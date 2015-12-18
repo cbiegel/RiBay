@@ -9,10 +9,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = RibayServerApplication.class)
 @WebAppConfiguration
-public class RibayServerApplicationTests {
+public class RibayServerApplicationTests
+{
 
-	@Test
-	public void contextLoads() {
-	}
+    @Test
+    public void contextLoads()
+    {
+    }
 
 }
