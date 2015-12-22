@@ -1,7 +1,9 @@
 package com.ribay.server;
 
-import java.net.UnknownHostException;
-import java.util.Arrays;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -21,19 +23,37 @@ public class MyRiakClient extends RiakClient
         super(setUpCluster());
     }
 
-    // This will create a client object that we can use to interact with Riak
-    private static RiakCluster setUpCluster() throws UnknownHostException
+    private static RiakCluster setUpCluster() throws Exception
     {
-        // This example will use only one node listening on localhost:10017
-        RiakNode node1 = new RiakNode.Builder().withRemoteAddress("134.100.11.158")
-                .withRemotePort(8087).build();
-        RiakNode node2 = new RiakNode.Builder().withRemoteAddress("134.100.11.159")
-                .withRemotePort(8087).build();
-        RiakNode node3 = new RiakNode.Builder().withRemoteAddress("134.100.11.160")
-                .withRemotePort(8087).build();
+        InputStream is = MyRiakClient.class.getClassLoader()
+                .getResourceAsStream("database.properties");
 
-        // This cluster object takes our one node as an argument
-        RiakCluster cluster = new RiakCluster.Builder(Arrays.asList(node1, node2, node3)).build();
+        if (is == null)
+        {
+            throw new Exception("No file 'database.properties' in classpath");
+        }
+
+        Properties p = new Properties();
+        p.load(is);
+
+        String ipsProperty = p.getProperty("ips");
+
+        if (ipsProperty == null)
+        {
+            throw new Exception("No property 'ips' configured in database.properties");
+        }
+
+        String[] ips = ipsProperty.split(",");
+
+        List<RiakNode> nodes = new ArrayList<>();
+        for (String ip : ips)
+        {
+            RiakNode node = new RiakNode.Builder().withRemoteAddress(ip).withRemotePort(8087)
+                    .build();
+            nodes.add(node);
+        }
+
+        RiakCluster cluster = new RiakCluster.Builder(nodes).build();
 
         // The cluster must be started to work, otherwise you will see errors
         cluster.start();
