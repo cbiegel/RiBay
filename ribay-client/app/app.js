@@ -8,6 +8,31 @@ angular.module('myApp', [
     'myApp.view3',
     'myApp.version'
 ]).
-config(['$routeProvider', function($routeProvider) {
-  $routeProvider.otherwise({redirectTo: '/view1'});
-}]);
+    config(['$routeProvider', function ($routeProvider) {
+        $routeProvider.otherwise({redirectTo: '/view1'});
+    }])
+
+    .controller('searchController', function ($scope) {
+        $scope.category = {
+            optionAll: {
+                /* name depends on language, value could be a key for db */
+                name: 'All',
+                value: ''
+            },
+            option1: {
+                name: 'option1Name',
+                value: 'option1Value'
+            },
+
+            selected: ''
+        };
+        $scope.searchText = '';
+
+        $scope.search = function () {
+            // TODO do something
+            window.alert('search \'' + $scope.searchText + '\' in category \'' + $scope.category.selected + '\'');
+
+            // reset textfield content
+            $scope.searchText = '';
+        };
+    });
