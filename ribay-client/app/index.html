@@ -15,6 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
     <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="app.css">
     <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
     <script src="bower_components/highcharts-release/highcharts.js"></script>
@@ -27,12 +28,16 @@
             <img src="components/img/application-logo.png"> <!-- TODO deliver image -->
         </div>
         <div class="search-field" ng-controller="searchController">
+            <!-- TODO use bootstrap component for combobox -->
             <select ng-model="category.selected">
                 <option value="{{category.optionAll.value}}">{{category.optionAll.name}}</option>
                 <option value="{{category.option1.value}}">{{category.option1.name}}</option>
             </select>
-            <input type="text" ng-model="searchText">
-            <button ng-click="search()">Search</button>
+            <input type="text" ng-model="searchText" placeholder="Article"
+                   uib-typeahead="article for article in getArticles($viewValue)" my-enter="search()"
+                   typeahead-loading="loadingArticles" class="form-control">
+            <i ng-show="loadingArticles" class="glyphicon glyphicon-refresh"></i>
+            <button type="button" class="btn btn-primary" ng-click="search()">Search</button>
         </div>
     </div>
     <div class="headline-second">
@@ -60,6 +65,8 @@
 -->
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="app.js"></script>
 <script src="view1/view1.js"></script>
 <script src="view2/view2.js"></script>

@@ -2,14 +2,15 @@
 
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
-    'ngRoute',
-    'myApp.view1',
-    'myApp.view2',
-    'myApp.view3',
-    'myApp.search',
-    'myApp.version'
-]).
-    config(['$routeProvider', function ($routeProvider) {
+        'ngRoute',
+        'myApp.view1',
+        'myApp.view2',
+        'myApp.view3',
+        'myApp.search',
+        'myApp.version'
+    ])
+
+    .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.otherwise({redirectTo: '/view1'});
     }])
 
@@ -29,6 +30,20 @@ angular.module('myApp', [
         };
         $scope.searchText = '';
 
+        $scope.getArticles = function (val) {
+            // TODO lazy load articles
+            return $http.get('//maps.googleapis.com/maps/api/geocode/json', {
+                params: {
+                    address: val,
+                    sensor: false
+                }
+            }).then(function (response) {
+                return response.data.results.map(function (item) {
+                    return item.formatted_address;
+                });
+            });
+        };
+
         $scope.search = function () {
             // switch to search view
             // TODO handle 'null' input
@@ -38,4 +53,19 @@ angular.module('myApp', [
             // reset textfield content
             // $scope.searchText = '';
         };
+    })
+
+    .directive('myEnter', function () {
+        return function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if (event.which === 13) {
+                    scope.$apply(function () {
+                        scope.$eval(attrs.myEnter);
+                    });
+
+                    event.preventDefault();
+                }
+            });
+        };
     });
+
