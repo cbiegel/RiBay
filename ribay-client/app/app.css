@@ -1,5 +1,9 @@
 /* app css stylesheet */
 
+html {
+    font-size: 10pt;
+}
+
 .menu {
     list-style: none;
     border-bottom: 0.1em solid black;
@@ -31,7 +35,7 @@
 
 .application-logo > img {
     width: 120px;
-    height: 48px;
+    height: 42px;
     background-color: green; /* TODO remove */
 }
 
@@ -40,9 +44,43 @@
 }
 
 .header {
-    padding: 4px 4px 4px 4px;
+    padding-left: 16px;
+    padding-top: 12px;
+    padding-right: 16px;
+    padding-bottom: 12px;
+}
+
+.footer {
+    padding-top: 24px;
 }
 
 .search-field > input {
     width: 480px;
+}
+
+.viewHeader {
+    height: 42px;
+    border: 0.1em solid #ccc;
+}
+
+.viewHeader > div {
+    display: inline-block;
+    padding-left: 16px;
+    padding-top: 12px;
+    padding-right: 16px;
+    padding-bottom: 12px;
+}
+
+.viewHeader > .left {
+    position: absolute;
+    left: 0px;
+}
+
+.viewHeader > .right {
+    position: absolute;
+    right: 0px;
+}
+
+.colored {
+    color: #c45500;
 }

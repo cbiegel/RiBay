@@ -6,13 +6,14 @@ angular.module('myApp', [
     'myApp.view1',
     'myApp.view2',
     'myApp.view3',
+    'myApp.search',
     'myApp.version'
 ]).
     config(['$routeProvider', function ($routeProvider) {
         $routeProvider.otherwise({redirectTo: '/view1'});
     }])
 
-    .controller('searchController', function ($scope) {
+    .controller('searchController', function ($scope, $location) {
         $scope.category = {
             optionAll: {
                 /* name depends on language, value could be a key for db */
@@ -29,10 +30,12 @@ angular.module('myApp', [
         $scope.searchText = '';
 
         $scope.search = function () {
-            // TODO do something
-            window.alert('search \'' + $scope.searchText + '\' in category \'' + $scope.category.selected + '\'');
+            // switch to search view
+            // TODO handle 'null' input
+            // TODO handle input 'all' as category
+            $location.path('search/' + encodeURIComponent($scope.searchText) + '/' + encodeURIComponent($scope.category.selected));
 
             // reset textfield content
-            $scope.searchText = '';
+            // $scope.searchText = '';
         };
     });
