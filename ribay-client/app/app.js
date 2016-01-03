@@ -7,6 +7,7 @@ angular.module('myApp', [
         'myApp.view2',
         'myApp.view3',
         'myApp.search',
+        'myApp.product',
         'myApp.version'
     ])
 
@@ -14,20 +15,26 @@ angular.module('myApp', [
         $routeProvider.otherwise({redirectTo: '/view1'});
     }])
 
-    .controller('searchController', function ($scope, $location) {
+    .controller('searchController', function ($scope, $location, $http) {
         $scope.category = {
-            optionAll: {
-                /* name depends on language, value could be a key for db */
+            options: [
+                {
+                    /* name depends on language, value could be a key for db */
+                    name: 'All',
+                    value: ''
+                },
+                {
+                    name: 'option1Name',
+                    value: 'option1Value'
+                }
+            ],
+
+            selected: {
                 name: 'All',
                 value: ''
-            },
-            option1: {
-                name: 'option1Name',
-                value: 'option1Value'
-            },
-
-            selected: ''
+            }
         };
+
         $scope.searchText = '';
 
         $scope.getArticles = function (val) {
@@ -48,7 +55,7 @@ angular.module('myApp', [
             // switch to search view
             // TODO handle 'null' input
             // TODO handle input 'all' as category
-            $location.path('search/' + encodeURIComponent($scope.searchText) + '/' + encodeURIComponent($scope.category.selected));
+            $location.path('search/' + encodeURIComponent($scope.searchText) + '/' + encodeURIComponent($scope.category.selected.value));
 
             // reset textfield content
             // $scope.searchText = '';

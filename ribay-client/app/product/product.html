@@ -1,0 +1,31 @@
+<div class="product-main" ng-controller="productCtrl">
+    <div class="left">
+        <uib-carousel interval="0" no-wrap="false">
+            <uib-slide ng-repeat="image in product.images">
+                <img ng-src="{{image.src}}" style="margin:auto;">
+            </uib-slide>
+        </uib-carousel>
+    </div>
+    <div class="center">
+        <div class="title">
+            <span>{{product.title}}</span>
+        </div>
+        <div class="rating">
+            <uib-rating ng-model="product.rate" max="5" readonly="true"></uib-rating>
+        </div>
+        <hr>
+        <div class="price">
+            <span class="caption">Price: </span>
+            <span class="value">{{product.price}}</span>
+        </div>
+        <div class="quantity">
+            <span>Only {{product.quantity}} left in stock</span>
+        </div>
+        <div class="details">
+            <span>{{product.details}}</span>
+        </div>
+    </div>
+    <div class="right">
+        <span>Placeholder for 'Add to cart' button</span>
+    </div>
+</div>

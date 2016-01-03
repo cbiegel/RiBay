@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
     <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="app.css">
     <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
     <script src="bower_components/highcharts-release/highcharts.js"></script>
@@ -28,11 +28,14 @@
             <img src="components/img/application-logo.png"> <!-- TODO deliver image -->
         </div>
         <div class="search-field" ng-controller="searchController">
-            <!-- TODO use bootstrap component for combobox -->
-            <select ng-model="category.selected">
-                <option value="{{category.optionAll.value}}">{{category.optionAll.name}}</option>
-                <option value="{{category.option1.value}}">{{category.option1.name}}</option>
-            </select>
+            <div class="btn-group" uib-dropdown>
+                <button id="single-button" type="button" class="btn" uib-dropdown-toggle>
+                    {{category.selected.name}} <span class="caret"></span>
+                </button>
+                <ul class="uib-dropdown-menu" role="menu" aria-labelledby="single-button">
+                    <li role="menuitem" ng-repeat="option in category.options"><a ng-click="category.selected = option" >{{option.name}}</a></li>
+                </ul>
+            </div>
             <input type="text" ng-model="searchText" placeholder="Article"
                    uib-typeahead="article for article in getArticles($viewValue)" my-enter="search()"
                    typeahead-loading="loadingArticles" class="form-control">
@@ -45,6 +48,8 @@
             <li><a href="#/view1">view1</a></li>
             <li><a href="#/view2">view2</a></li>
             <li><a href="#/view3">view3</a></li>
+            <li><a href="#/search/abc/123">Search page demo</a></li>
+            <li><a href="#/product/123">Product page demo</a></li>
         </ul>
     </div>
 </div>
@@ -58,20 +63,24 @@
     <div ng-view></div>
 </div>
 
+<!--
 <div class="footer">Angular seed app: v<span app-version></span></div>
+-->
 
 <!-- In production use:
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
 -->
 <script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 <script src="app.js"></script>
 <script src="view1/view1.js"></script>
 <script src="view2/view2.js"></script>
 <script src="view3/view3.js"></script>
 <script src="search/search.js"></script>
+<script src="product/product.js"></script>
 <script src="components/version/version.js"></script>
 <script src="components/version/version-directive.js"></script>
 <script src="components/version/interpolate-filter.js"></script>

@@ -92,3 +92,75 @@ html {
 .colored {
     color: #c45500;
 }
+
+.product-main > .left {
+    width: 30%;
+    float: left;
+}
+
+.product-main .left img {
+    height: 400px;
+}
+
+.product-main .left .carousel-control {
+    background-image: none;
+}
+
+.product-main .left .carousel-control span {
+    color: #333;
+}
+
+.product-main .left .carousel-indicators > li {
+    border-color: #333;
+}
+
+.product-main .left .carousel-indicators .active {
+    background-color: #333;
+}
+
+.product-main > .center {
+    margin-left: 32%;
+    margin-right: 260px;
+}
+
+.product-main > .right {
+    width: 250px;
+    float: right;
+}
+
+.product-main .title {
+    font-size: 19px;
+    font-weight: normal;
+}
+
+.product-main .rating {
+    color: #f7ce2b;
+    text-shadow: 1px 1px #bb9924;
+}
+
+.product-main .price > .caption {
+    font-size: 13px;
+    color: #555;
+}
+
+.product-main .price > .value {
+    font-size: 17px;
+    color: #b12704;
+}
+
+.product-main .quantity {
+    margin-top: 8px;
+    margin-bottom: 8px;
+
+    font-size: 17px;
+    color: #008a00;
+}
+
+.product-main .details {
+    font-size: 13px;
+}
+
+.product-main hr {
+    margin-top: 0px;
+    margin-bottom: 8px;
+}
