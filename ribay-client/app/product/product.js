@@ -30,4 +30,19 @@ angular.module('myApp.product', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
             // TODO get data from backend
         };
 
+
+        $scope.isSuccessAlertDisplayed = false
+        $scope.successTextAlert = "Item \"" + $scope.product.title + "\" was added to the cart."
+
+        $scope.addToCart = function() {
+
+            $scope.isSuccessAlertDisplayed = true;
+
+            // TODO integrate actual shopping cart
+        };
+
+        $scope.switchBool = function(boolValue) {
+          $scope[boolValue] = !$scope[boolValue];
+        };
+
     }]);

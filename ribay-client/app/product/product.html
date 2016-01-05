@@ -1,4 +1,10 @@
 <div class="product-main" ng-controller="productCtrl">
+    <div class="top">
+        <div class="alert alert-success" ng-show="isSuccessAlertDisplayed">
+            <button type="button" class="close" data-ng-click="switchBool('isSuccessAlertDisplayed')">×</button>
+            <strong>{{successTextAlert}}</strong>
+        </div>
+    </div>
     <div class="left">
         <uib-carousel interval="0" no-wrap="false">
             <uib-slide ng-repeat="image in product.images">
@@ -26,6 +32,6 @@
         </div>
     </div>
     <div class="right">
-        <span>Placeholder for 'Add to cart' button</span>
+        <button type="button" class="btn btn-primary" ng-click="addToCart()">Add to cart</button>
     </div>
 </div>
