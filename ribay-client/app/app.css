@@ -164,6 +164,12 @@ html {
     margin-bottom: 8px;
 }
 
+.product-reviews {
+    clear: both;
+    margin-left: 32%;
+    margin-right: 260px;
+}
+
 .product-reviews .review {
     padding-top: 6px;
 }
