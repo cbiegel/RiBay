@@ -35,3 +35,12 @@
         <button type="button" class="btn btn-primary" ng-click="addToCart()">Add to cart</button>
     </div>
 </div>
+
+<div class="product-reviews" ng-controller="reviewCtrl">
+    <div class ="review" ng-repeat="review in reviews">
+        Review from <b>{{review.name}}</b> on <span ng-bind="review.time | date:'MM/dd/yyyy HH:mm:ss'"></span> (
+        <uib-rating class="rating" ng-model="review.rating" max="5" readonly="true"></uib-rating>
+        ): <b>{{review.title}}</b>
+        <br/>{{review.text}}
+    </div>
+</div>

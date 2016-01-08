@@ -133,9 +133,8 @@ html {
     font-weight: normal;
 }
 
-.product-main .rating {
+.rating {
     color: #f7ce2b;
-    text-shadow: 1px 1px #bb9924;
 }
 
 .product-main .price > .caption {
@@ -163,4 +162,8 @@ html {
 .product-main hr {
     margin-top: 0px;
     margin-bottom: 8px;
+}
+
+.product-reviews .review {
+    padding-top: 6px;
 }

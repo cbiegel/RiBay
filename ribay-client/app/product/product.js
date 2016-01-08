@@ -13,7 +13,7 @@ angular.module('myApp.product', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         });
     }])
 
-    .controller('productCtrl', ['$scope', '$routeParams', function ($scope, $routeParams) {
+    .controller('productCtrl', ['$scope', '$routeParams', '$timeout', function ($scope, $routeParams, $timeout) {
 
         $scope.product = {
             id: $routeParams.productid,
@@ -34,15 +34,38 @@ angular.module('myApp.product', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         $scope.isSuccessAlertDisplayed = false
         $scope.successTextAlert = "Item \"" + $scope.product.title + "\" was added to the cart."
 
-        $scope.addToCart = function() {
+        $scope.addToCart = function () {
 
             $scope.isSuccessAlertDisplayed = true;
+            $timeout(function() {
+                $scope.isSuccessAlertDisplayed = false;
+            }, 2000);
 
             // TODO integrate actual shopping cart
         };
 
-        $scope.switchBool = function(boolValue) {
-          $scope[boolValue] = !$scope[boolValue];
+        $scope.switchBool = function (boolValue) {
+            $scope[boolValue] = !$scope[boolValue];
         };
 
+    }])
+    .controller('reviewCtrl', ['$scope', '$routeParams', function ($scope, $routeParams) {
+
+        $scope.reviews = [{
+            name: "Max Mustermann",
+            time: Date.now(),
+            title: "Tolles Produkt",
+            text: "Gutes Produkt.\r\nSchnelle Lieferung, einwandfrei.",
+            rating: 4
+        },
+            {
+                name: "Foo Bar",
+                time: Date.now(),
+                title: "Schlechtes Produkt",
+                text: "Schlechtes Produkt.\r\nLangsame Lieferung :(.",
+                rating: 1
+            }];
+
     }]);
+
+
