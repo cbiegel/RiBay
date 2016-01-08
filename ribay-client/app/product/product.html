@@ -5,6 +5,19 @@
             <strong>{{successTextAlert}}</strong>
         </div>
     </div>
+    <div class="right">
+        <div class="box">
+            <div class="box-content">
+                <div class="quantity">
+                    <span>Quantity: </span>
+                    <select ng-model="quantity">
+                        <option ng-repeat="n in [] | range:20" value="{{n+1}}">{{n+1}}</option>
+                    </select>
+                </div>
+                <button type="button" class="btn add-to-cart" ng-click="addToCart()">Add to cart</button>
+            </div>
+        </div>
+    </div>
     <div class="left">
         <uib-carousel interval="0" no-wrap="false">
             <uib-slide ng-repeat="image in product.images">
@@ -16,7 +29,7 @@
         <div class="title">
             <span>{{product.title}}</span>
         </div>
-        <div class="rating">
+        <div class="rating noselect">
             <uib-rating ng-model="product.rate" max="5" readonly="true"></uib-rating>
         </div>
         <hr>
@@ -31,16 +44,20 @@
             <span>{{product.details}}</span>
         </div>
     </div>
-    <div class="right">
-        <button type="button" class="btn btn-primary" ng-click="addToCart()">Add to cart</button>
-    </div>
 </div>
 
 <div class="product-reviews" ng-controller="reviewCtrl">
-    <div class ="review" ng-repeat="review in reviews">
-        Review from <b>{{review.name}}</b> on <span ng-bind="review.time | date:'MM/dd/yyyy HH:mm:ss'"></span> (
-        <uib-rating class="rating" ng-model="review.rating" max="5" readonly="true"></uib-rating>
-        ): <b>{{review.title}}</b>
-        <br/>{{review.text}}
+    <div class="review" ng-repeat="review in reviews">
+        <div class="review-caption-first">
+            <uib-rating class="rating noselect" ng-model="review.rating" max="5" readonly="true"></uib-rating>
+            <span>{{review.title}}</span>
+        </div>
+        <div class="review-caption-second">
+            <span>By {{review.name}} on</span>
+            <span ng-bind="review.time | date:'MM/dd/yyyy HH:mm:ss'"></span>
+        </div>
+        <div class="review-content">
+            <span>{{review.text}}</span>
+        </div>
     </div>
 </div>

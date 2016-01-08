@@ -74,5 +74,19 @@ angular.module('myApp', [
                 }
             });
         };
+    })
+
+    // http://stackoverflow.com/questions/11873570/angularjs-for-loop-with-numbers-ranges
+    .filter('range', function () {
+        return function (input, total) {
+            total = parseInt(total);
+
+            for (var i = 0; i < total; i++) {
+                input.push(i);
+            }
+
+            return input;
+        };
     });
+;
 

@@ -31,8 +31,10 @@ angular.module('myApp.product', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         };
 
 
-        $scope.isSuccessAlertDisplayed = false
-        $scope.successTextAlert = "Item \"" + $scope.product.title + "\" was added to the cart."
+        $scope.isSuccessAlertDisplayed = false;
+        $scope.successTextAlert = "Item \"" + $scope.product.title + "\" was added to the cart.";
+
+        $scope.quantity = '1';
 
         $scope.addToCart = function () {
 
