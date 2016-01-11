@@ -8,6 +8,7 @@ angular.module('myApp', [
         'myApp.view3',
         'myApp.search',
         'myApp.product',
+        'myApp.cart',
         'myApp.version'
     ])
 
