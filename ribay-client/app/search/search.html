@@ -3,7 +3,59 @@
         {{result.start}}-{{result.end}} of {{result.size}} results for <b class="colored">"{{search.text}}"</b> in <b>"{{search.category}}"</b>
     </div>
     <div class="right">
-        Sort by
-        <!-- Add combobox for sorting -->
+        <span>Sort by</span>
+        <!-- TODO build an url -->
+        <!--<select ng-model="sortcategory" ng-options="value.id as value.label for value in sortcategories"-->
+        <select ng-model="sortCategory" ng-options="value.label for value in sortCategories"
+                ng-change="searchAgain(search.text)">
+        </select>
+    </div>
+</div>
+<div class="search-main">
+    <div id="left">
+        <div class="headline text-medium text-light">Show results for</div>
+        <!-- TODO categories -->
+        <div class="headline text-medium text-light">Refine by</div>
+        <div class="filter-category">
+            <div class="title text-bold text-small">
+                <span>Avg. Customer Review</span>
+            </div>
+            <div class="content text-small">
+                <div ng-repeat="n in [] | range: 5 | reverse | limitTo: 4">
+                    <a ng-click="searchAgain(search.text)"> <!-- TODO build an url -->
+                        <uib-rating ng-model="n" max="5" readonly="true" class="rating"></uib-rating>
+                        <span>& Up</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="center">
+        <!-- TODO build an url -->
+        <div class="text-medium" ng-show="result.suggestion">
+            <span>Did you mean: <a ng-click="searchAgain(result.suggestion)">"{{result.suggestion}}"</a></span>
+        </div>
+        <div class="search-list">
+            <div class="search-entry inline" ng-repeat="item in result.list">
+                <div class="image-container">
+                    <a href="#/product/{{item.id}}"><img src="{{item.image}}"></a>
+                </div>
+                <div>
+                    <div class="text-medium">
+                        <a href="#/product/{{item.id}}" class="product-link text-medium">{{item.name}}</a>
+                    </div>
+                    <div class="inline">
+                        <div class="details-left">
+                            <span class="price text-bold">{{item.price | currency: "€"}}</span>
+                        </div>
+                        <div class="details-right">
+                            <div class="rating noselect">
+                                <uib-rating ng-model="item.rating" max="5" readonly="true"></uib-rating>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

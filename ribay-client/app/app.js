@@ -88,6 +88,12 @@ angular.module('myApp', [
 
             return input;
         };
+    })
+
+    // http://stackoverflow.com/questions/15266671/angular-ng-repeat-in-reverse
+    .filter('reverse', function () {
+        return function (items) {
+            return items.slice().reverse();
+        };
     });
-;
 

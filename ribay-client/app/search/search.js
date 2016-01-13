@@ -24,10 +24,70 @@ angular.module('myApp.search', ['ngRoute'])
         };
 
         $scope.result = {
+            suggestion: "My suggestion", // set undefined if no suggestion
             start: 1, // TODO
-            end: 1, // TODO
-            size: 0, // TODO
-            list: [] // TODO
+            end: 6, // TODO
+            size: 20, // TODO
+            list: [{
+                id: "abc",
+                image: "http://placehold.it/200x400",
+                name: "Name of article 1",
+                price: 12.34,
+                rating: 4
+            }, {
+                id: "abc",
+                image: "http://placehold.it/200x400",
+                name: "Name of article 2",
+                price: 12.34,
+                rating: 4
+            }, {
+                id: "abc",
+                image: "http://placehold.it/200x400",
+                name: "Name of article 3",
+                price: 12.34,
+                rating: 4
+            }, {
+                id: "abc",
+                image: "http://placehold.it/200x400",
+                name: "Name of article 4",
+                price: 12.34,
+                rating: 4
+            }, {
+                id: "abc",
+                image: "http://placehold.it/200x400",
+                name: "Name of article 5",
+                price: 12.34,
+                rating: 4
+            }, {
+                id: "abc",
+                image: "http://placehold.it/200x400",
+                name: "Name of article 6",
+                price: 12.34,
+                rating: 4
+            }]
+        };
+
+        $scope.sortCategories = [{
+            id: "1",
+            label: "Relevance"
+        }, {
+            id: "2",
+            label: "Price: Low to High"
+        }, {
+            id: "3",
+            label: "Price: High to Low"
+        }, {
+            id: "4",
+            label: "Avg. Customer Review"
+        }, {
+            id: "5",
+            label: "Newest Arrivals"
+        }];
+
+        $scope.sortCategory = $scope.sortCategories[0];
+
+        $scope.searchAgain = function (text) {
+            alert("search again " + text);
         };
 
     }]);
