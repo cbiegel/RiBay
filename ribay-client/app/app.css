@@ -297,7 +297,7 @@ a {
     width: 100%;
 }
 
-.cart .cart-table tr:not(.cart-footer) {
+.cart .cart-table tr {
     border-bottom: 1px solid #ddd;
 }
 
@@ -319,7 +319,8 @@ a {
     font-size: 13px;
 }
 
-.cart .cart-table .cart-footer td {
+.cart .cart-footer {
+    float: right;
     padding-top: 4px;
 }
 

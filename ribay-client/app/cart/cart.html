@@ -47,14 +47,10 @@
                     </div>
                 </td>
             </tr>
-            <tr class="cart-footer">
-                <td></td>
-                <td></td>
-                <td>
-                    <span class="text-medium text-bold">Subtotal ({{subtotal.amount}} items): </span>
-                    <span class="price">{{subtotal.price | currency: "€"}}</span>
-                </td>
-            </tr>
         </table>
+        <div class="cart-footer">
+            <span class="text-medium text-bold">Subtotal ({{subtotal.amount}} items): </span>
+            <span class="price">{{subtotal.price | currency: "€"}}</span>
+        </div>
     </div>
 </div>
