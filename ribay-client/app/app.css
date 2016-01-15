@@ -329,7 +329,9 @@ a {
 }
 
 .cart .cart-table .cart-item img {
-    /* TODO center in container */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
     height: 100px;
     max-width: 125px;
 }
@@ -337,11 +339,9 @@ a {
 .cart .cart-table .cart-item .image-container {
     width: 125px;
     margin-right: 16px;
-    display: inline-block;
 }
 
 .cart .cart-table .cart-item .cart-item-details {
-    display: inline-block;
 }
 
 .cart .cart-table .cart-item .cart-item-options {
@@ -408,7 +408,9 @@ a {
 }
 
 .search-list .search-entry .image-container img {
-    /* TODO center in container */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
     height: 160px;
     max-width: 160px;
 }

@@ -20,15 +20,18 @@
             </tr>
             <tr ng-repeat="item in cart" class="cart-item">
                 <td>
-                    <div class="image-container">
-                        <a href="#/product/{{item.id}}"><img ng-src="{{item.image}}"></a>
-                    </div>
-                    <div class="cart-item-details">
-                        <div class="cart-item-caption">
-                            <a href="#/product/{{item.id}}" class="product-link text-medium text-bold">{{item.name}}</a>
+                    <div class="inline">
+                        <div class="image-container">
+                            <a href="#/product/{{item.id}}"><img ng-src="{{item.image}}"></a>
                         </div>
-                        <div class="cart-item-options">
-                            <a ng-click="deleteItem(item)">Delete</a>
+                        <div class="cart-item-details">
+                            <div class="cart-item-caption">
+                                <a href="#/product/{{item.id}}"
+                                   class="product-link text-medium text-bold">{{item.name}}</a>
+                            </div>
+                            <div class="cart-item-options">
+                                <a ng-click="deleteItem(item)">Delete</a>
+                            </div>
                         </div>
                     </div>
                 </td>
@@ -49,8 +52,10 @@
             </tr>
         </table>
         <div class="cart-footer">
-            <span class="text-medium text-bold">Subtotal ({{subtotal.amount}} items): </span>
-            <span class="price">{{subtotal.price | currency: "€"}}</span>
+            <div class="cart-footer-content">
+                <span class="text-medium text-bold">Subtotal ({{subtotal.amount}} items): </span>
+                <span class="price">{{subtotal.price | currency: "€"}}</span>
+            </div>
         </div>
     </div>
 </div>
