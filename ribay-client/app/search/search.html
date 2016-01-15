@@ -1,6 +1,7 @@
 <div class="viewHeader">
     <div class="left">
-        {{result.start}}-{{result.end}} of {{result.size}} results for <b class="colored">"{{search.text}}"</b> in <b>"{{search.category}}"</b>
+        {{result.start}}-{{result.end}} of {{result.total_size}} results for <b class="colored">"{{search.text}}"</b> in
+        <b>"{{search.category}}"</b>
     </div>
     <div class="right">
         <span>Sort by</span>
@@ -56,6 +57,12 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="pagination">
+            <!-- TODO build an url -->
+            <uib-pagination total-items="result.total_size" ng-model="result.page_no" items-per-page="result.page_size"
+                            max-size="10" class="pagination-sm" boundary-links="true" boundary-link-numbers="true"
+                            rotate="true" ng-change="searchAgain(search.text)"></uib-pagination>
         </div>
     </div>
 </div>

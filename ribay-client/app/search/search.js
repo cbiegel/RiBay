@@ -20,14 +20,19 @@ angular.module('myApp.search', ['ngRoute'])
     .controller('searchCtrl', ['$scope', '$routeParams', function ($scope, $routeParams) {
         $scope.search = {
             category: decodeURIComponent($routeParams.category) || '',
-            text: decodeURIComponent($routeParams.text)
+            text: decodeURIComponent($routeParams.text),
+            page_no: 1, // TODO from url
+            page_size: 6 // TODO from url
+            // TODO sort by
         };
 
         $scope.result = {
             suggestion: "My suggestion", // set undefined if no suggestion
+            page_no: $scope.search.page_no,
+            page_size: $scope.search.page_size,
             start: 1, // TODO
             end: 6, // TODO
-            size: 20, // TODO
+            total_size: 200, // TODO
             list: [{
                 id: "abc",
                 image: "http://placehold.it/200x400",
