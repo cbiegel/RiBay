@@ -9,6 +9,8 @@ angular.module('myApp', [
         'myApp.search',
         'myApp.product',
         'myApp.cart',
+        'myApp.login',
+        'myApp.loginSuccess',
         'myApp.version'
     ])
 
