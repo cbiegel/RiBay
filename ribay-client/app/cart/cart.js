@@ -4,7 +4,7 @@
 
 'use strict';
 
-angular.module('myApp.cart', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
+angular.module('myApp.cart', [])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/cart', {
@@ -13,12 +13,12 @@ angular.module('myApp.cart', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         });
     }])
 
-    .controller('cartCtrl', ['$scope', '$http', function ($scope, $http) {
+    .controller('cartCtrl', ['$scope', '$http', 'Backend', function ($scope, $http, Backend) {
 
         $scope.cart = undefined;
         $scope.subtotal = undefined;
 
-        $http.get('http://localhost:8080/cart/get/').success(function (data) {
+        $http.get(Backend.host + '/cart/get/').success(function (data) {
             $scope.cart = data.articles;
 
             var total_amount = 0;

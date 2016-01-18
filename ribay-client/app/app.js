@@ -3,6 +3,7 @@
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
         'ngRoute',
+        'ngCookies',
         'myApp.view1',
         'myApp.view2',
         'myApp.view3',
@@ -14,8 +15,38 @@ angular.module('myApp', [
         'myApp.version'
     ])
 
+    .constant("Backend", {
+        host: "http://localhost:8080"
+    })
+
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.otherwise({redirectTo: '/view1'});
+    }])
+
+    .config(['$httpProvider', function ($httpProvider) {
+        $httpProvider.interceptors.push('authInterceptor');
+    }])
+
+    .factory('authInterceptor', ['$cookies', function ($cookies) {
+        return {
+            request: function (config) {
+                // if there is a cookie with the session id, enrich the request with a header
+                config.headers = config.headers || {};
+                if ($cookies.get("RSESSIONID")) {
+                    config.headers['rsessionid'] = $cookies.get("RSESSIONID");
+                }
+                return config;
+            },
+            response: function (response) {
+                // if there is a response header with the session is, set a cookie
+                if (response.headers('rsessionid')) {
+                    var expires = new Date();
+                    expires.setDate(expires.getDate() + 1); // expires in 24 hours
+                    $cookies.put('RSESSIONID', response.headers('rsessionid'), {expires: expires});
+                }
+                return response;
+            }
+        }
     }])
 
     .controller('searchController', function ($scope, $location, $http) {
