@@ -1,4 +1,4 @@
-package com.ribay.server;
+package com.ribay.server.db;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +17,7 @@ import com.basho.riak.client.api.RiakCommand;
 import com.basho.riak.client.core.RiakCluster;
 import com.basho.riak.client.core.RiakFuture;
 import com.basho.riak.client.core.RiakNode;
+import com.ribay.server.util.RibayProperties;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)

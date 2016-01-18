@@ -1,4 +1,4 @@
-package com.ribay.server;
+package com.ribay.server.util;
 
 import java.util.Properties;
 

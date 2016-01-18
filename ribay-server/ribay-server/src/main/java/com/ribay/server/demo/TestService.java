@@ -1,4 +1,4 @@
-package com.ribay.server;
+package com.ribay.server.demo;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -13,6 +13,7 @@ import com.basho.riak.client.api.commands.kv.StoreValue;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
 import com.basho.riak.client.core.query.RiakObject;
+import com.ribay.server.db.MyRiakClient;
 
 @RestController
 public class TestService

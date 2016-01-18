@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.basho.riak.client.api.commands.kv.FetchValue;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
-import com.ribay.server.MyRiakClient;
-import com.ribay.server.RibayProperties;
+import com.ribay.server.db.MyRiakClient;
 import com.ribay.server.material.Cart;
+import com.ribay.server.util.AuthInterceptor;
+import com.ribay.server.util.RequestScopeData;
+import com.ribay.server.util.RibayProperties;
 
 @RestController
 public class CartService
@@ -22,12 +24,17 @@ public class CartService
     @Autowired
     private RibayProperties properties;
 
-    @CrossOrigin(origins = "*")
-    @RequestMapping("/cart/get/")
+    @Autowired
+    private RequestScopeData requestData;
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
+    @RequestMapping(path = "/cart/get/")
     public Cart getCart() throws Exception
     {
-        // TODO get session id from cookie
-        String sessionId = DemoService.DEMO_SESSION_ID;
+        String sessionId = requestData.getSessionId();
+
+        // TODO comment the next line to prevent getting only the same demo data
+        sessionId = DemoService.DEMO_SESSION_ID;
 
         Namespace quotesBucket = new Namespace(properties.getBucketCart());
         Location quoteObjectLocation = new Location(quotesBucket, sessionId);

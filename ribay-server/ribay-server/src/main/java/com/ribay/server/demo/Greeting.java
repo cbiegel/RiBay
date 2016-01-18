@@ -1,4 +1,4 @@
-package com.ribay.server;
+package com.ribay.server.demo;
 
 public class Greeting {
 

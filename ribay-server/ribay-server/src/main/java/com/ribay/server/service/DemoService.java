@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.basho.riak.client.api.commands.kv.StoreValue;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
-import com.ribay.server.MyRiakClient;
-import com.ribay.server.RibayProperties;
+import com.ribay.server.db.MyRiakClient;
 import com.ribay.server.material.ArticleShort;
 import com.ribay.server.material.Cart;
+import com.ribay.server.util.RibayProperties;
 
 @RestController
 public class DemoService
