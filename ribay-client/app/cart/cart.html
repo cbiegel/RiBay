@@ -1,6 +1,5 @@
 <div class="cart">
-    <div class="right">
-        <!-- TODO do not display if cart is empty -->
+    <div class="right" ng-show="!isEmpty">
         <div class="box background-grey">
             <div class="box-content">
                 <div class="subtotal">
@@ -12,51 +11,55 @@
         </div>
     </div>
     <div class="center">
-        <div class="text-big text-bold">Shopping Basket</div>
-        <!-- TODO show text when cart is empty -->
-        <table class="cart-table">
-            <tr class="cart-header">
-                <td></td>
-                <td>Price</td>
-                <td>Quantity</td>
-            </tr>
-            <tr ng-repeat="item in cart" class="cart-item">
-                <td>
-                    <div class="inline">
-                        <div class="image-container">
-                            <a href="#/product/{{item.id}}"><img ng-src="{{item.image}}"></a>
-                        </div>
-                        <div class="cart-item-details">
-                            <div class="cart-item-caption">
-                                <a href="#/product/{{item.id}}"
-                                   class="product-link text-medium text-bold">{{item.name}}</a>
+        <div ng-show="isEmpty">
+            <div class="text-big text-bold">Your Shopping Basket is empty.</div>
+        </div>
+        <div ng-show="!isEmpty">
+            <div class="text-big text-bold">Shopping Basket</div>
+            <table class="cart-table">
+                <tr class="cart-header">
+                    <td></td>
+                    <td>Price</td>
+                    <td>Quantity</td>
+                </tr>
+                <tr ng-repeat="item in cart" class="cart-item">
+                    <td>
+                        <div class="inline">
+                            <div class="image-container">
+                                <a href="#/product/{{item.id}}"><img ng-src="{{item.image}}"></a>
                             </div>
-                            <div class="cart-item-options">
-                                <a ng-click="deleteItem(item)">Delete</a>
+                            <div class="cart-item-details">
+                                <div class="cart-item-caption">
+                                    <a href="#/product/{{item.id}}"
+                                       class="product-link text-medium text-bold">{{item.name}}</a>
+                                </div>
+                                <div class="cart-item-options">
+                                    <a ng-click="deleteItem(item)">Delete</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </td>
-                <td>
-                    <span class="price">{{item.price | currency: "€"}}</span>
-                </td>
-                <td>
-                    <div class="btn-group" uib-dropdown>
-                        <button id="single-button" type="button" class="btn" uib-dropdown-toggle>
-                            {{item.quantity}} <span class="caret"></span>
-                        </button>
-                        <ul class="uib-dropdown-menu" role="menu" aria-labelledby="single-button">
-                            <li role="menuitem" ng-repeat="n in [] | range:20"><a
-                                    ng-click="setQuantity(item, n+1)">{{n+1}}</a></li>
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-        </table>
-        <div class="cart-footer">
-            <div class="cart-footer-content">
-                <span class="text-medium text-bold">Subtotal ({{subtotal.amount}} items): </span>
-                <span class="price">{{subtotal.price | currency: "€"}}</span>
+                    </td>
+                    <td>
+                        <span class="price">{{item.price | currency: "€"}}</span>
+                    </td>
+                    <td>
+                        <div class="btn-group" uib-dropdown>
+                            <button id="single-button" type="button" class="btn" uib-dropdown-toggle>
+                                {{item.quantity}} <span class="caret"></span>
+                            </button>
+                            <ul class="uib-dropdown-menu" role="menu" aria-labelledby="single-button">
+                                <li role="menuitem" ng-repeat="n in [] | range:20"><a
+                                        ng-click="setQuantity(item, n+1)">{{n+1}}</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div class="cart-footer">
+                <div class="cart-footer-content">
+                    <span class="text-medium text-bold">Subtotal ({{subtotal.amount}} items): </span>
+                    <span class="price">{{subtotal.price | currency: "€"}}</span>
+                </div>
             </div>
         </div>
     </div>

@@ -4,6 +4,8 @@
 angular.module('myApp', [
         'ngRoute',
         'ngCookies',
+        'ngAnimate',
+        'ui.bootstrap',
         'myApp.view1',
         'myApp.view2',
         'myApp.view3',

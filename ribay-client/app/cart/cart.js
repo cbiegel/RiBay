@@ -17,9 +17,11 @@ angular.module('myApp.cart', [])
 
         $scope.cart = undefined;
         $scope.subtotal = undefined;
+        $scope.isEmpty = true;
 
         $http.get(Backend.host + '/cart/get/').success(function (data) {
             $scope.cart = data.articles;
+            $scope.isEmpty = (data.articles.length == 0);
 
             var total_amount = 0;
             angular.forEach($scope.cart, function (item) {

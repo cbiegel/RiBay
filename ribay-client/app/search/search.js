@@ -4,7 +4,7 @@
 
 'use strict';
 
-angular.module('myApp.search', ['ngRoute'])
+angular.module('myApp.search', [])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/search/:text/:category', {

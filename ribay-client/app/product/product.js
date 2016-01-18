@@ -4,7 +4,7 @@
 
 'use strict';
 
-angular.module('myApp.product', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
+angular.module('myApp.product', [])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/product/:productid', {
@@ -39,7 +39,7 @@ angular.module('myApp.product', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         $scope.addToCart = function () {
 
             $scope.isSuccessAlertDisplayed = true;
-            $timeout(function() {
+            $timeout(function () {
                 $scope.isSuccessAlertDisplayed = false;
             }, 2000);
 
@@ -50,24 +50,18 @@ angular.module('myApp.product', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
             $scope[boolValue] = !$scope[boolValue];
         };
 
-    }])
-    .controller('reviewCtrl', ['$scope', '$routeParams', function ($scope, $routeParams) {
-
         $scope.reviews = [{
             name: "Max Mustermann",
             time: Date.now(),
             title: "Tolles Produkt",
             text: "Gutes Produkt.\r\nSchnelle Lieferung, einwandfrei.",
             rating: 4
-        },
-            {
-                name: "Foo Bar",
-                time: Date.now(),
-                title: "Schlechtes Produkt",
-                text: "Schlechtes Produkt.\r\nLangsame Lieferung :(.",
-                rating: 1
-            }];
+        }, {
+            name: "Foo Bar",
+            time: Date.now(),
+            title: "Schlechtes Produkt",
+            text: "Schlechtes Produkt.\r\nLangsame Lieferung :(.",
+            rating: 1
+        }];
 
     }]);
-
-

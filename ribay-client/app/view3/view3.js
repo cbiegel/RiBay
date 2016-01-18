@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.view3', ['ngRoute'])
+angular.module('myApp.view3', [])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/view3', {
@@ -9,12 +9,8 @@ angular.module('myApp.view3', ['ngRoute'])
         });
     }])
 
-    .controller('View3Ctrl', [function () {
-    }])
-
-    .controller('myCtrl', function ($scope, $http) {
-        $http.get('http://localhost:8080/get-welcome?name=spanish').
-        success(function (data) {
+    .controller('View3Ctrl', ['$scope', '$http', 'Backend', function ($scope, $http, Backend) {
+        $http.get(Backend.host + '/get-welcome?name=spanish').success(function (data) {
             $scope.greeting = data;
         });
-    });
+    }]);

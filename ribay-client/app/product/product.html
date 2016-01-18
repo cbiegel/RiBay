@@ -1,4 +1,4 @@
-<div class="product-main" ng-controller="productCtrl">
+<div class="product-main">
     <div class="top">
         <div class="alert alert-success" ng-show="isSuccessAlertDisplayed">
             <button type="button" class="close" data-ng-click="switchBool('isSuccessAlertDisplayed')">×</button>
@@ -44,11 +44,9 @@
             <span>{{product.details}}</span>
         </div>
     </div>
-
-    <hr>
 </div>
-
-<div class="product-reviews" ng-controller="reviewCtrl">
+<hr>
+<div class="product-reviews">
     <div class="review" ng-repeat="review in reviews">
         <div class="review-caption-first">
             <uib-rating class="rating noselect" ng-model="review.rating" max="5" readonly="true"></uib-rating>
