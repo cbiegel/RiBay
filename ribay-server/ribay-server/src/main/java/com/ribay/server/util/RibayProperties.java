@@ -43,4 +43,10 @@ public class RibayProperties
         return value;
     }
 
+    public String getBucketSessionLastAccess()
+    {
+        String value = databaseProperties.getProperty("bucket.session.lastaccess");
+        return value;
+    }
+
 }
