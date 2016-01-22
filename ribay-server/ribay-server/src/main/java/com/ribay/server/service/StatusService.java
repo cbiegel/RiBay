@@ -9,16 +9,21 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.basho.riak.client.api.commands.buckets.ListBuckets;
 import com.basho.riak.client.api.commands.kv.ListKeys;
 import com.basho.riak.client.core.query.Namespace;
 import com.ribay.server.db.MyRiakClient;
 import com.ribay.server.util.AuthInterceptor;
+import com.ribay.server.util.RibayProperties;
 
 @RestController
 public class StatusService
 {
+
+    @Autowired
+    private RibayProperties properties;
 
     @Autowired
     private MyRiakClient client;
@@ -46,6 +51,18 @@ public class StatusService
         List<String> keys = StreamSupport.stream(lkResp.spliterator(), false)
                 .map((o) -> o.getKeyAsString()).collect(Collectors.toList());
         return keys;
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
+    @RequestMapping(path = "/status/db/cluster")
+    public Object getClusterStatus() throws Exception
+    {
+        // no native api for that. use http instead
+
+        String url = "http://" + properties.getDatabaseIps()[0] + ":8098/stats";
+
+        Object result = new RestTemplate().getForObject(url, Object.class);
+        return result;
     }
 
 }
