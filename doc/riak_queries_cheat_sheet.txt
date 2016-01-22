@@ -1,0 +1,14 @@
+Cheat Sheet für Riak queries:
+
+Alle Buckets abfragen:
+	curl -X GET 134.100.11.158:8098/riak?buckets=true
+	
+Alle Keys für bestimmten Bucket (z.B. demo_cart) abfragen:
+	curl -i http://134.100.11.158:8098/buckets/demo_cart/keys?keys=true
+	
+Value für demo_cart/demo_key abfragen -> Headers + JSON:
+	curl -i http://134.100.11.158:8098/buckets/demo_cart/keys/demo_key
+
+Value für demo_cart/demo_key abfragen (NUR JSON):
+	curl http://134.100.11.158:8098/buckets/demo_cart/keys/demo_key > c:/test.json
+	
