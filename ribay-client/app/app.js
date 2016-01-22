@@ -5,6 +5,7 @@ angular.module('myApp', [
         'ngRoute',
         'ngCookies',
         'ngAnimate',
+        'jsonFormatter',
         'ui.bootstrap',
         'myApp.view1',
         'myApp.view2',
