@@ -1,5 +1,6 @@
 package com.ribay.server.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -55,13 +56,15 @@ public class StatusService
 
     @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
     @RequestMapping(path = "/status/db/cluster")
-    public Object getClusterStatus() throws Exception
+    public List<Object> getClusterStatus() throws Exception
     {
         // no native api for that. use http instead
 
-        String url = "http://" + properties.getDatabaseIps()[0] + ":8098/stats";
+        List<Object> result = Arrays.stream(properties.getDatabaseIps()).parallel()
+                .map((ip) -> "http://" + ip + ":8098/stats")
+                .map((url) -> new RestTemplate().getForObject(url, Object.class))
+                .collect(Collectors.toList());
 
-        Object result = new RestTemplate().getForObject(url, Object.class);
         return result;
     }
 
