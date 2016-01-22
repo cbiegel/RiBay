@@ -1,0 +1,11 @@
+<div name="status">
+<div name="buttonBar" class="box background-grey col-lg-3 inline">
+    <div ng-repeat="command in commands">
+        <button type="button" class="btn btn-primary" ng-click="executeCommand(command)">{{command}}</button>
+    </div>
+</div>
+    <br><br><br><br>
+<div name="result">
+    Result: <br><br>{{result | json}}
+</div>
+</div>

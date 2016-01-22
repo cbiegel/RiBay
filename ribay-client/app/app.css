@@ -424,3 +424,8 @@ a {
 
 .search-list .search-entry .details-right {
 }
+
+.status .result {
+    clear: both;
+    padding-left: 200px;
+}

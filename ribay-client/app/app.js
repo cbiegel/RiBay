@@ -14,6 +14,7 @@ angular.module('myApp', [
         'myApp.cart',
         'myApp.login',
         'myApp.loginSuccess',
+        'myApp.status',
         'myApp.version'
     ])
 
