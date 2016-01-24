@@ -2,7 +2,7 @@
  * Created by Chris on 22.01.2016.
  */
 
-angular.module('myApp.status', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
+angular.module('myApp.status', [])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/status', {
@@ -11,22 +11,34 @@ angular.module('myApp.status', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         });
     }])
 
-    .controller('statusCtrl', ['$scope', '$http', 'Backend', function ($scope, $http, Backend) {
+    .service('statusService', ['$http', 'Backend', function ($http, Backend) {
+
+        this.getBuckets = function (callback) {
+            $http.get(Backend.host + '/status/db/buckets').success(callback);
+        };
+
+        this.getClusterStatus = function (callback) {
+            $http.get(Backend.host + '/status/db/cluster').success(callback);
+        };
+
+    }])
+
+    .controller('statusCtrl', ['$scope', 'statusService', function ($scope, statusService) {
         $scope.commands = ['List Buckets', 'Cluster Status'];
-        $scope.executeCommand = function(command) {
-            switch(command) {
-                case 'List Buckets':
-                    $http.get(Backend.host + '/status/db/buckets').success(function (data) {
+        $scope.executeCommand = function (command) {
+            switch (command) {
+                case $scope.commands[0]:
+                    statusService.getBuckets(function (data) {
                         $scope.result = data;
-                    })
+                    });
                     break;
-                case 'Cluster Status':
-                    $http.get(Backend.host + '/status/db/cluster').success(function (data) {
+                case $scope.commands[1]:
+                    statusService.getClusterStatus(function (data) {
                         $scope.result = data;
-                    })
+                    });
                     break;
                 default:
-                console.log("Error: Unknown status command.");
+                    console.log("Error: Unknown status command.");
             }
         }
     }]);

@@ -1,14 +1,11 @@
-<div name="status">
-    <div name="buttonBar" class="box background-grey col-lg-3 inline">
-        <div ng-repeat="command in commands">
-            <button type="button" class="btn btn-primary" ng-click="executeCommand(command)">{{command}}</button>
-        </div>
+<div class="status">
+    <div class="box background-grey col-lg-3 inline">
+        <button type="button" class="btn btn-primary" ng-repeat="command in commands"
+                ng-click="executeCommand(command)">{{command}}
+        </button>
     </div>
-    <br><br><br><br>
-    <div name="result">
-        <span>Result:</span>
-        <br>
-        <br>
-        <json-formatter ng-show="result" json="result" open="1"></json-formatter>
+    <div class="result" ng-show="result">
+        <span class="text-bold">Result:</span>
+        <json-formatter json="result" open="1"></json-formatter>
     </div>
 </div>
