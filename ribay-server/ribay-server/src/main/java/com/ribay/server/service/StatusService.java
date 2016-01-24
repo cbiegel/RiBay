@@ -68,13 +68,14 @@ public class StatusService
         // no native api for that. use http instead
 
         Map<String, Object> result = Arrays.stream(properties.getDatabaseIps())
-                .map((ip) -> "http://" + ip + ":8098/stats")
+                .map((ip) -> "http://" + ip + ":8098/stats") // build stats url
                 .parallel().map(
                         (url) -> new RestTemplate().getForObject(url, Object.class))
                 .collect(Collectors.toMap(
-                        ((jsonObj) -> (String) ((Map<?, ?>) jsonObj).get("nodename")),
-                        ((jsonObj) -> jsonObj), ((jsonObj1, jsonObj2) -> jsonObj2),
-                        (() -> new TreeMap<>(StatusService::compareNodeNames))));
+                        ((jsonObj) -> (String) ((Map<?, ?>) jsonObj).get("nodename")), // key
+                        ((jsonObj) -> jsonObj), // use the object itself as value
+                        ((jsonObj1, jsonObj2) -> jsonObj2), // if conflict -> use last object
+                        (() -> new TreeMap<>(StatusService::compareNodeNames)))); // store sorted
 
         return result;
     }
