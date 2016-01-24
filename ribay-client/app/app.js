@@ -31,22 +31,28 @@ angular.module('myApp', [
         $httpProvider.interceptors.push('authInterceptor');
     }])
 
-    .factory('authInterceptor', ['$cookies', function ($cookies) {
+    .factory('authInterceptor', ['$cookies', 'Backend', function ($cookies, Backend) {
         return {
             request: function (config) {
-                // if there is a cookie with the session id, enrich the request with a header
-                config.headers = config.headers || {};
-                if ($cookies.get("RSESSIONID")) {
-                    config.headers['rsessionid'] = $cookies.get("RSESSIONID");
+                // interceptor is only for backend calls
+                if (config.url.startsWith(Backend.host)) {
+                    // if there is a cookie with the session id, enrich the request with a header
+                    config.headers = config.headers || {};
+                    if ($cookies.get("RSESSIONID")) {
+                        config.headers['rsessionid'] = $cookies.get("RSESSIONID");
+                    }
                 }
                 return config;
             },
             response: function (response) {
-                // if there is a response header with the session is, set a cookie
-                if (response.headers('rsessionid')) {
-                    var expires = new Date();
-                    expires.setDate(expires.getDate() + 1); // expires in 24 hours
-                    $cookies.put('RSESSIONID', response.headers('rsessionid'), {expires: expires});
+                // interceptor is only for backend calls
+                if (response.config.url.startsWith(Backend.host)) {
+                    // if there is a response header with the session is, set a cookie
+                    if (response.headers('rsessionid')) {
+                        var expires = new Date();
+                        expires.setDate(expires.getDate() + 1); // expires in 24 hours
+                        $cookies.put('RSESSIONID', response.headers('rsessionid'), {expires: expires});
+                    }
                 }
                 return response;
             }
