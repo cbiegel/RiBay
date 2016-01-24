@@ -13,13 +13,36 @@ angular.module('myApp.cart', [])
         });
     }])
 
-    .controller('cartCtrl', ['$scope', '$http', 'Backend', function ($scope, $http, Backend) {
+    .service('cartService', ['$http', 'Backend', function ($http, Backend) {
+
+        this.getCart = function (callback) {
+            $http.get(Backend.host + '/cart/get/').success(callback);
+        };
+
+        this.deleteItem = function (item) {
+            // TODO delete item from cart
+            alert("delete " + item.id);
+        };
+
+        this.setQuantity = function (item, quantity) {
+            // TODO set quantity of item
+            alert("set quantity of " + item.id + " to " + quantity);
+        };
+
+        this.checkout = function () {
+            // TODO proceed to checkout
+            alert("Checkout");
+        };
+
+    }])
+
+    .controller('cartCtrl', ['$scope', 'cartService', function ($scope, cartService) {
 
         $scope.cart = undefined;
         $scope.subtotal = undefined;
         $scope.isEmpty = true;
 
-        $http.get(Backend.host + '/cart/get/').success(function (data) {
+        cartService.getCart(function (data) {
             $scope.cart = data.articles;
             $scope.isEmpty = (data.articles.length == 0);
 
@@ -39,19 +62,10 @@ angular.module('myApp.cart', [])
             };
         });
 
-        $scope.deleteItem = function (item) {
-            // TODO delete item from cart
-            alert("delete " + item.id);
-        };
+        $scope.deleteItem = cartService.deleteItem;
 
-        $scope.setQuantity = function (item, quantity) {
-            // TODO set quantity of item
-            alert("set quantity of " + item.id + " to " + quantity);
-        };
+        $scope.setQuantity = cartService.setQuantity;
 
-        $scope.checkout = function () {
-            // TODO proceed to checkout
-            alert("Checkout");
-        }
+        $scope.checkout = cartService.checkout;
 
     }]);
