@@ -17,7 +17,62 @@ angular.module('myApp.search', [])
         });
     }])
 
-    .controller('searchCtrl', ['$scope', '$routeParams', function ($scope, $routeParams) {
+    .service('searchService', [function () {
+
+        // TODO add parameters for filter and sort-by
+        this.search = function (category, text, page_no, page_size, callback) {
+            var data = {
+                // TODO get real data from backend
+                suggestion: "My suggestion", // set undefined if no suggestion
+                page_no: page_no,
+                page_size: page_size,
+                start: 1, // TODO
+                end: 6, // TODO
+                total_size: 200, // TODO
+                list: [{
+                    id: "abc",
+                    image: "http://placehold.it/200x400",
+                    name: "Name of article 1",
+                    price: 12.34,
+                    rating: 4
+                }, {
+                    id: "abc",
+                    image: "http://placehold.it/200x400",
+                    name: "Name of article 2",
+                    price: 12.34,
+                    rating: 4
+                }, {
+                    id: "abc",
+                    image: "http://placehold.it/200x400",
+                    name: "Name of article 3",
+                    price: 12.34,
+                    rating: 4
+                }, {
+                    id: "abc",
+                    image: "http://placehold.it/200x400",
+                    name: "Name of article 4",
+                    price: 12.34,
+                    rating: 4
+                }, {
+                    id: "abc",
+                    image: "http://placehold.it/200x400",
+                    name: "Name of article 5",
+                    price: 12.34,
+                    rating: 4
+                }, {
+                    id: "abc",
+                    image: "http://placehold.it/200x400",
+                    name: "Name of article 6",
+                    price: 12.34,
+                    rating: 4
+                }]
+            };
+            callback(data);
+        };
+
+    }])
+
+    .controller('searchCtrl', ['$scope', '$routeParams', 'searchService', function ($scope, $routeParams, searchService) {
         $scope.search = {
             category: decodeURIComponent($routeParams.category) || '',
             text: decodeURIComponent($routeParams.text),
@@ -26,51 +81,9 @@ angular.module('myApp.search', [])
             // TODO sort by
         };
 
-        $scope.result = {
-            suggestion: "My suggestion", // set undefined if no suggestion
-            page_no: $scope.search.page_no,
-            page_size: $scope.search.page_size,
-            start: 1, // TODO
-            end: 6, // TODO
-            total_size: 200, // TODO
-            list: [{
-                id: "abc",
-                image: "http://placehold.it/200x400",
-                name: "Name of article 1",
-                price: 12.34,
-                rating: 4
-            }, {
-                id: "abc",
-                image: "http://placehold.it/200x400",
-                name: "Name of article 2",
-                price: 12.34,
-                rating: 4
-            }, {
-                id: "abc",
-                image: "http://placehold.it/200x400",
-                name: "Name of article 3",
-                price: 12.34,
-                rating: 4
-            }, {
-                id: "abc",
-                image: "http://placehold.it/200x400",
-                name: "Name of article 4",
-                price: 12.34,
-                rating: 4
-            }, {
-                id: "abc",
-                image: "http://placehold.it/200x400",
-                name: "Name of article 5",
-                price: 12.34,
-                rating: 4
-            }, {
-                id: "abc",
-                image: "http://placehold.it/200x400",
-                name: "Name of article 6",
-                price: 12.34,
-                rating: 4
-            }]
-        };
+        searchService.search($scope.search.category, $scope.search.text, $scope.search.page_no, $scope.search.page_size, function (data) {
+            $scope.result = data;
+        });
 
         $scope.sortCategories = [{
             id: "1",
