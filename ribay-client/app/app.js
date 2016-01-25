@@ -117,12 +117,11 @@ angular.module('myApp', [
         };
     })
 
-    .controller('navController', ['$rootScope', '$scope', '$http', '$location', 'Backend', function ($rootScope, $scope, $http, $location, Backend) {
+    .controller('navController', ['$rootScope', '$scope', '$http', 'Backend', function ($rootScope, $scope, $http, Backend) {
 
         $scope.logout = function () {
             $http.get(Backend.host + '/auth/logout').success(function (data) {
                 $rootScope.loggedIn = undefined;
-                $location.url('/view1'); // TODO go to start
             });
         };
 
