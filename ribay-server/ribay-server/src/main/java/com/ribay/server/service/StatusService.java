@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.basho.riak.client.api.commands.buckets.ListBuckets;
+import com.basho.riak.client.api.commands.kv.FetchValue;
 import com.basho.riak.client.api.commands.kv.ListKeys;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
@@ -36,15 +37,13 @@ public class StatusService
 
     @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
     @RequestMapping(path = "/status/db/buckets")
-    public Map<String, String> getBuckets() throws Exception
+    public List<String> getBuckets() throws Exception
     {
         ListBuckets lb = new ListBuckets.Builder("my_type").build();
         ListBuckets.Response lbResp = client.execute(lb);
 
-        Map<String, String> buckets = StreamSupport.stream(lbResp.spliterator(), false)
-                .collect(Collectors.toMap(Namespace::getBucketNameAsString,
-                        Namespace::getBucketTypeAsString, ((o1, o2) -> o2),
-                        (() -> new TreeMap<>(String.CASE_INSENSITIVE_ORDER))));
+        List<String> buckets = StreamSupport.stream(lbResp.spliterator(), false)
+                .map(Namespace::getBucketNameAsString).sorted().collect(Collectors.toList());
 
         return buckets;
     }
@@ -57,8 +56,20 @@ public class StatusService
         ListKeys.Response lkResp = client.execute(lk);
 
         List<String> keys = StreamSupport.stream(lkResp.spliterator(), false)
-                .map(Location::getKeyAsString).collect(Collectors.toList());
+                .map(Location::getKeyAsString).sorted().collect(Collectors.toList());
         return keys;
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
+    @RequestMapping(path = "/status/db/value")
+    public Object getValue(@RequestParam(value = "bucket") String bucket,
+            @RequestParam(value = "key") String key) throws Exception
+    {
+        Namespace quotesBucket = new Namespace(bucket);
+        Location quoteObjectLocation = new Location(quotesBucket, key);
+
+        FetchValue fetchOp = new FetchValue.Builder(quoteObjectLocation).build();
+        return client.execute(fetchOp).getValue(Object.class);
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
