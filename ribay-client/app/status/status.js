@@ -24,21 +24,14 @@ angular.module('myApp.status', [])
     }])
 
     .controller('statusCtrl', ['$scope', 'statusService', function ($scope, statusService) {
-        $scope.commands = ['List Buckets', 'Cluster Status'];
-        $scope.executeCommand = function (command) {
-            switch (command) {
-                case $scope.commands[0]:
-                    statusService.getBuckets(function (data) {
-                        $scope.result = data;
-                    });
-                    break;
-                case $scope.commands[1]:
-                    statusService.getClusterStatus(function (data) {
-                        $scope.result = data;
-                    });
-                    break;
-                default:
-                    console.log("Error: Unknown status command.");
-            }
-        }
+
+        statusService.getBuckets(function (data) {
+            $scope.buckets = data;
+        });
+
+        statusService.getClusterStatus(function (data) {
+            $scope.clusterStatus = data;
+        });
+
+
     }]);
