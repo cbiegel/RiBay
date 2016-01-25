@@ -23,6 +23,17 @@ angular.module('myApp', [
         host: "http://localhost:8080"
     })
 
+    .run(['$rootScope', '$location', '$log', '$http', 'Backend', function ($rootScope, $location, $log, $http, Backend) {
+        $rootScope.$on("$locationChangeStart", function (event, next, current) {
+            $log.info("location changing to:" + next);
+
+            // when changing view -> check if logged in and set as global variable
+            $http.get(Backend.host + '/auth/loggedin').success(function (data) {
+                $rootScope.loggedIn = data;
+            });
+        });
+    }])
+
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.otherwise({redirectTo: '/view1'});
     }])
@@ -105,6 +116,17 @@ angular.module('myApp', [
             // $scope.searchText = '';
         };
     })
+
+    .controller('navController', ['$rootScope', '$scope', '$http', '$location', 'Backend', function ($rootScope, $scope, $http, $location, Backend) {
+
+        $scope.logout = function () {
+            $http.get(Backend.host + '/auth/logout').success(function (data) {
+                $rootScope.loggedIn = undefined;
+                $location.url('/view1'); // TODO go to start
+            });
+        };
+
+    }])
 
     .directive('myEnter', function () {
         return function (scope, element, attrs) {

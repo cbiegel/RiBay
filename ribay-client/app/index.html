@@ -44,7 +44,8 @@
             <button type="button" class="btn btn-primary" ng-click="search()">Search</button>
         </div>
     </div>
-    <div class="headline-second">
+    <span class="text-bold text-medium" ng-show="loggedIn">Hello {{loggedIn.userName}}</span>
+    <div class="headline-second" ng-controller="navController">
         <ul class="menu">
             <li><a href="#/view1">view1</a></li>
             <li><a href="#/view2">view2</a></li>
@@ -52,8 +53,9 @@
             <li><a href="#/search/abc/123">Search page demo</a></li>
             <li><a href="#/product/123">Product page demo</a></li>
             <li><a href="#/cart">Cart page demo</a></li>
-            <li><a href="#/login">Login Demo</a></li>
             <li><a href="#/status">Status</a></li>
+            <li ng-show="!loggedIn"><a href="#/login">Login</a></li>
+            <li ng-show="loggedIn"><a ng-click="logout()">Logout</a></li>
         </ul>
     </div>
 </div>

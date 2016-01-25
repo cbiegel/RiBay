@@ -13,58 +13,51 @@ angular.module('myApp.login', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         });
     }])
 
-    .service('loginService', ['$timeout', function ($timeout) {
+    .service('loginService', ['$timeout', '$http', 'Backend', function ($timeout, $http, Backend) {
 
-        this.checkLogin = function (username, password, callback) {
+        this.login = function (username, password, callback) {
+
+            $http.get(Backend.host + '/auth/login?username=' + username + '&password=' + password).then(function (config) {
+                // if there is a result -> login successfull
+                if (config.data != "") {
+                    var response = {user: config.data};
+                    callback(response);
+                }
+                else {
+                    var response = {message: 'Username or password is incorrect'};
+                    callback(response);
+                }
+            });
+
 
             /* Dummy authentication for testing, uses $timeout to simulate api call
              ----------------------------------------------*/
-            $timeout(function () {
-                var response = {success: (username === 'test') && (password === 'test')};
-                if (!response.success) {
-                    response.message = 'Username or password is incorrect';
-                }
-                callback(response);
-            }, 1000);
+            //$timeout(function () {
+            //    var response = {success: (username === 'test') && (password === 'test')};
+            //    if (!response.success) {
+            //        response.message = 'Username or password is incorrect';
+            //    }
+            //    callback(response);
+            //}, 1000);
 
         };
 
     }])
 
-    .controller('loginCtrl', ['$rootScope', '$scope', '$location', '$filter', '$q', 'loginService', function ($rootScope, $scope, $location, $filter, $q, loginService) {
-
+    .controller('loginCtrl', ['$scope', '$location', '$filter', '$q', 'loginService', function ($scope, $location, $filter, $q, loginService) {
 
         $scope.login = function () {
             $scope.dataLoading = true;
-            loginService.checkLogin($scope.username, $scope.password, function (response) {
-                if (response.success) {
-                    $scope.setCredentials($scope.username, $scope.password);
-                    $location.url('/loginSuccess');
-                } else {
+            loginService.login($scope.username, $scope.password, function (response) {
+
+                if (response.user) {
+                    $location.url('/view1'); // TODO go to home view
+                }
+                else {
                     $scope.error = response.message;
                     $scope.dataLoading = false;
                 }
             });
-        };
-
-        $scope.setCredentials = function (username, password) {
-            var authdata = $scope.base64Encode(username + ':' + password);
-
-            $rootScope.globals = {
-                currentUser: {
-                    username: username,
-                    authdata: authdata
-                }
-            };
-
-            // $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;
-            // $cookieStore.put('globals', $rootScope.globals);
-        };
-
-        $scope.clearCredentials = function () {
-            $rootScope.globals = {};
-            // $cookieStore.remove('globals');
-            // $http.defaults.headers.common.Authorization = 'Basic ';
         };
 
         $scope.base64Encode = function (input) {
