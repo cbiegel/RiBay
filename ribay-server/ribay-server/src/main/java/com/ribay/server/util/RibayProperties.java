@@ -49,4 +49,10 @@ public class RibayProperties
         return value;
     }
 
+    public String getBucketSessionLogin()
+    {
+        String value = databaseProperties.getProperty("bucket.session.login");
+        return value;
+    }
+
 }
