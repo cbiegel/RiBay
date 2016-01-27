@@ -38,8 +38,20 @@ a {
     font-weight: 700;
 }
 
+.text-bolder {
+    font-weight: 900;
+}
+
 .text-light {
     color: #999;
+}
+
+.text-code {
+    font-family: monospace;
+}
+
+.text-underline {
+    text-decoration: underline;
 }
 
 .inline > * {

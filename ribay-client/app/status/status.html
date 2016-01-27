@@ -4,9 +4,9 @@
             <div id="container">
                 <div id="left">
                     <span class="text-bold text-medium">Buckets</span>
-                    <div class="box box-content background-grey">
+                    <div class="box box-content background-grey text-code">
                         <ul ng-show="buckets">
-                            <li ng-repeat="bucket in buckets">
+                            <li ng-repeat="bucket in buckets" ng-class="{'text-bolder text-underline' : bucket == selectedBucket}">
                                 <a ng-click="selectBucket(bucket)">{{bucket}}</a>
                             </li>
                         </ul>
@@ -14,9 +14,9 @@
                 </div>
                 <div id="middle">
                     <span class="text-bold text-medium">Keys</span>
-                    <div class="box box-content background-grey">
+                    <div class="box box-content background-grey text-code">
                         <ul ng-show="keys">
-                            <li ng-repeat="key in keys">
+                            <li ng-repeat="key in keys" ng-class="{'text-bolder text-underline' : key == selectedKey}">
                                 <a ng-click="selectKey(key)">{{key}}</a>
                             </li>
                         </ul>
