@@ -120,7 +120,7 @@ angular.module('myApp', [
     .controller('navController', ['$rootScope', '$scope', '$http', 'Backend', function ($rootScope, $scope, $http, Backend) {
 
         $scope.logout = function () {
-            $http.get(Backend.host + '/auth/logout').success(function (data) {
+            $http.post(Backend.host + '/auth/logout').success(function (data) {
                 $rootScope.loggedIn = undefined;
             });
         };

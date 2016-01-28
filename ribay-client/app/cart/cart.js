@@ -16,7 +16,7 @@ angular.module('myApp.cart', [])
     .service('cartService', ['$http', 'Backend', function ($http, Backend) {
 
         this.getCart = function (callback) {
-            $http.get(Backend.host + '/cart/get/').success(callback);
+            $http.get(Backend.host + '/cart').success(callback);
         };
 
         this.deleteItem = function (item) {

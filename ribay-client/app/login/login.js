@@ -17,7 +17,7 @@ angular.module('myApp.login', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
 
         this.login = function (username, password, callback) {
 
-            $http.get(Backend.host + '/auth/login?username=' + username + '&password=' + password).then(function (config) {
+            $http.post(Backend.host + '/auth/login?username=' + username + '&password=' + password).then(function (config) {
                 // if there is a result -> login successfull
                 if (config.data != "") {
                     var response = {user: config.data};
