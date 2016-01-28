@@ -5,6 +5,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -21,6 +23,8 @@ import com.ribay.server.db.MyRiakClient;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class AuthInterceptor extends HandlerInterceptorAdapter
 {
+
+    private final Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
 
     public static final String HEADER_NAME = "rsessionid";
 
@@ -48,23 +52,18 @@ public class AuthInterceptor extends HandlerInterceptorAdapter
                 // if no session id is set, a unique one will be created and set as response header
                 // the client has to create a cookie from that response header
 
-                // TODO use logger
-                System.out.println("No session id set. create one");
-
                 sessionId = UUID.randomUUID().toString();
+
+                logger.info("No session id set. create one: " + sessionId);
 
                 response.addHeader(HEADER_NAME, sessionId);
             }
             else
             {
-                // TODO use logger
-                System.out.println("session id is set");
+                logger.debug("session id is already set: " + sessionId);
 
                 // TODO check if valid?
             }
-
-            // TODO use logger
-            System.out.println("session id: " + sessionId);
 
             // set session id of request scope data so that the actual rest services can use that to
             // get the session id
@@ -82,18 +81,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter
         String key = requestData.getSessionId();
         Long value = System.currentTimeMillis();
 
-        try
-        {
-            Location cartObjectLocation = new Location(new Namespace(bucket), key);
-            StoreValue storeOp = new StoreValue.Builder(value).withLocation(cartObjectLocation)
-                    .build();
-            client.execute(storeOp);
-        }
-        catch (Exception e)
-        {
-            // TODO use logger
-            e.printStackTrace();
-        }
+        Location cartObjectLocation = new Location(new Namespace(bucket), key);
+        StoreValue storeOp = new StoreValue.Builder(value).withLocation(cartObjectLocation).build();
+        client.executeAsync(storeOp); // exceute async
     }
 
 }

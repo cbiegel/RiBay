@@ -12,6 +12,7 @@ import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -36,7 +37,7 @@ public class StatusService
     private MyRiakClient client;
 
     @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
-    @RequestMapping(path = "/status/db/buckets")
+    @RequestMapping(path = "/status/db/buckets", method = RequestMethod.GET)
     public List<String> getBuckets() throws Exception
     {
         ListBuckets lb = new ListBuckets.Builder("my_type").build();
@@ -49,7 +50,7 @@ public class StatusService
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
-    @RequestMapping(path = "/status/db/keys")
+    @RequestMapping(path = "/status/db/keys", method = RequestMethod.GET)
     public List<String> getKeys(@RequestParam(value = "bucket") String bucket) throws Exception
     {
         ListKeys lk = new ListKeys.Builder(new Namespace(bucket)).build();
@@ -61,7 +62,7 @@ public class StatusService
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
-    @RequestMapping(path = "/status/db/value")
+    @RequestMapping(path = "/status/db/value", method = RequestMethod.GET)
     public Object getValue(@RequestParam(value = "bucket") String bucket,
             @RequestParam(value = "key") String key) throws Exception
     {
@@ -73,7 +74,7 @@ public class StatusService
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
-    @RequestMapping(path = "/status/db/cluster")
+    @RequestMapping(path = "/status/db/cluster", method = RequestMethod.GET)
     public Map<String, Object> getClusterStatus() throws Exception
     {
         // no native api for that. use http instead

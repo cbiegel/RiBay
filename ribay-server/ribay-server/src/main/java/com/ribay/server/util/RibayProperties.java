@@ -2,6 +2,8 @@ package com.ribay.server.util;
 
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -11,11 +13,15 @@ import org.springframework.stereotype.Component;
 public class RibayProperties
 {
 
+    private final Logger logger = LoggerFactory.getLogger(RibayProperties.class);
+
     private final Properties applicationProperties;
     private final Properties databaseProperties;
 
     public RibayProperties() throws Exception
     {
+        logger.info("Load properties");
+
         applicationProperties = new Properties();
         applicationProperties.load(RibayProperties.class.getClassLoader()
                 .getResourceAsStream("application.properties"));

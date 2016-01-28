@@ -7,6 +7,8 @@ import java.util.concurrent.ExecutionException;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -24,6 +26,8 @@ import com.ribay.server.util.RibayProperties;
 public class MyRiakClient
 {
 
+    private final Logger logger = LoggerFactory.getLogger(MyRiakClient.class);
+
     @Autowired
     private RibayProperties properties;
 
@@ -36,6 +40,8 @@ public class MyRiakClient
     @PostConstruct
     private void init() throws Exception
     {
+        logger.info("init");
+
         String[] ips = properties.getDatabaseIps();
 
         List<RiakNode> nodes = new ArrayList<>();
@@ -63,12 +69,16 @@ public class MyRiakClient
     public <T, S> T execute(RiakCommand<T, S> command)
             throws ExecutionException, InterruptedException
     {
+        logger.debug("execute: " + command);
+
         // chain of responsibility
         return client.execute(command);
     }
 
     public <T, S> RiakFuture<T, S> executeAsync(RiakCommand<T, S> command)
     {
+        logger.debug("executeAsync: " + command);
+
         // chain of responsibility
         return client.executeAsync(command);
     }

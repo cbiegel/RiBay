@@ -2,9 +2,11 @@ package com.ribay.server.service;
 
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.basho.riak.client.api.commands.kv.StoreValue;
@@ -19,6 +21,8 @@ import com.ribay.server.util.RibayProperties;
 public class DemoService
 {
 
+    private final Logger logger = LoggerFactory.getLogger(DemoService.class);
+
     public static final String DEMO_SESSION_ID = "demo_key";
 
     @Autowired
@@ -32,10 +36,11 @@ public class DemoService
      * 
      * @throws Exception
      */
-    @CrossOrigin(origins = "*")
-    @RequestMapping("/demo/create/")
+    @RequestMapping(path = "/demo/create", method = RequestMethod.POST)
     public void createDemo() throws Exception
     {
+        logger.info("create demo");
+
         Cart demoCart = new Cart(Arrays.asList(
                 new ArticleShort("abc", "My first article in shopping cart",
                         "http://placehold.it/200x400", 12.34, 2),

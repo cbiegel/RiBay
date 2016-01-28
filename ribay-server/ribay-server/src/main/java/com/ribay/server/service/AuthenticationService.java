@@ -3,6 +3,7 @@ package com.ribay.server.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,7 +32,7 @@ public class AuthenticationService
     private RequestScopeData requestData;
 
     @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
-    @RequestMapping(path = "/auth/loggedin")
+    @RequestMapping(path = "/auth/loggedin", method = RequestMethod.GET)
     public User getLoggedInUser() throws Exception
     {
         String bucket = properties.getBucketSessionLogin();
@@ -44,7 +45,7 @@ public class AuthenticationService
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
-    @RequestMapping(path = "/auth/login")
+    @RequestMapping(path = "/auth/login", method = RequestMethod.POST)
     public User login(@RequestParam(value = "username") String userName,
             @RequestParam(value = "password") String password) throws Exception
     {
@@ -69,7 +70,7 @@ public class AuthenticationService
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
-    @RequestMapping(path = "/auth/logout")
+    @RequestMapping(path = "/auth/logout", method = RequestMethod.POST)
     public void logout() throws Exception
     {
         String bucket = properties.getBucketSessionLogin();

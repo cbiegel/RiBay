@@ -3,6 +3,7 @@ package com.ribay.server.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.basho.riak.client.api.commands.kv.FetchValue;
@@ -28,7 +29,7 @@ public class CartService
     private RequestScopeData requestData;
 
     @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
-    @RequestMapping(path = "/cart/get/")
+    @RequestMapping(path = "/cart", method = RequestMethod.GET)
     public Cart getCart() throws Exception
     {
         String sessionId = requestData.getSessionId();
