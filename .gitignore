@@ -1,3 +1,4 @@
 /target/
-.idea
-bower_components
+.idea/
+/ribay-server.iml
+bower_components/
