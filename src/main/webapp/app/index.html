@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en" ng-app="myApp" class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RiBay</title>
+    <meta name="description" content="RiBay is ...">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/json-formatter/dist/json-formatter.min.css">
+    <link rel="stylesheet" href="app.css">
+    <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+    <script src="bower_components/highcharts-release/highcharts.js"></script>
+</head>
+<body>
+<div class="header">
+    <div class="headline-first">
+        <div class="application-logo">
+            <img src="components/img/application-logo.png"> <!-- TODO deliver image -->
+        </div>
+        <div class="search-field" ng-controller="searchController">
+            <div class="btn-group" uib-dropdown>
+                <button id="single-button" type="button" class="btn" uib-dropdown-toggle>
+                    {{category.selected.name}} <span class="caret"></span>
+                </button>
+                <ul class="uib-dropdown-menu" role="menu" aria-labelledby="single-button">
+                    <li role="menuitem" ng-repeat="option in category.options"><a ng-click="category.selected = option">{{option.name}}</a>
+                    </li>
+                </ul>
+            </div>
+            <input type="text" ng-model="searchText" placeholder="Article"
+                   uib-typeahead="article for article in getArticles($viewValue)" my-enter="search()"
+                   typeahead-loading="loadingArticles" class="form-control">
+            <i ng-show="loadingArticles" class="glyphicon glyphicon-refresh"></i>
+            <button type="button" class="btn btn-primary" ng-click="search()">Search</button>
+        </div>
+    </div>
+    <span class="text-bold text-medium" ng-show="loggedIn">Hello {{loggedIn.userName}}</span>
+    <div class="headline-second" ng-controller="navController">
+        <ul class="menu">
+            <li><a href="#/view1">view1</a></li>
+            <li><a href="#/view2">view2</a></li>
+            <li><a href="#/view3">view3</a></li>
+            <li><a href="#/search/abc/123">Search page demo</a></li>
+            <li><a href="#/product/123">Product page demo</a></li>
+            <li><a href="#/cart">Cart page demo</a></li>
+            <li><a href="#/status">Status</a></li>
+            <li ng-show="!loggedIn"><a href="#/login">Login</a></li>
+            <li ng-show="loggedIn"><a ng-click="logout()">Logout</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="main" ng-view>
+</div>
+
+<!--
+<div class="footer">Angular seed app: v<span app-version></span></div>
+-->
+
+<!-- In production use:
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+-->
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-animate/angular-animate.min.js"></script>
+<script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
+<script src="bower_components/angular-route/angular-route.min.js"></script>
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/json-formatter/dist/json-formatter.min.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+<script src="app.js"></script>
+<script src="view1/view1.js"></script>
+<script src="view2/view2.js"></script>
+<script src="view3/view3.js"></script>
+<script src="search/search.js"></script>
+<script src="product/product.js"></script>
+<script src="cart/cart.js"></script>
+<script src="login/login.js"></script>
+<script src="login/loginSuccess.js"></script>
+<script src="status/status.js"></script>
+<script src="components/version/version.js"></script>
+<script src="components/version/version-directive.js"></script>
+<script src="components/version/interpolate-filter.js"></script>
+</body>
+</html>

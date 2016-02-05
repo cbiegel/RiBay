@@ -1,0 +1,63 @@
+<div class="product-main">
+    <div class="top">
+        <div class="alert alert-success" ng-show="isSuccessAlertDisplayed">
+            <button type="button" class="close" data-ng-click="switchBool('isSuccessAlertDisplayed')">×</button>
+            <strong>{{successTextAlert}}</strong>
+        </div>
+    </div>
+    <div class="right">
+        <div class="box">
+            <div class="box-content">
+                <div class="quantity">
+                    <span>Quantity: </span>
+                    <select ng-model="quantity">
+                        <option ng-repeat="n in [] | range:20" value="{{n+1}}">{{n+1}}</option>
+                    </select>
+                </div>
+                <button type="button" class="btn button-primary" ng-click="addToCart()">Add to cart</button>
+            </div>
+        </div>
+    </div>
+    <div class="left">
+        <uib-carousel interval="0" no-wrap="false">
+            <uib-slide ng-repeat="image in product.images">
+                <img ng-src="{{image.src}}" style="margin:auto;">
+            </uib-slide>
+        </uib-carousel>
+    </div>
+    <div class="center">
+        <div class="title">
+            <span>{{product.title}}</span>
+        </div>
+        <div class="rating noselect">
+            <uib-rating ng-model="product.rate" max="5" readonly="true"></uib-rating>
+        </div>
+        <hr>
+        <div class="price">
+            <span class="caption">Price: </span>
+            <span class="value">{{product.price}}</span>
+        </div>
+        <div class="quantity">
+            <span>Only {{product.quantity}} left in stock</span>
+        </div>
+        <div class="details">
+            <span>{{product.details}}</span>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="product-reviews">
+    <div class="review" ng-repeat="review in reviews">
+        <div class="review-caption-first">
+            <uib-rating class="rating noselect" ng-model="review.rating" max="5" readonly="true"></uib-rating>
+            <span>{{review.title}}</span>
+        </div>
+        <div class="review-caption-second">
+            <span>By {{review.name}} on</span>
+            <span ng-bind="review.time | date:'MM/dd/yyyy HH:mm:ss'"></span>
+        </div>
+        <div class="review-content">
+            <span>{{review.text}}</span>
+        </div>
+    </div>
+</div>
