@@ -9,8 +9,8 @@ angular.module('myApp.view3', [])
         });
     }])
 
-    .controller('View3Ctrl', ['$scope', '$http', 'Backend', function ($scope, $http, Backend) {
-        $http.get(Backend.host + '/get-welcome?name=spanish').success(function (data) {
+    .controller('View3Ctrl', ['$scope', '$http', function ($scope, $http) {
+        $http.get('/get-welcome?name=spanish').success(function (data) {
             $scope.greeting = data;
         });
     }]);

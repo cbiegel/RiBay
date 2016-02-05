@@ -19,16 +19,12 @@ angular.module('myApp', [
         'myApp.version'
     ])
 
-    .constant("Backend", {
-        host: "http://localhost:8080"
-    })
-
-    .run(['$rootScope', '$location', '$log', '$http', 'Backend', function ($rootScope, $location, $log, $http, Backend) {
+    .run(['$rootScope', '$location', '$log', '$http', function ($rootScope, $location, $log, $http) {
         $rootScope.$on("$locationChangeStart", function (event, next, current) {
             $log.info("location changing to:" + next);
 
             // when changing view -> check if logged in and set as global variable
-            $http.get(Backend.host + '/auth/loggedin').success(function (data) {
+            $http.get('/auth/loggedin').success(function (data) {
                 $rootScope.loggedIn = data;
             });
         });
@@ -42,28 +38,22 @@ angular.module('myApp', [
         $httpProvider.interceptors.push('authInterceptor');
     }])
 
-    .factory('authInterceptor', ['$cookies', 'Backend', function ($cookies, Backend) {
+    .factory('authInterceptor', ['$cookies', function ($cookies) {
         return {
             request: function (config) {
-                // interceptor is only for backend calls
-                if (config.url.startsWith(Backend.host)) {
-                    // if there is a cookie with the session id, enrich the request with a header
-                    config.headers = config.headers || {};
-                    if ($cookies.get("RSESSIONID")) {
-                        config.headers['rsessionid'] = $cookies.get("RSESSIONID");
-                    }
+                // if there is a cookie with the session id, enrich the request with a header
+                config.headers = config.headers || {};
+                if ($cookies.get("RSESSIONID")) {
+                    config.headers['rsessionid'] = $cookies.get("RSESSIONID");
                 }
                 return config;
             },
             response: function (response) {
-                // interceptor is only for backend calls
-                if (response.config.url.startsWith(Backend.host)) {
-                    // if there is a response header with the session is, set a cookie
-                    if (response.headers('rsessionid')) {
-                        var expires = new Date();
-                        expires.setDate(expires.getDate() + 1); // expires in 24 hours
-                        $cookies.put('RSESSIONID', response.headers('rsessionid'), {expires: expires});
-                    }
+                // if there is a response header with the session is, set a cookie
+                if (response.headers('rsessionid')) {
+                    var expires = new Date();
+                    expires.setDate(expires.getDate() + 1); // expires in 24 hours
+                    $cookies.put('RSESSIONID', response.headers('rsessionid'), {expires: expires});
                 }
                 return response;
             }
@@ -117,10 +107,10 @@ angular.module('myApp', [
         };
     })
 
-    .controller('navController', ['$rootScope', '$scope', '$http', 'Backend', function ($rootScope, $scope, $http, Backend) {
+    .controller('navController', ['$rootScope', '$scope', '$http', function ($rootScope, $scope, $http) {
 
         $scope.logout = function () {
-            $http.post(Backend.host + '/auth/logout').success(function (data) {
+            $http.post('/auth/logout').success(function (data) {
                 $rootScope.loggedIn = undefined;
             });
         };

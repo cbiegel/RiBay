@@ -13,10 +13,10 @@ angular.module('myApp.cart', [])
         });
     }])
 
-    .service('cartService', ['$http', 'Backend', function ($http, Backend) {
+    .service('cartService', ['$http', function ($http) {
 
         this.getCart = function (callback) {
-            $http.get(Backend.host + '/cart').success(callback);
+            $http.get('/cart').success(callback);
         };
 
         this.deleteItem = function (item) {

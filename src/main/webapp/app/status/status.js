@@ -11,22 +11,22 @@ angular.module('myApp.status', [])
         });
     }])
 
-    .service('statusService', ['$http', 'Backend', function ($http, Backend) {
+    .service('statusService', ['$http', function ($http) {
 
         this.getBuckets = function (callback) {
-            $http.get(Backend.host + '/status/db/buckets').success(callback);
+            $http.get('/status/db/buckets').success(callback);
         };
 
         this.getKeys = function (bucket, callback) {
-            $http.get(Backend.host + '/status/db/keys?bucket=' + bucket).success(callback);
+            $http.get('/status/db/keys?bucket=' + bucket).success(callback);
         }
 
         this.getValue = function (bucket, key, callback) {
-            $http.get(Backend.host + '/status/db/value?bucket=' + bucket + '&key=' + key).success(callback);
+            $http.get('/status/db/value?bucket=' + bucket + '&key=' + key).success(callback);
         }
 
         this.getClusterStatus = function (callback) {
-            $http.get(Backend.host + '/status/db/cluster').success(callback);
+            $http.get('/status/db/cluster').success(callback);
         };
 
     }])

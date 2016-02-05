@@ -13,11 +13,11 @@ angular.module('myApp.login', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         });
     }])
 
-    .service('loginService', ['$timeout', '$http', 'Backend', function ($timeout, $http, Backend) {
+    .service('loginService', ['$timeout', '$http', function ($timeout, $http) {
 
         this.login = function (username, password, callback) {
 
-            $http.post(Backend.host + '/auth/login?username=' + username + '&password=' + password).then(function (config) {
+            $http.post('/auth/login?username=' + username + '&password=' + password).then(function (config) {
                 // if there is a result -> login successfull
                 if (config.data != "") {
                     var response = {user: config.data};
