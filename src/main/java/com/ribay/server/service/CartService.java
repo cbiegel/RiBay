@@ -16,8 +16,7 @@ import com.ribay.server.util.RequestScopeData;
 import com.ribay.server.util.RibayProperties;
 
 @RestController
-public class CartService
-{
+public class CartService {
 
     @Autowired
     private MyRiakClient client;
@@ -28,10 +27,8 @@ public class CartService
     @Autowired
     private RequestScopeData requestData;
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
     @RequestMapping(path = "/cart", method = RequestMethod.GET)
-    public Cart getCart() throws Exception
-    {
+    public Cart getCart() throws Exception {
         String sessionId = requestData.getSessionId();
 
         // TODO comment the next line to prevent getting only the same demo data

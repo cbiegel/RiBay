@@ -18,8 +18,7 @@ import com.ribay.server.material.Cart;
 import com.ribay.server.util.RibayProperties;
 
 @RestController
-public class DemoService
-{
+public class DemoService {
 
     private final Logger logger = LoggerFactory.getLogger(DemoService.class);
 
@@ -33,12 +32,11 @@ public class DemoService
 
     /**
      * Creates demo objects for demo UI. This will override the existing data in the demo buckets
-     * 
+     *
      * @throws Exception
      */
     @RequestMapping(path = "/demo/create", method = RequestMethod.POST)
-    public void createDemo() throws Exception
-    {
+    public void createDemo() throws Exception {
         logger.info("create demo");
 
         Cart demoCart = new Cart(Arrays.asList(

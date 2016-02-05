@@ -19,8 +19,7 @@ import com.ribay.server.util.RequestScopeData;
 import com.ribay.server.util.RibayProperties;
 
 @RestController
-public class AuthenticationService
-{
+public class AuthenticationService {
 
     @Autowired
     private MyRiakClient client;
@@ -31,10 +30,8 @@ public class AuthenticationService
     @Autowired
     private RequestScopeData requestData;
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
     @RequestMapping(path = "/auth/loggedin", method = RequestMethod.GET)
-    public User getLoggedInUser() throws Exception
-    {
+    public User getLoggedInUser() throws Exception {
         String bucket = properties.getBucketSessionLogin();
         String key = requestData.getSessionId();
         Location location = new Location(new Namespace(bucket), key);
@@ -44,15 +41,12 @@ public class AuthenticationService
         return value;
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
     @RequestMapping(path = "/auth/login", method = RequestMethod.POST)
     public User login(@RequestParam(value = "username") String userName,
-            @RequestParam(value = "password") String password) throws Exception
-    {
+                      @RequestParam(value = "password") String password) throws Exception {
         // TODO encrypt password and send as header
         // TODO do login against DB
-        if (userName.equals("test") && password.equals("test"))
-        {
+        if (userName.equals("test") && password.equals("test")) {
             String bucket = properties.getBucketSessionLogin();
             String key = requestData.getSessionId();
             User value = new User("test");
@@ -62,17 +56,13 @@ public class AuthenticationService
             client.execute(storeOp); // TODO execute async?
 
             return value;
-        }
-        else
-        {
+        } else {
             return null;
         }
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
     @RequestMapping(path = "/auth/logout", method = RequestMethod.POST)
-    public void logout() throws Exception
-    {
+    public void logout() throws Exception {
         String bucket = properties.getBucketSessionLogin();
         String key = requestData.getSessionId();
 

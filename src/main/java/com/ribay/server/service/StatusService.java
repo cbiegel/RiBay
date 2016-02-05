@@ -27,8 +27,7 @@ import com.ribay.server.util.AuthInterceptor;
 import com.ribay.server.util.RibayProperties;
 
 @RestController
-public class StatusService
-{
+public class StatusService {
 
     @Autowired
     private RibayProperties properties;
@@ -36,10 +35,8 @@ public class StatusService
     @Autowired
     private MyRiakClient client;
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
     @RequestMapping(path = "/status/db/buckets", method = RequestMethod.GET)
-    public List<String> getBuckets() throws Exception
-    {
+    public List<String> getBuckets() throws Exception {
         ListBuckets lb = new ListBuckets.Builder("my_type").build();
         ListBuckets.Response lbResp = client.execute(lb);
 
@@ -49,10 +46,8 @@ public class StatusService
         return buckets;
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
     @RequestMapping(path = "/status/db/keys", method = RequestMethod.GET)
-    public List<String> getKeys(@RequestParam(value = "bucket") String bucket) throws Exception
-    {
+    public List<String> getKeys(@RequestParam(value = "bucket") String bucket) throws Exception {
         ListKeys lk = new ListKeys.Builder(new Namespace(bucket)).build();
         ListKeys.Response lkResp = client.execute(lk);
 
@@ -61,11 +56,9 @@ public class StatusService
         return keys;
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
     @RequestMapping(path = "/status/db/value", method = RequestMethod.GET)
     public Object getValue(@RequestParam(value = "bucket") String bucket,
-            @RequestParam(value = "key") String key) throws Exception
-    {
+                           @RequestParam(value = "key") String key) throws Exception {
         Namespace quotesBucket = new Namespace(bucket);
         Location quoteObjectLocation = new Location(quotesBucket, key);
 
@@ -73,10 +66,8 @@ public class StatusService
         return client.execute(fetchOp).getValue(Object.class);
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = AuthInterceptor.HEADER_NAME)
     @RequestMapping(path = "/status/db/cluster", method = RequestMethod.GET)
-    public Map<String, Object> getClusterStatus() throws Exception
-    {
+    public Map<String, Object> getClusterStatus() throws Exception {
         // no native api for that. use http instead
 
         Map<String, Object> result = Arrays.stream(properties.getDatabaseIps())
@@ -92,10 +83,8 @@ public class StatusService
         return result;
     }
 
-    private static int compareNodeNames(String nodeName1, String nodeName2)
-    {
-        try
-        {
+    private static int compareNodeNames(String nodeName1, String nodeName2) {
+        try {
             // remove 'riak@' prefix
             String ip1 = nodeName1.split("@")[1];
             String ip2 = nodeName2.split("@")[1];
@@ -110,9 +99,7 @@ public class StatusService
 
             // compare number
             return value1.subtract(value2).signum();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
