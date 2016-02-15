@@ -1,0 +1,4 @@
+/target/
+.idea/
+/ribay-server.iml
+/src/main/webapp/app/bower_components
