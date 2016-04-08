@@ -1,74 +1,66 @@
 package com.ribay.server.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.basho.riak.client.api.commands.kv.DeleteValue;
-import com.basho.riak.client.api.commands.kv.FetchValue;
-import com.basho.riak.client.api.commands.kv.StoreValue;
-import com.basho.riak.client.core.query.Location;
-import com.basho.riak.client.core.query.Namespace;
-import com.ribay.server.db.MyRiakClient;
 import com.ribay.server.material.User;
-import com.ribay.server.util.AuthInterceptor;
+import com.ribay.server.repository.AuthenticationRepository;
 import com.ribay.server.util.RequestScopeData;
-import com.ribay.server.util.RibayProperties;
 
 @RestController
-public class AuthenticationService {
+public class AuthenticationService
+{
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationService.class);
 
     @Autowired
-    private MyRiakClient client;
-
-    @Autowired
-    private RibayProperties properties;
+    private AuthenticationRepository repository;
 
     @Autowired
     private RequestScopeData requestData;
 
     @RequestMapping(path = "/auth/loggedin", method = RequestMethod.GET)
-    public User getLoggedInUser() throws Exception {
-        String bucket = properties.getBucketSessionLogin();
-        String key = requestData.getSessionId();
-        Location location = new Location(new Namespace(bucket), key);
+    public User getLoggedInUser() throws Exception
+    {
 
-        FetchValue fetchOp = new FetchValue.Builder(location).build();
-        User value = client.execute(fetchOp).getValue(User.class);
-        return value;
+        String key = requestData.getSessionId();
+        return repository.getLoggedInUser(key);
     }
 
     @RequestMapping(path = "/auth/login", method = RequestMethod.POST)
     public User login(@RequestParam(value = "username") String userName,
-                      @RequestParam(value = "password") String password) throws Exception {
+            @RequestParam(value = "password") String password) throws Exception
+    {
         // TODO encrypt password and send as header
         // TODO do login against DB
-        if (userName.equals("test") && password.equals("test")) {
-            String bucket = properties.getBucketSessionLogin();
+        if (userName.equals("test") && password.equals("test"))
+        {
             String key = requestData.getSessionId();
             User value = new User("test");
 
-            Location location = new Location(new Namespace(bucket), key);
-            StoreValue storeOp = new StoreValue.Builder(value).withLocation(location).build();
-            client.execute(storeOp); // TODO execute async?
-
-            return value;
-        } else {
+            return repository.login(key, value);
+        }
+        else
+        {
             return null;
         }
     }
 
     @RequestMapping(path = "/auth/logout", method = RequestMethod.POST)
-    public void logout() throws Exception {
-        String bucket = properties.getBucketSessionLogin();
+    public void logout() throws Exception
+    {
         String key = requestData.getSessionId();
-
-        Location location = new Location(new Namespace(bucket), key);
-        DeleteValue storeOp = new DeleteValue.Builder(location).build(); // TODO options
-        client.execute(storeOp); // TODO execute async?
+        try
+        {
+            repository.logout(key);
+        }
+        catch (Exception e)
+        {
+            LOGGER.warn("Failed to execute logout.", e);
+        }
     }
-
 }

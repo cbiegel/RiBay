@@ -26,7 +26,7 @@ import com.ribay.server.util.RibayProperties;
 public class MyRiakClient
 {
 
-    private final Logger logger = LoggerFactory.getLogger(MyRiakClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MyRiakClient.class);
 
     @Autowired
     private RibayProperties properties;
@@ -40,7 +40,7 @@ public class MyRiakClient
     @PostConstruct
     private void init() throws Exception
     {
-        logger.info("init");
+        LOGGER.info("init");
 
         String[] ips = properties.getDatabaseIps();
 
@@ -69,7 +69,7 @@ public class MyRiakClient
     public <T, S> T execute(RiakCommand<T, S> command)
             throws ExecutionException, InterruptedException
     {
-        logger.debug("execute: " + command);
+        LOGGER.debug("execute: " + command);
 
         // chain of responsibility
         return client.execute(command);
@@ -77,7 +77,7 @@ public class MyRiakClient
 
     public <T, S> RiakFuture<T, S> executeAsync(RiakCommand<T, S> command)
     {
-        logger.debug("executeAsync: " + command);
+        LOGGER.debug("executeAsync: " + command);
 
         // chain of responsibility
         return client.executeAsync(command);
