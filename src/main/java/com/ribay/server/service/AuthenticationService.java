@@ -1,8 +1,11 @@
 package com.ribay.server.service;
 
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,6 +64,43 @@ public class AuthenticationService
         catch (Exception e)
         {
             LOGGER.warn("Failed to execute logout.", e);
+        }
+    }
+
+    @RequestMapping(path = "/auth/register", method = RequestMethod.POST)
+    public User register(@RequestBody User user) throws Exception
+    {
+        // Look up if the user with the given email address already exists
+        // TODO: This operation is not transactional. It might be possible that a new user is
+        // created in the meantime (dirty read)
+        try
+        {
+            User existingUser = null;
+            existingUser = repository.lookupExistingUser(user.getEmailAddress());
+            if (null != existingUser)
+            {
+                return null;
+            }
+        }
+        catch (Exception e)
+        {
+            LOGGER.warn("Failed to look up existing user in register operation.", e);
+            return null;
+        }
+
+        UUID uuid = UUID.randomUUID();
+        LOGGER.info("Generated UUID: " + uuid.toString());
+        user.setUuid(uuid);
+
+        try
+        {
+            repository.register(user);
+            return user;
+        }
+        catch (Exception e)
+        {
+            LOGGER.warn("Failed to execute register.", e);
+            return null;
         }
     }
 }

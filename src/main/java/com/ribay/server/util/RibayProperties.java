@@ -61,4 +61,10 @@ public class RibayProperties
         return value;
     }
 
+    public String getBucketUsers()
+    {
+        String value = databaseProperties.getProperty("bucket.users");
+        return value;
+    }
+
 }

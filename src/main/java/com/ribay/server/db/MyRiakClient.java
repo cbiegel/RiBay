@@ -83,4 +83,9 @@ public class MyRiakClient
         return client.executeAsync(command);
     }
 
+    public RiakClient getRiakClient()
+    {
+        return client;
+    }
+
 }

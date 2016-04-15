@@ -5,6 +5,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.basho.riak.client.api.commands.indexes.BinIndexQuery;
 import com.basho.riak.client.api.commands.kv.DeleteValue;
 import com.basho.riak.client.api.commands.kv.FetchValue;
 import com.basho.riak.client.api.commands.kv.StoreValue;
@@ -48,5 +49,32 @@ public class AuthenticationRepository
         Location location = new Location(new Namespace(bucket), sessionId);
         DeleteValue storeOp = new DeleteValue.Builder(location).build(); // TODO options
         client.execute(storeOp); // TODO execute async?
+    }
+
+    public void register(final User user) throws Exception
+    {
+        String bucket = properties.getBucketUsers();
+        Location location = new Location(new Namespace(bucket), user.getUuid().toString());
+        StoreValue storeOp = new StoreValue.Builder(user).withLocation(location).build();
+        client.execute(storeOp);
+    }
+
+    public User lookupExistingUser(final String emailAddress) throws Exception
+    {
+        String bucket = properties.getBucketUsers();
+        Namespace namespace = new Namespace(bucket);
+        BinIndexQuery indexQuery = new BinIndexQuery.Builder(namespace, "emailAddress",
+                emailAddress).build();
+        BinIndexQuery.Response resp = client.execute(indexQuery);
+        if (resp.hasEntries())
+        {
+            Location location = resp.getEntries().get(0).getRiakObjectLocation();
+            FetchValue fetchOp = new FetchValue.Builder(location).build();
+            return client.execute(fetchOp).getValue(User.class);
+        }
+        else
+        {
+            return null;
+        }
     }
 }

@@ -16,7 +16,8 @@ angular.module('myApp', [
         'myApp.login',
         'myApp.loginSuccess',
         'myApp.status',
-        'myApp.version'
+        'myApp.version',
+        'myApp.register'
     ])
 
     .run(['$rootScope', '$location', '$log', '$http', function ($rootScope, $location, $log, $http) {
