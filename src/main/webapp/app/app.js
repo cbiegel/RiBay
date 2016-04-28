@@ -7,6 +7,7 @@ angular.module('myApp', [
         'ngAnimate',
         'jsonFormatter',
         'ui.bootstrap',
+        'myApp.home',
         'myApp.view1',
         'myApp.view2',
         'myApp.view3',
@@ -32,7 +33,7 @@ angular.module('myApp', [
     }])
 
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.otherwise({redirectTo: '/view1'});
+        $routeProvider.otherwise({redirectTo: '/'});
     }])
 
     .controller('searchController', function ($scope, $location, $http) {

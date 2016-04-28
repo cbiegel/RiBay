@@ -1,0 +1,58 @@
+
+<div class="home">
+    <uib-carousel id="promo-banner" interval="0" no-wrap="false">
+        <uib-slide ng-repeat="n in [] | range: 5">
+            <span>Promo {{n}}</span>
+            <!-- image and link here -->
+        </uib-slide>
+    </uib-carousel>
+    <div id="right">
+        <div style="text-align: center;">This is a sidebar. It can be used to <a>display things</a>.</div>
+    </div>
+    <div id="center">
+        <div class="itemrow">
+            <div class="caption">
+                <span class="text-big">New for you</span>
+                <a>See more</a>
+            </div>
+            <div class="content">
+                <div class="items">
+                    <a class="item" ng-repeat="n in [] | range: 20">Product {{n}}</a>
+                    <!-- icons here -->
+                </div>
+            </div>
+        </div>
+        <div class="itemrow">
+            <div class="caption">
+                <span class="text-big">Related to items you've viewed</span>
+                <a>See more</a>
+            </div>
+            <div class="content">
+                <div class="items">
+                    <a class="item" ng-repeat="n in [] | range: 20">Product {{n}}</a>
+                    <!-- icons here -->
+                </div>
+            </div>
+        </div>
+        <div id="promo-split">
+            <div>
+                <a><img alt="advertising1"></a>
+            </div>
+            <div>
+                <a><img alt="advertising2"></a>
+            </div>
+        </div>
+        <div class="itemrow">
+            <div class="caption">
+                <span class="text-big">Inspired by your Wish List</span>
+                <a>See more</a>
+            </div>
+            <div class="content">
+                <div class="items">
+                    <a class="item" ng-repeat="n in [] | range: 20">Product {{n}}</a>
+                    <!-- icons here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
