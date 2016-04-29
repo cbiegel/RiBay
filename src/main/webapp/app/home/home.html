@@ -16,9 +16,10 @@
             </div>
             <div class="content">
                 <div class="items">
-                    <div class="item" ng-repeat="n in [] | range: 20" ng-mouseover="focused = n"
-                         ng-mouseleave="focused = undefined">
-                        <button type="button" class="detail-button box" ng-show="focused == n"
+                    <div class="item" ng-repeat="n in [] | range: 20" ng-init="focused = false"
+                         ng-mouseover="focused = true"
+                         ng-mouseleave="focused = false">
+                        <button type="button" class="detail-button box" ng-show="focused"
                                 ng-click="showDetails(n)">Show details
                         </button>
                         <a><span>Product {{n}}</span></a>
@@ -34,9 +35,10 @@
             </div>
             <div class="content">
                 <div class="items">
-                    <div class="item" ng-repeat="n in [] | range: 20" ng-mouseover="focused = n"
-                         ng-mouseleave="focused = undefined">
-                        <button type="button" class="detail-button box" ng-show="focused == n"
+                    <div class="item" ng-repeat="n in [] | range: 20" ng-init="focused = false"
+                         ng-mouseover="focused = true"
+                         ng-mouseleave="focused = false">
+                        <button type="button" class="detail-button box" ng-show="focused"
                                 ng-click="showDetails(n)">Show details
                         </button>
                         <a><span>Product {{n}}</span></a>
@@ -60,9 +62,10 @@
             </div>
             <div class="content">
                 <div class="items">
-                    <div class="item" ng-repeat="n in [] | range: 20" ng-mouseover="focused = n"
-                         ng-mouseleave="focused = undefined">
-                        <button type="button" class="detail-button box" ng-show="focused == n"
+                    <div class="item" ng-repeat="n in [] | range: 20" ng-init="focused = false"
+                         ng-mouseover="focused = true"
+                         ng-mouseleave="focused = false">
+                        <button type="button" class="detail-button box" ng-show="focused"
                                 ng-click="showDetails(n)">Show details
                         </button>
                         <a><span>Product {{n}}</span></a>
