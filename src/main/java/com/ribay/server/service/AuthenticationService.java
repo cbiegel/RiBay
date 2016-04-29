@@ -35,17 +35,18 @@ public class AuthenticationService
     }
 
     @RequestMapping(path = "/auth/login", method = RequestMethod.POST)
-    public User login(@RequestParam(value = "username") String userName,
+    public User login(@RequestParam(value = "email") String emailAddress,
             @RequestParam(value = "password") String password) throws Exception
     {
         // TODO encrypt password and send as header
-        // TODO do login against DB
-        if (userName.equals("test") && password.equals("test"))
+        User user = null;
+        user = repository.lookupExistingUser(emailAddress);
+
+        // User exists in database
+        if (null != user)
         {
             String key = requestData.getSessionId();
-            User value = new User("test");
-
-            return repository.login(key, value);
+            return repository.login(key, user);
         }
         else
         {

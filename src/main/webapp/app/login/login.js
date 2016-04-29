@@ -15,43 +15,30 @@ angular.module('myApp.login', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
 
     .service('loginService', ['$timeout', '$http', function ($timeout, $http) {
 
-        this.login = function (username, password, callback) {
+        this.login = function (emailAddress, password, callback) {
 
-            $http.post('/auth/login?username=' + username + '&password=' + password).then(function (config) {
-                // if there is a result -> login successfull
+            $http.post('/auth/login?email=' + emailAddress + '&password=' + password).then(function (config) {
+                // if there is a result -> login successful
                 if (config.data != "") {
                     var response = {user: config.data};
                     callback(response);
                 }
                 else {
-                    var response = {message: 'Username or password is incorrect'};
+                    var response = {message: 'E-Mail address or password is incorrect'};
                     callback(response);
                 }
             });
-
-
-            /* Dummy authentication for testing, uses $timeout to simulate api call
-             ----------------------------------------------*/
-            //$timeout(function () {
-            //    var response = {success: (username === 'test') && (password === 'test')};
-            //    if (!response.success) {
-            //        response.message = 'Username or password is incorrect';
-            //    }
-            //    callback(response);
-            //}, 1000);
-
         };
-
     }])
 
     .controller('loginCtrl', ['$scope', '$location', '$filter', '$q', 'loginService', function ($scope, $location, $filter, $q, loginService) {
 
         $scope.login = function () {
             $scope.dataLoading = true;
-            loginService.login($scope.username, $scope.password, function (response) {
+            loginService.login($scope.email, $scope.password, function (response) {
 
                 if (response.user) {
-                    $location.url('/view1'); // TODO go to home view
+                    $location.url('/');
                 }
                 else {
                     $scope.error = response.message;

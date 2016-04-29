@@ -14,16 +14,26 @@ angular.module('myApp.register', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
 
     .service('registerService', ['$timeout', '$http', function ($timeout, $http) {
 
-        this.register = function (username, password, callback) {
+        this.register = function (email, name, password, callback) {
 
-            $http.post('/auth/register?username=' + username + '&password=' + password).then(function (config) {
+            var dataObject = {
+                uuid : null,
+                emailAddress : email,
+                password: password,
+                name : name
+            };
+
+            $http.post('/auth/register', dataObject).then(function (config) {
                 // if there is a result -> register successfull
                 if (config.data != "") {
-                    var response = {user: config.data};
+                    var response = {
+                        user: config.data,
+                        message: 'Successfully registered! Welcome, ' + config.data.name + "."
+                    };
                     callback(response);
                 }
                 else {
-                    var response = {message: 'A user with this name already exists. Please choose another name.'};
+                    var response = {message: 'A user with this e-mail address already exists.'};
                     callback(response);
                 }
             });
@@ -37,10 +47,13 @@ angular.module('myApp.register', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
         $scope.register = function () {
             $scope.dataLoading = true;
             $scope.registerSuccessful = false;
-            registerService.register($scope.username, $scope.password, function (response) {
+            registerService.register($scope.email, $scope.name, $scope.password, function (response) {
 
                 if (response.user) {
                     $scope.registerSuccessful = true;
+                    $scope.successMessage = response.message;
+                    $scope.dataLoading = false;
+                    $location.url("/");
                 }
                 else {
                     $scope.error = response.message;

@@ -59,6 +59,15 @@ public class AuthenticationRepository
         client.execute(storeOp);
     }
 
+    /**
+     * Looks up existing user in the database by E-mail address.
+     * 
+     * @param emailAddress
+     *            The e-mail of the user (Secondary Index of the "users" bucket)
+     * @return The user object of the user with the given e-mail, if it exists. If it does not
+     *         exist, returns null.
+     * @throws Exception
+     */
     public User lookupExistingUser(final String emailAddress) throws Exception
     {
         String bucket = properties.getBucketUsers();
