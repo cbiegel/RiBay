@@ -4,13 +4,17 @@
 
 angular.module('myApp.home', ['ngRoute'])
 
-    .config(['$routeProvider', function($routeProvider) {
+    .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/', {
             templateUrl: 'home/home.html',
             controller: 'HomeCtrl'
         });
     }])
 
-    .controller('HomeCtrl', [function() {
+    .controller('HomeCtrl', ['$scope', '$window', function ($scope, $window) {
+        $scope.focused = undefined;
 
+        $scope.showDetails = function (item) {
+            $window.alert(item);
+        };
     }]);
