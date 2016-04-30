@@ -58,6 +58,10 @@ a {
     float: left;
 }
 
+.disabled {
+    opacity: 0.6;
+}
+
 .button-primary {
     color: #111;
     background: #f3d078;
@@ -447,8 +451,7 @@ a {
 }
 
 .status #container .box {
-    height: 640px;
-    overflow: auto;
+    overflow-x: auto;
 }
 
 .status #container ul {
