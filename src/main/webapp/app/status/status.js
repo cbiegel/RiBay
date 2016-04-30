@@ -34,7 +34,9 @@ angular.module('myApp.status', [])
     .controller('statusCtrl', ['$scope', 'statusService', function ($scope, statusService) {
 
         $scope.buckets = undefined;
+        $scope.buckets_page = 1;
         $scope.keys = undefined;
+        $scope.keys_page = 1;
         $scope.value = undefined;
 
         $scope.selectedBucket = undefined;
@@ -51,6 +53,7 @@ angular.module('myApp.status', [])
             if (bucket) {
                 statusService.getKeys(bucket, function (data) {
                     $scope.keys = data;
+                    $scope.keys_page = 1; // reset page on bucket change
                 });
             }
             else {

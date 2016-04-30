@@ -1,0 +1,1 @@
+Place your 'movies.json' file in this folder!

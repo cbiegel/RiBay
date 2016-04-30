@@ -12,3 +12,5 @@ Value für demo_cart/demo_key abfragen -> Headers + JSON:
 Value für demo_cart/demo_key abfragen (NUR JSON):
 	curl http://134.100.11.158:8098/buckets/demo_cart/keys/demo_key > c:/test.json
 	
+Demo-Werte erzeugen (nur von dem Rechner ausführen, auf dem die Anwendung läuft (localhost)). HINWEIS: DAUERT ETWA 50 MINUTEN!
+    curl -X POST localhost:8080/demo/create/

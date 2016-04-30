@@ -6,9 +6,14 @@
                     <span class="text-bold text-medium">Buckets</span>
                     <div class="box box-content background-grey text-code">
                         <ul ng-show="buckets">
-                            <li ng-repeat="bucket in buckets" ng-class="{'text-bolder text-underline' : bucket == selectedBucket}">
+                            <li ng-repeat="bucket in buckets.slice((buckets_page - 1) * 20, buckets_page *20)"
+                                ng-class="{'text-bolder text-underline' : bucket == selectedBucket}">
                                 <a ng-click="selectBucket(bucket)">{{bucket}}</a>
                             </li>
+                            <uib-pagination total-items="buckets.length" ng-model="buckets_page" items-per-page="20"
+                                            max-size="10" class="pagination-sm" boundary-links="true"
+                                            boundary-link-numbers="true"
+                                            rotate="true"></uib-pagination>
                         </ul>
                     </div>
                 </div>
@@ -16,9 +21,14 @@
                     <span class="text-bold text-medium">Keys</span>
                     <div class="box box-content background-grey text-code">
                         <ul ng-show="keys">
-                            <li ng-repeat="key in keys" ng-class="{'text-bolder text-underline' : key == selectedKey}">
+                            <li ng-repeat="key in keys.slice((keys_page - 1) * 20, keys_page *20)"
+                                ng-class="{'text-bolder text-underline' : key == selectedKey}">
                                 <a ng-click="selectKey(key)">{{key}}</a>
                             </li>
+                            <uib-pagination total-items="keys.length" ng-model="keys_page" items-per-page="20"
+                                            max-size="10" class="pagination-sm" boundary-links="true"
+                                            boundary-link-numbers="true"
+                                            rotate="true"></uib-pagination>
                         </ul>
                     </div>
                 </div>

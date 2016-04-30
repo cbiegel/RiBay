@@ -10,16 +10,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class RibayProperties
-{
+public class RibayProperties {
 
     private final Logger logger = LoggerFactory.getLogger(RibayProperties.class);
 
     private final Properties applicationProperties;
     private final Properties databaseProperties;
 
-    public RibayProperties() throws Exception
-    {
+    public RibayProperties() throws Exception {
         logger.info("Load properties");
 
         applicationProperties = new Properties();
@@ -31,39 +29,38 @@ public class RibayProperties
                 RibayProperties.class.getClassLoader().getResourceAsStream("database.properties"));
     }
 
-    public int getSessionTimeout()
-    {
+    public int getSessionTimeout() {
         String value = applicationProperties.getProperty("session.timeout.seconds");
         return Integer.parseInt(value);
     }
 
-    public String[] getDatabaseIps() throws Exception
-    {
+    public String[] getDatabaseIps() throws Exception {
         String value = databaseProperties.getProperty("ips");
         return value.split(",");
     }
 
-    public String getBucketCart()
-    {
+    public String getBucketCart() {
         String value = databaseProperties.getProperty("bucket.cart");
         return value;
     }
 
-    public String getBucketSessionLastAccess()
-    {
+    public String getBucketSessionLastAccess() {
         String value = databaseProperties.getProperty("bucket.session.lastaccess");
         return value;
     }
 
-    public String getBucketSessionLogin()
-    {
+    public String getBucketSessionLogin() {
         String value = databaseProperties.getProperty("bucket.session.login");
         return value;
     }
 
-    public String getBucketUsers()
-    {
+    public String getBucketUsers() {
         String value = databaseProperties.getProperty("bucket.users");
+        return value;
+    }
+
+    public String getBucketArticles() {
+        String value = databaseProperties.getProperty("bucket.articles");
         return value;
     }
 
