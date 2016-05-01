@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import com.basho.riak.client.core.FutureOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,15 @@ public class MyRiakClient
 
         // chain of responsibility
         return client.execute(command);
+    }
+
+    public <V,S> RiakFuture<V,S> execute(FutureOperation<V, ?, S> operation) throws ExecutionException, InterruptedException
+    {
+        // is this the new api??
+        LOGGER.debug("execute: " + operation);
+
+        // chain of responsibility
+        return client.getRiakCluster().execute(operation);
     }
 
     public <T, S> RiakFuture<T, S> executeAsync(RiakCommand<T, S> command)

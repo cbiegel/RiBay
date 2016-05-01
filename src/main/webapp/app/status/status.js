@@ -25,16 +25,20 @@ angular.module('myApp.status', [])
             $http.get('/status/db/value?bucket=' + bucket + '&key=' + key).success(callback);
         }
 
+        this.getBucketProperties = function (bucket, callback) {
+            $http.get('/status/db/bucket_properties?bucket=' + bucket).success(callback);
+        }
+
         this.getClusterStatus = function (callback) {
             $http.get('/status/db/cluster').success(callback);
         };
 
     }])
-
     .controller('statusCtrl', ['$scope', 'statusService', function ($scope, statusService) {
 
         $scope.buckets = undefined;
         $scope.buckets_page = 1;
+        $scope.bucket_properties = undefined;
         $scope.keys = undefined;
         $scope.keys_page = 1;
         $scope.value = undefined;
@@ -55,9 +59,13 @@ angular.module('myApp.status', [])
                     $scope.keys = data;
                     $scope.keys_page = 1; // reset page on bucket change
                 });
+                statusService.getBucketProperties(bucket, function (data) {
+                    $scope.bucket_properties = data;
+                });
             }
             else {
                 $scope.keys = undefined;
+                $scope.bucket_properties = undefined;
             }
         };
 
@@ -80,3 +88,5 @@ angular.module('myApp.status', [])
 
 
     }]);
+
+

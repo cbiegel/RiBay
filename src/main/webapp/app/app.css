@@ -475,6 +475,10 @@ a {
     width: 45%;
 }
 
+.status .json-formatter-row .toggler {
+    margin-left: -1.2em;
+}
+
 .login {
     padding: 12px 16px;
 }
