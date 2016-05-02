@@ -64,4 +64,9 @@ public class RibayProperties {
         return value;
     }
 
+    public String getBucketImages() {
+        String value = databaseProperties.getProperty("bucket.images");
+        return value;
+    }
+
 }
