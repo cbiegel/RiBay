@@ -73,9 +73,14 @@ angular.module('myApp.status', [])
             $scope.selectedKey = key;
 
             if (key) {
-                statusService.getValue($scope.selectedBucket, key, function (data) {
-                    $scope.value = data;
-                });
+                if ($scope.selectedBucket == "images") {
+                    $scope.value = "/image/" + key;
+                }
+                else {
+                    statusService.getValue($scope.selectedBucket, key, function (data) {
+                        $scope.value = data;
+                    });
+                }
             }
             else {
                 $scope.value = undefined;

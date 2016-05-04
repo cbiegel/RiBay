@@ -43,7 +43,9 @@
                 <div id="right">
                     <span class="text-bold text-medium">Value</span>
                     <div class="box box-content background-grey">
-                        <json-formatter ng-show="value" json="value" open="100"></json-formatter>
+                        <!-- Display either json viewer or image viewer -->
+                        <json-formatter ng-show="value && (selectedBucket != 'images')" json="value" open="100"></json-formatter>
+                        <img ng-show="value && (selectedBucket == 'images')" src="{{value}}" />
                     </div>
                 </div>
             </div>

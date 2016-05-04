@@ -1,11 +1,9 @@
 package com.ribay.server.repository;
 
 import com.basho.riak.client.api.commands.kv.FetchValue;
-import com.basho.riak.client.api.commands.kv.StoreValue;
-import com.basho.riak.client.core.RiakFuture;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.basho.riak.client.core.query.RiakObject;
 import com.ribay.server.db.MyRiakClient;
 import com.ribay.server.exception.NotFoundException;
 import com.ribay.server.util.RibayProperties;
@@ -13,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.Future;
 
 /**
  * Created by CD on 02.05.2016.
@@ -29,8 +25,8 @@ public class ImageRepository {
     @Autowired
     private RibayProperties properties;
 
-    public byte[] loadImage(String imageId) throws NotFoundException, Exception {
-        String bucket = properties.getBucketArticles();
+    public ImageData loadImage(String imageId) throws NotFoundException, Exception {
+        String bucket = properties.getBucketImages();
         String key = imageId;
 
         Location location = new Location(new Namespace(bucket), key);
@@ -39,20 +35,23 @@ public class ImageRepository {
         if (response.isNotFound()) {
             throw new NotFoundException();
         } else {
-            byte[] result = response.getValue(new TypeReference<byte[]>() {
-            });
-            return result;
+            RiakObject obj = response.getValue(RiakObject.class);
+
+            byte[] data = obj.getValue().getValue();
+            String mimeType = obj.getContentType();
+
+            return new ImageData(data, mimeType);
         }
     }
 
-    public Future<?> storeImage(byte[] data, String imageId) throws Exception {
-        String bucket = properties.getBucketArticles();
-        String key = imageId;
+    public static class ImageData {
+        public final byte[] data;
+        public final String mimeType;
 
-        Location location = new Location(new Namespace(bucket), key);
-        StoreValue command = new StoreValue.Builder(data).withLocation(location).build();
-        RiakFuture<StoreValue.Response, Location> response = client.executeAsync(command);
-        return response;
+        public ImageData(byte[] data, String mimeType) {
+            this.data = data;
+            this.mimeType = mimeType;
+        }
     }
 
 }

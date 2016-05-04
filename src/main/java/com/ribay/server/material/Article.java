@@ -20,6 +20,7 @@ public class Article {
     private String year;
     private String comment;
     private List<Tweet> tweets;
+    private String imageId;
 
     public String getId() {
         return id;
@@ -123,5 +124,13 @@ public class Article {
 
     public void setTweets(List<Tweet> tweets) {
         this.tweets = tweets;
+    }
+
+    public String getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(String imageId) {
+        this.imageId = imageId;
     }
 }

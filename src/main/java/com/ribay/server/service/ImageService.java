@@ -24,12 +24,12 @@ public class ImageService {
 
     @RequestMapping(path = "/image/{imageId}", method = RequestMethod.GET)
     public ResponseEntity<byte[]> getImage(@PathVariable(value = "imageId") String imageId) throws Exception {
-        byte[] data = imageRepository.loadImage(imageId);
+        ImageRepository.ImageData data = imageRepository.loadImage(imageId);
 
-        String mimeType = MimetypesFileTypeMap.getDefaultFileTypeMap().getContentType(imageId); // use imageId as filename
+        MediaType mediaType = MediaType.parseMediaType(data.mimeType);
         CacheControl cacheControl = CacheControl.empty().noTransform().cachePublic().sMaxAge(30, TimeUnit.DAYS);
 
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).cacheControl(cacheControl).body(data);
+        return ResponseEntity.ok().contentType(mediaType).cacheControl(cacheControl).body(data.data);
     }
 
 }

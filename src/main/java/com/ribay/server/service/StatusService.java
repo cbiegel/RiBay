@@ -12,6 +12,7 @@ import java.util.stream.StreamSupport;
 import com.basho.riak.client.api.commands.buckets.FetchBucketProperties;
 import com.basho.riak.client.core.operations.FetchBucketPropsOperation;
 import com.basho.riak.client.core.query.BucketProperties;
+import com.basho.riak.client.core.query.RiakObject;
 import com.sun.org.apache.xml.internal.utils.NameSpace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,7 +66,8 @@ public class StatusService {
         Location quoteObjectLocation = new Location(quotesBucket, key);
 
         FetchValue fetchOp = new FetchValue.Builder(quoteObjectLocation).build();
-        return client.execute(fetchOp).getValue(Object.class);
+        FetchValue.Response fetchResp = client.execute(fetchOp);
+        return fetchResp.getValue(Object.class);
     }
 
     @RequestMapping(path = "/status/db/bucket_properties", method = RequestMethod.GET)
