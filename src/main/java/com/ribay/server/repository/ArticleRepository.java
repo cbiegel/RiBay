@@ -1,5 +1,17 @@
 package com.ribay.server.repository;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import com.basho.riak.client.api.commands.kv.FetchValue;
 import com.basho.riak.client.api.commands.kv.StoreValue;
 import com.basho.riak.client.core.operations.SearchOperation;
 import com.basho.riak.client.core.query.Location;
@@ -12,16 +24,6 @@ import com.ribay.server.material.PageInfo;
 import com.ribay.server.repository.query.QueryBuilder;
 import com.ribay.server.repository.query.QueryBuilderArticle;
 import com.ribay.server.util.RibayProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Future;
 
 /**
  * Created by CD on 30.04.2016.
@@ -67,6 +69,13 @@ public class ArticleRepository {
         List<Map<String, List<String>>> results = response.getAllResults();
         // TODO convert result
         return null;
+    }
+    
+    public Article getArticleInformation(final String articleId) throws Exception {
+	String bucket = properties.getBucketArticles();
+        Location location = new Location(new Namespace(bucket), articleId);
+        FetchValue fetchOp = new FetchValue.Builder(location).build();
+        return client.execute(fetchOp).getValue(Article.class);
     }
 
 }

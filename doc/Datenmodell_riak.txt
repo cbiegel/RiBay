@@ -1,0 +1,89 @@
+*Datenmodell-Entwurf für Online-Warenhaus-Anwendung mit Riak
+
+Entwurf #1
+Stand: 07.12.2015
+
+Das folgende Datenmodell gilt für diese Anwendungsfälle:
+
+	* Benutzer sucht nach einem Artikel in verschiedenen Kategorien über die Suchfunktion
+	* Benutzer sieht sich Artikeldetails an
+	* Benutzer fügt Artikel zum Warenkorb hinzu
+	* Benutzer sieht sich Warenkorb an
+	* Benutzer registriert einen neuen Account
+	* Benutzer loggt sich ein
+	* Benutzer ändert seine Adressen und Zahlungsinformationen
+	* Benutzer schließt Bestellung ab
+	* Benutzer sieht sich seine Bestellungsdetails nachträglich an
+	* Benutzer fügt Kommentar und Bewertung zum Artikel hinzu
+
+Allgemein gilt: Das Design der Datenstruktur richtet sich nach den Klienten. Dies bedeutet, dass die Klienten die für die Anwendungsfälle benötigten Informationen effizient abrufen sollen. Daher gilt: Normalisierung vermeiden, Redundanzen sind erlaubt. Dies liegt an der Eigenschaft von Riaks Datenmodell (Key-Value-Daten). Zugriffe, die solche Schlüssel-Wert-Paare betreffen, sind besonders dann effizient, wenn es sich um reine Lese- und Schreibzugriffe handelt. Da das Schreiben eines Key-Value-Tupels wesentlich schneller ist als das Modifizieren (Updaten) eines bestehenden Eintrags, ist es zu bevorzugen, unveränderliche (immutable) Daten zu modellieren, sodass aktualisierte Werte beispielsweise anhand eines eindeutigen Zeitstempels identifiziert werden können, da somit eine eindeutige zeitliche Ordnung in den Daten eingeführt wird.
+
+	* Bucket: users
+		* Zweck: Enthält Stammdaten von Benutzern
+		* Key: UUID
+			* Secondary Index: email_adress (eindeutig)
+		* Value: User Data (JSON) (z.B. Stammdaten wie Passwort, Name, E-Mail-Adresse etc., die selten gändert werden)
+		* Begründung: Da sich die Stammdaten von Benutzern nur selten ändern, ist eine hohe Schreib-Performance nicht wichtig. Daher verzichten wir hier auf unveränderliche Daten, die z.B. mit einem Zeitstempel eindeutig markiert wären. Stattdessen können wir die Nutzerdatem im JSON-Datenformat nach Belieben modifizieren ("updaten"). Als Sekundären Index verwenden wir hier die E-Mail-Adresse, um schnell von den eingegebenen Login-Daten zum dazugehörigen Benutzer zu kommen.
+
+	* Bucket: user_adress
+		* Zweck: Speichert die Adressen von Benutzern
+		* Key: UUID
+		* Value: CRDT Set von Tupeln (Empfänger, Adresszusatz, Straße + Hausnummer, PLZ, Ort, Land)
+		* Begründung: Adressen können sich häufiger ändern, deshalb hier ein CRDT. Bei Konflikt: Merge
+
+-> Brauchen wir bestimmte Benutzergruppen wie Käufer, Verkäufer, etc.?
+
+	* Bucket: login
+		* Zweck: Ordnet Session zu eingeloggtem User zu
+		* Key: SessionID (eindeutig)
+		* Value: UUID (eingeloggter User) + evtl. MetaData als JSON (z.B. Benutzername für Anzeige)
+		* Begründung: Speichert die Zuordnung Browser-Session -> Benutzer. Wenn kein Value für die Session vorhanden ist, bedeutet dies, dass der Anwender nicht eingeloggt ist. Die Meta-Daten sind redundant könnten für die Anzeige aber nützlich sein. So kann im Header der Seite zum Beispiel der Name des eingeloggten Users stehen. Dadurch ersparen wir uns eine eventuelle zweite Anfrage, in der zur UUID der Benutzername herausgefunden werden soll (Bucket "users"). Der Key ist die HttpSessionID, welche eindeutig für alle Tabs des gleichen Browsers ist und sich damit für die Identifikation einer Browser-Session eignet. Einträge dieses Buckets werden gelöscht, wenn sich ein Benutzer explizit ausloggt oder die HttpSession ausläuft (einstellbar und beobachtbar durch den Web-Container). Die UUID wird später benötigt, um den Bestellvorgang abzuwickeln. Dazu gehört das Auslesen von Zahlungsinformationen und Adressen.
+
+	* Bucket: shopping_cart
+		* Zweck: Speichert den Warenkorb des Anwenders. Designed für die effiziente Darstellung des Warenkorbs für den Anwender.
+		* Key: HttpSessionID
+		* Value: Set (CRDT) von Tupeln (article_id, article_name, anzahl, einzelpreis)
+		* Begründung: Der Anwender wird identifiziert durch die HttpSessionID (siehe Begründung für Bucket 'login'). Ein Warenkorb soll benutzt werden können, auch wenn sich der Anwender noch nicht eingeloggt hat. Daher wird hier die immer vorhandene HttpSessionID verwendet. Als Typ des Values wird ein CRDT Set verwendet, das Konflikte automatisch löst, indem es die in Konflikt stehenden Warenkörbe mergt. Artikelname und Einzelpreis sind redundante Daten des Artikels, die jedoch für die effiziente Darstellung des Warenkorbs in der UI benötigt werden. Im weiteren Verlauf der Bestellung können die Preise nochmals abgeglichen werden, um Konsistenz sicherzustellen. Einträge dieses Buckets werden - wie beim Bucket 'login' - bei Ablauf der HttpSessionID gelöscht, bleiben nach einem Logout ohne Ablauf der Session jedoch erhalten.
+
+	* Bucket: article_stock
+		* Zweck: Speichert die Anzahl der vorrätigen Artikel
+		* Key: article_id
+		* Value: Counter (CRDT) für die Anzahl des Artikels mit der ID <article_id> im Lager
+		* Begründung: Die Anzahl, wie oft ein Artikel im Lager vorhanden ist, muss konsistent sein. Bestellen zwei Kunden gleichzeitig denselben Artikel, von dem nur noch ein Exemplar auf Lager ist, würde ein Konflikt entstehen, der durch "eventual consistency" möglicherweise erst zu spät entdeckt wird (beispielsweise, wenn beide Kunden bereits beim Bezahlvorgang sind). Es ist daher wichtig, die genaue Verfügbarkeit von Artikeln per CRDT (und eventuell sogar noch durch entsprechende Logik in der Anwendung) möglichst konsistent zu halten. Es wäre darüber hinaus möglich, die Parameter des Bucket "article_stock" so zu konfigurieren, dass eine höhere Konsistenz ermöglicht wird
+
+	* Bucket: article_info
+		* Zweck: Speichert die "Stammdaten" von Artikeln. Wird benötigt für die vollständige Darstellung eines Artikels.
+		* Key: article_id
+			* Kommentar: Es wird kein sekundärer Index für article_info benötigt, da nicht direkt nach einem vollständigem Artikel gesucht werden muss. Bei einer Suche soll man erst auf eine Seite gelangen, die alle Suchergebnisse anzeigt, Diese Seite mit den Suchergebnissen enthält nur geringe Informationen über den Artikel und benötigt daher nicht die kompletten Artikel-Daten. Einen eigenen Bucket für die Kurzfassung von Artikeln zu verwenden, ist effizienter.
+		* Value: JSON (Artikel-Infos: Name, Hersteller, Beschreibung, technische Daten, ...)
+		* Begründung: Die Stammdaten eines Artikels, wie beispielsweise der Name und Hersteller eines Artikels,  werden nicht häufig geändert. Daher benötigt man hier nicht unbedingt einen auf häufige Änderungen ausgelegten Datentyp, wie zum Beispiel bei 'article_stock' oder 'article_comment'.
+
+	* Bucket: article_info_short
+		* Zweck: Kurzfassung eines Artikel. Benötigt für die Seite, die Suchergebnisse für Artikel enthält
+		* Key: article_id
+			* Secondary Index: article_name (muss nicht eindeutig sein)
+		* Value: JSON (Primärbild, Name, Hersteller, Preis, durchschnittliche Bewertung, Anzahl an Bewertungen)
+		* Begründung: Bei einer Suche werden Artikel nicht komplett angezeigt, sondern nur eine Kurzfassung. Dies ist performanter, da sich die Datenmenge eines jeden Artikels reduziert. Die Kurzfassung enthält neben einigen Stammdaten auch Infos über Bewertungen, die sich häufiger ändern können. Da es sich aber nur um eine Auflistung mit geringem Wert handelt, ist es nicht wichtig, dass die Infos immer zu 100% aktuell sind. Änderungen wie zum Beispiel durch Einführung eines neuen Kommentars müssen nicht unmittelbar Einträge dieses Buckets ändern. Als sekundären Index wählen wir den Namen des Artikels, sodass wir eine performantere Suche erzielen können.
+
+	* Bucket: article_image
+		* Zweck: Hält die Produktbilder von Artikeln
+		* Key: article_id
+		* Value: Image (Bild vom Artikel).
+-> Was, wenn wir mehrere Bilder pro Artikel zulassen wollen? Dann nehmen wir als Value eine Liste von Bildern oder einen Bucket, der eine Liste von image_ids enthält. Am Besten wir fragen nach, da dies ja große Datenmengen sein können.
+
+	* Bucket: article_comment _<article_ID>
+		* Zweck: Speichert die Kommentare/Rezensionen von bestimmten Benutzern zu bestimmten Artikel
+		* Key: Timestamp + UUID
+		* Value: JSON (rating, Kommentar, Author, ...)
+-> Hier sind auch mehrere Kommentare möglich. Hier evtl. auch der Value als Liste oder als CRDT Set
+
+	* Bucket. product_category_<category_name>
+		* Zweck: Hält Informationen über die Kategorisierung von Artikeln. Jede Kategorie kann beliebig viele Artikel halten (jeden Artikel jedoch höchstens einmal) und jeder Artikel kann beliebig vielen Kategorien angehören.
+		* Key: Timestamp
+		* Value: Set (CRDT) von Tupeln (article_id : article_name)
+		* Begründung: Produktkategorien verhalten sich wie "Stammdaten" für Produkte. Kategorien an sich werden nur selten geändert. Es ändert sich am häufigsten, welche Artikel in einer Kategorie vorhanden sind.
+-> Wo befindet sich ein guter Tradeoff zwischen Lese- und Schreibeffizienz und der größe der übertragenen Daten? In diesem Beispiel würde die Effizienz der Zugriffe sehr hoch sein, da immer nur das Set von Artikel ausgelesen und geschrieben werden muss, allerdings würde das Datenobjekt bei einer großen Menge von Daten irgendwann sehr stark wachsen. Dieses Objekt müsste in dieser Lösung immer vollständig zwischen Server und Client übertragen werden, damit es um neue Einträge erweitert werden kann. Das würde bei sehr großen Daten zum Nachteil führen.
+
+
+TODO: Bestellhistorie? Liste von unveränderlichen Einträgen?
+TODO: Zahlungsinformationen?

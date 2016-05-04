@@ -13,25 +13,44 @@ angular.module('myApp.product', [])
         });
     }])
 
-    .service('productService', [function () {
+    .service('productService', ['$http', function ($http) {
 
         this.getProductDetails = function (id, callback) {
-            // TODO get data from backend
-            var data = {
-                id: id,
-                title: 'Insert product title here',
-                rate: 4,
-                price: "45,23€",
-                quantity: 1337,
-                details: "Insert the product details here",
-                images: [
-                    {src: '//placehold.it/300x300'},
-                    {src: '//placehold.it/400x300'},
-                    {src: '//placehold.it/300x400'}
-                ]
-            };
-            callback(data);
-        };
+
+            $http.get('/article/info?articleId=' + id).then(function(config) {
+                if(config.data != "") {
+
+                    var data = {
+                        id: config.data.id,
+                        title: config.data.title,
+                        rate: config.data.rating,
+                        votes: config.data.votes,
+                        year: config.data.year,
+                        releases: config.data.releases,
+                        genres: config.data.genre,
+                        actors: config.data.actors,
+                        runtime: config.data.runtime,
+                        price: "13,37€",
+                        quantity: 1337,
+                        details: config.data.plot,
+                        images: [
+                                    {src: '//placehold.it/300x300'},
+                                    {src: '//placehold.it/400x300'},
+                                    {src: '//placehold.it/300x400'}
+                                ]
+                    };
+
+                    // convert release timestamps from unix time to date string
+                    for(var i=0; i < data.releases.length; i++) {
+                        var date = new Date(data.releases[i].date);
+                        data.releases[i].date = "" + date.getFullYear() + "/" + date.getMonth() + "/" + date.getDay();
+                    }
+                    callback(data);
+                }
+                 else {
+                    // TODO: Article with articleId wasn't found in app server / backend -> display appropriate error message
+                }
+            });
 
         this.getReviews = function (id, callback) {
             // TODO get data from backend
@@ -56,11 +75,12 @@ angular.module('myApp.product', [])
             callback();
         };
 
-    }])
+    }}])
 
     .controller('productCtrl', ['$scope', '$routeParams', '$timeout', 'productService', function ($scope, $routeParams, $timeout, productService) {
 
         var id = $routeParams.productid;
+        $scope.product = "";
 
         productService.getProductDetails(id, function (data) {
             $scope.product = data;
@@ -68,6 +88,7 @@ angular.module('myApp.product', [])
 
         $scope.isSuccessAlertDisplayed = false;
         $scope.successTextAlert = "Item \"" + $scope.product.title + "\" was added to the cart.";
+        $scope.hasActors = false;
 
         $scope.quantity = '1';
 
@@ -91,5 +112,17 @@ angular.module('myApp.product', [])
         productService.getReviews(id, function (data) {
             $scope.reviews = data;
         });
+
+        // return only the first n entries of the actors
+        $scope.getFirstNActors = function (n) {
+            if($scope.product.actors) {
+                var limit = Math.min(n, $scope.product.actors.length);
+                var result = new Array(limit);
+                for (var i = 0; i < limit; i++) {
+                    result[i] = $scope.product.actors[i];
+                }
+                return result;
+            }
+        }
 
     }]);
