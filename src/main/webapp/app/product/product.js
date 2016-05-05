@@ -13,44 +13,52 @@ angular.module('myApp.product', [])
         });
     }])
 
-    .service('productService', ['$http', function ($http) {
+    .service('productService', ['$http', '$window', 'imageService', function ($http, $window, imageService) {
 
         this.getProductDetails = function (id, callback) {
 
-            $http.get('/article/info?articleId=' + id).then(function(config) {
-                if(config.data != "") {
-
+            $http.get('/article/info?articleId=' + id).then(
+                function success(response) {
                     var data = {
-                        id: config.data.id,
-                        title: config.data.title,
-                        rate: config.data.rating,
-                        votes: config.data.votes,
-                        year: config.data.year,
-                        releases: config.data.releases,
-                        genres: config.data.genre,
-                        actors: config.data.actors,
-                        runtime: config.data.runtime,
+                        id: response.data.id,
+                        title: response.data.title,
+                        rate: response.data.rating,
+                        votes: response.data.votes,
+                        year: response.data.year,
+                        releases: response.data.releases,
+                        genres: response.data.genre,
+                        actors: response.data.actors,
+                        runtime: response.data.runtime,
                         price: "13,37€",
                         quantity: 1337,
-                        details: config.data.plot,
-                        images: [
-                                    {src: '//placehold.it/300x300'},
-                                    {src: '//placehold.it/400x300'},
-                                    {src: '//placehold.it/300x400'}
-                                ]
+                        details: response.data.plot,
+                        images: []
                     };
 
-                    // convert release timestamps from unix time to date string
-                    for(var i=0; i < data.releases.length; i++) {
-                        var date = new Date(data.releases[i].date);
-                        data.releases[i].date = "" + date.getFullYear() + "/" + date.getMonth() + "/" + date.getDay();
+                    if (response.data.imageId) {
+                        var url = imageService.createImageURLFromId(response.data.imageId);
+                        data.images.push({src: url});
                     }
+
+                    // convert release timestamps from unix time to date string
+                    for (var i = 0; i < data.releases.length; i++) {
+                        var date = new Date(data.releases[i].date);
+                        data.releases[i].date = date;
+                    }
+
                     callback(data);
+                },
+                function error(response) {
+                    if (response.status == 404) {
+                        // TODO: Article with articleId wasn't found in app server / backend -> display appropriate error message
+                        $window.alert("Not found!");
+                    }
+                    else {
+                        // TODO: handle other error
+                    }
                 }
-                 else {
-                    // TODO: Article with articleId wasn't found in app server / backend -> display appropriate error message
-                }
-            });
+            );
+        };
 
         this.getReviews = function (id, callback) {
             // TODO get data from backend
@@ -75,7 +83,7 @@ angular.module('myApp.product', [])
             callback();
         };
 
-    }}])
+    }])
 
     .controller('productCtrl', ['$scope', '$routeParams', '$timeout', 'productService', function ($scope, $routeParams, $timeout, productService) {
 
@@ -115,7 +123,7 @@ angular.module('myApp.product', [])
 
         // return only the first n entries of the actors
         $scope.getFirstNActors = function (n) {
-            if($scope.product.actors) {
+            if ($scope.product.actors) {
                 var limit = Math.min(n, $scope.product.actors.length);
                 var result = new Array(limit);
                 for (var i = 0; i < limit; i++) {

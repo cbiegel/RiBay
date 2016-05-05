@@ -270,6 +270,14 @@ a {
     margin-bottom: 8px;
 }
 
+.product-main #product-details > div {
+    padding: 4px 16px;
+}
+
+.product-main #product-details .releases table td {
+    padding-right: 8px;
+}
+
 .product-reviews {
     clear: both;
     margin-left: 32%;

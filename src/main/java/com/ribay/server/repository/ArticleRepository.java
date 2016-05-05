@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+import com.ribay.server.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,12 +71,18 @@ public class ArticleRepository {
         // TODO convert result
         return null;
     }
-    
+
     public Article getArticleInformation(final String articleId) throws Exception {
-	String bucket = properties.getBucketArticles();
-        Location location = new Location(new Namespace(bucket), articleId);
+        String bucket = properties.getBucketArticles();
+        String key = articleId;
+        Location location = new Location(new Namespace(bucket), key);
         FetchValue fetchOp = new FetchValue.Builder(location).build();
-        return client.execute(fetchOp).getValue(Article.class);
+        FetchValue.Response fetchResp = client.execute(fetchOp);
+        if (fetchResp.isNotFound()) {
+            throw new NotFoundException();
+        } else {
+            return fetchResp.getValue(Article.class);
+        }
     }
 
 }

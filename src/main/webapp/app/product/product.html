@@ -42,38 +42,50 @@
             <span>Only {{product.quantity}} left in stock</span>
         </div>
         <hr>
-        <div class="releaseYear">
-            <span class="caption">Release Year: </span>
-            <span class="value">{{product.year}}</span>
-        </div>
-        <div class="releases">
-            <span class="caption">Released in: </span>
-            <span class="value" ng-repeat="release in product.releases">{{release.country}}, {{release.date}}<br></span>
-        </div>
-        <div class="genres">
-            <span class="caption">Genres: </span>
-            <span class="value" ng-repeat="genre in product.genres">{{genre}}{{$last ? '' : ', '}}</span>
-        </div>
-        <div class="actors">
-            <span class="caption">Actors: </span>
-            <span class="value" ng-repeat="actor in getFirstNActors(5)">{{actor}}</span>
-        </div>
-        <div class="details">
-            <span class="caption">Plot information:</span>
-            <span class="value">
-                <div ng-if="product.details">{{product.details}}</div>
-                <div class="no-plot-info" ng-if="!product.details">This product does not have plot information.</div>
-            </span>
-        </div>
-        <div class="runtime">
-            <span class="caption">Runtime: </span>
-            <span class="value">{{product.runtime}}</span>
+        <div id="product-details">
+            <span class="text-medium text-bold colored">Product details</span>
+            <div class="releaseYear">
+                <span class="caption text-bold">Release Year: </span>
+                <span class="value">{{product.year}}</span>
+            </div>
+            <div class="releases">
+                <span class="caption text-bold">Released in: </span>
+                <div class="value">
+                    <table>
+                        <tr ng-repeat="release in product.releases">
+                            <td>{{release.country}}</td>
+                            <td><span ng-bind="release.date | date:'MM/dd/yyyy'"></span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="genres">
+                <span class="caption text-bold">Genres: </span>
+                <span class="value" ng-repeat="genre in product.genres">{{genre}}{{$last ? '' : ', '}}</span>
+            </div>
+            <div class="actors">
+                <span class="caption text-bold">Actors: </span>
+                <span class="value" ng-repeat="actor in getFirstNActors(5)">{{actor}}{{$last ? '' : ', '}}</span>
+            </div>
+            <div class="details">
+                <span class="caption text-bold">Plot information:</span>
+                <div class="value">
+                    <div ng-if="product.details">{{product.details}}</div>
+                    <div class="no-plot-info"
+                         ng-if="!product.details">This product does not have plot information.
+                    </div>
+                </div>
+            </div>
+            <div class="runtime">
+                <span class="caption text-bold">Runtime: </span>
+                <span class="value">{{product.runtime}}</span>
+            </div>
         </div>
     </div>
 </div>
 <hr>
 <div class="product-reviews">
-    <div class="reviewsTitle">Product Reviews</div>
+    <div class="reviewsTitle text-medium text-bold colored">Product Reviews</div>
     <div class="review" ng-repeat="review in reviews">
         <div class="review-caption-first">
             <uib-rating class="rating noselect" ng-model="review.rating" max="5" readonly="true"></uib-rating>

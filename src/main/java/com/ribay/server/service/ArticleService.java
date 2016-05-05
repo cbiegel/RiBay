@@ -22,7 +22,7 @@ import com.ribay.server.repository.ArticleRepository;
 public class ArticleService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArticleService.class);
-    
+
     @Autowired
     private ArticleRepository articleRepository;
 
@@ -45,20 +45,10 @@ public class ArticleService {
 
         return articleRepository.queryArticles(query, pageInfo);
     }
-    
+
     @RequestMapping(path = "/article/info", method = RequestMethod.GET)
     public Article getArticleInfo(@RequestParam(value = "articleId") String articleId) throws Exception {
-	Article article = null;
-	
-	try {
-	    article = articleRepository.getArticleInformation(articleId);
-	    LOGGER.debug("Fetched article information for article with ID: " + articleId);
-	} catch (Exception e) {
-	    LOGGER.error("Failed to fetch article information for article with ID: " + articleId, e);
-	}
-	
-	return article;
+        return articleRepository.getArticleInformation(articleId);
     }
-    
 
 }

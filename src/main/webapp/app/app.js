@@ -36,6 +36,14 @@ angular.module('myApp', [
         $routeProvider.otherwise({redirectTo: '/'});
     }])
 
+    .service('imageService', ['$http', function ($http) {
+
+        this.createImageURLFromId = function (imageId) {
+            return "/image/" + imageId;
+        };
+
+    }])
+
     .controller('searchController', function ($scope, $location, $http) {
         $scope.category = {
             options: [
