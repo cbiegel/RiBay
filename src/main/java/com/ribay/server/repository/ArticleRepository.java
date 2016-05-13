@@ -59,7 +59,7 @@ public class ArticleRepository {
         int start = pageInfo.getStart();
         int pageSize = pageInfo.getPage_size();
 
-        SearchOperation command = new SearchOperation.Builder(BinaryValue.create("schema_article"), queryString) //
+        SearchOperation command = new SearchOperation.Builder(BinaryValue.create("index_article"), queryString) //
                 .withStart(start) //
                 .withNumRows(pageSize) //
                 .build();
@@ -68,6 +68,8 @@ public class ArticleRepository {
 
         SearchOperation.Response response = command.get();
         List<Map<String, List<String>>> results = response.getAllResults();
+
+        LOGGER.info("result: " + results);
         // TODO convert result
         return null;
     }

@@ -55,7 +55,7 @@ public class StoreSearchSchema {
         String bucket = properties.getBucketArticles();
 
         Namespace namespace = new Namespace(bucket);
-        StoreBucketProperties command = new StoreBucketProperties.Builder(namespace).withSearchIndex("schema_article").build();
+        StoreBucketProperties command = new StoreBucketProperties.Builder(namespace).withSearchIndex("index_article").build();
         client.execute(command);
     }
 

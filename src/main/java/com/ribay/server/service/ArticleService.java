@@ -30,7 +30,7 @@ public class ArticleService {
     public List<Article> searchArticles() throws Exception {
         // TODO pass arguments from browser
         ArticleQuery query = new ArticleQuery();
-        query.setText("This");
+        query.setText("So");
         query.setMovie(null);
         query.setGenre(null);
         query.setPrice_low(null);
