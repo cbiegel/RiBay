@@ -17,57 +17,39 @@ angular.module('myApp.search', [])
         });
     }])
 
-    .service('searchService', [function () {
+    .service('searchService', ['$http', 'imageService', function ($http, imageService) {
 
         // TODO add parameters for filter and sort-by
         this.search = function (category, text, page_no, page_size, callback) {
-            var data = {
-                // TODO get real data from backend
-                suggestion: "My suggestion", // set undefined if no suggestion
-                page_no: page_no,
-                page_size: page_size,
-                start: 1, // TODO
-                end: 6, // TODO
-                total_size: 200, // TODO
-                list: [{
-                    id: "abc",
-                    image: "http://placehold.it/200x400",
-                    name: "Name of article 1",
-                    price: 12.34,
-                    rating: 4
-                }, {
-                    id: "abc",
-                    image: "http://placehold.it/200x400",
-                    name: "Name of article 2",
-                    price: 12.34,
-                    rating: 4
-                }, {
-                    id: "abc",
-                    image: "http://placehold.it/200x400",
-                    name: "Name of article 3",
-                    price: 12.34,
-                    rating: 4
-                }, {
-                    id: "abc",
-                    image: "http://placehold.it/200x400",
-                    name: "Name of article 4",
-                    price: 12.34,
-                    rating: 4
-                }, {
-                    id: "abc",
-                    image: "http://placehold.it/200x400",
-                    name: "Name of article 5",
-                    price: 12.34,
-                    rating: 4
-                }, {
-                    id: "abc",
-                    image: "http://placehold.it/200x400",
-                    name: "Name of article 6",
-                    price: 12.34,
-                    rating: 4
-                }]
-            };
-            callback(data);
+
+
+            $http.get('/article/search').then(
+                function success(response) {
+
+                    var data = {
+                        // TODO get real data from backend
+                        suggestion: "My suggestion", // set undefined if no suggestion
+                        page_no: page_no,
+                        page_size: page_size,
+                        start: 1, // TODO
+                        end: 6, // TODO
+                        total_size: 200, // TODO
+                        list: response.data
+                    };
+
+                    data.list.forEach(function (currentValue, index, array) {
+                        if (currentValue.image) {
+                            var url = imageService.createImageURLFromId(currentValue.image);
+                            currentValue.image = url;
+                        }
+                    });
+
+                    callback(data);
+                },
+                function error(response) {
+                    // TODO: handle other error
+                }
+            );
         };
 
     }])
@@ -77,7 +59,7 @@ angular.module('myApp.search', [])
             category: decodeURIComponent($routeParams.category) || '',
             text: decodeURIComponent($routeParams.text),
             page_no: 1, // TODO from url
-            page_size: 6 // TODO from url
+            page_size: 20 // TODO from url
             // TODO sort by
         };
 

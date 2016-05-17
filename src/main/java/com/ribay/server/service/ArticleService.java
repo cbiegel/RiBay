@@ -3,15 +3,12 @@ package com.ribay.server.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ribay.server.material.ArticleReview;
+import com.ribay.server.material.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.ribay.server.material.Article;
-import com.ribay.server.material.ArticleQuery;
-import com.ribay.server.material.PageInfo;
 import com.ribay.server.repository.ArticleRepository;
 
 /**
@@ -26,7 +23,7 @@ public class ArticleService {
     private ArticleRepository articleRepository;
 
     @RequestMapping(path = "/article/search", method = RequestMethod.GET)
-    public List<Article> searchArticles() throws Exception {
+    public List<ArticleForSearch> searchArticles() throws Exception {
         // TODO pass arguments from browser
         ArticleQuery query = new ArticleQuery();
         query.setText("So");
@@ -68,13 +65,10 @@ public class ArticleService {
     @RequestMapping(path = "/article/submitReview", method = RequestMethod.POST)
     public ArticleReview submitArticleReview(@RequestBody ArticleReview review) throws Exception {
 
-        try
-        {
+        try {
             articleRepository.submitArticleReview(review);
             return review;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             LOGGER.error("Failed to submit article review.");
             e.printStackTrace();
             return null;

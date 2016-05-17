@@ -1,17 +1,15 @@
 package com.ribay.server.repository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import com.basho.riak.client.api.convert.ConversionException;
 import com.basho.riak.client.core.query.RiakObject;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ribay.server.exception.NotFoundException;
-import com.ribay.server.material.ArticleReview;
+import com.ribay.server.material.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +24,6 @@ import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
 import com.basho.riak.client.core.util.BinaryValue;
 import com.ribay.server.db.MyRiakClient;
-import com.ribay.server.material.Article;
-import com.ribay.server.material.ArticleQuery;
-import com.ribay.server.material.PageInfo;
 import com.ribay.server.repository.query.QueryBuilder;
 import com.ribay.server.repository.query.QueryBuilderArticle;
 import com.ribay.server.util.RibayProperties;
@@ -59,7 +54,7 @@ public class ArticleRepository {
         return client.executeAsync(storeOp);
     }
 
-    public List<Article> queryArticles(ArticleQuery query, PageInfo pageInfo) throws Exception {
+    public List<ArticleForSearch> queryArticles(ArticleQuery query, PageInfo pageInfo) throws Exception {
         QueryBuilder<ArticleQuery> queryBuilder = new QueryBuilderArticle();
         String queryString = queryBuilder.buildQuery(query);
 
@@ -68,7 +63,7 @@ public class ArticleRepository {
         int start = pageInfo.getStart();
         int pageSize = pageInfo.getPage_size();
 
-        SearchOperation command = new SearchOperation.Builder(BinaryValue.create("index_article"), queryString) //
+        SearchOperation command = new SearchOperation.Builder(BinaryValue.create("articles"), queryString) //
                 .withStart(start) //
                 .withNumRows(pageSize) //
                 .build();
@@ -76,11 +71,22 @@ public class ArticleRepository {
         client.execute(command);
 
         SearchOperation.Response response = command.get();
-        List<Map<String, List<String>>> results = response.getAllResults();
+        List<Map<String, List<String>>> searchResults = response.getAllResults();
 
-        LOGGER.info("result: " + results);
-        // TODO convert result
-        return null;
+        // map solr result document to object
+        List<ArticleForSearch> result = searchResults.stream().map((map) -> {
+            ArticleForSearch item = new ArticleForSearch();
+            item.setId(map.getOrDefault("id_register", Collections.singletonList(null)).get(0));
+            item.setTitle(map.getOrDefault("title_register", Collections.singletonList(null)).get(0));
+            item.setYear(map.getOrDefault("year_register", Collections.singletonList(null)).get(0));
+            item.setVotes(Integer.valueOf(map.getOrDefault("votes_counter", Collections.singletonList("0")).get(0)));
+            item.setSumRatings(Integer.valueOf(map.getOrDefault("sumRatings_counter", Collections.singletonList("0")).get(0)));
+            item.setImage(map.getOrDefault("image_register", Collections.singletonList(null)).get(0));
+            item.setMovie(Boolean.valueOf(map.getOrDefault("isMovie_flag", Collections.singletonList("false")).get(0)));
+            item.setPrice(Integer.valueOf(map.getOrDefault("price_register", Collections.singletonList("0")).get(0)));
+            return item;
+        }).collect(Collectors.toList());
+        return result;
     }
 
     public Article getArticleInformation(final String articleId) throws Exception {
@@ -103,17 +109,17 @@ public class ArticleRepository {
         FetchValue fetchOp = new FetchValue.Builder(location).build();
         FetchValue.Response fetchResp = client.execute(fetchOp);
 
-            // At least one review already exists for this article
-            try {
-                List<ArticleReview[]> result = fetchResp.getValues(ArticleReview[].class);
-                List<ArticleReview> reviews = new ArrayList<>(Arrays.asList(result.get(0)));
-                return reviews;
-            } catch (Exception e) {
-                // Only one review exists...
-                List<ArticleReview> result = fetchResp.getValues(ArticleReview.class);
-                return result;
-            }
+        // At least one review already exists for this article
+        try {
+            List<ArticleReview[]> result = fetchResp.getValues(ArticleReview[].class);
+            List<ArticleReview> reviews = new ArrayList<>(Arrays.asList(result.get(0)));
+            return reviews;
+        } catch (Exception e) {
+            // Only one review exists...
+            List<ArticleReview> result = fetchResp.getValues(ArticleReview.class);
+            return result;
         }
+    }
 
     public void submitArticleReview(ArticleReview review) throws Exception {
 
