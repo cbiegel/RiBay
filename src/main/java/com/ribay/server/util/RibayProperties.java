@@ -69,4 +69,9 @@ public class RibayProperties {
         return value;
     }
 
+    public String getBucketArticleReviews() {
+        String value = databaseProperties.getProperty("bucket.articleReviews");
+        return value;
+    }
+
 }

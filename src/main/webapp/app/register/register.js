@@ -24,7 +24,7 @@ angular.module('myApp.register', ['ngRoute', 'ngAnimate', 'ui.bootstrap'])
             };
 
             $http.post('/auth/register', dataObject).then(function (config) {
-                // if there is a result -> register successfull
+                // if there is a result -> register successful
                 if (config.data != "") {
                     var response = {
                         user: config.data,

@@ -1,5 +1,9 @@
 package com.ribay.server.repository;
 
+import com.basho.riak.client.core.query.RiakObject;
+import com.basho.riak.client.core.query.indexes.StringBinIndex;
+import com.basho.riak.client.core.util.BinaryValue;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -14,6 +18,8 @@ import com.basho.riak.client.core.query.Namespace;
 import com.ribay.server.db.MyRiakClient;
 import com.ribay.server.material.User;
 import com.ribay.server.util.RibayProperties;
+
+import javax.websocket.Decoder;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -55,7 +61,14 @@ public class AuthenticationRepository
     {
         String bucket = properties.getBucketUsers();
         Location location = new Location(new Namespace(bucket), user.getUuid().toString());
-        StoreValue storeOp = new StoreValue.Builder(user).withLocation(location).build();
+        // Set the email index for the new object. This requires a RiakObject type
+        String jsonString = new ObjectMapper().writeValueAsString(user);
+        RiakObject riakObj = new RiakObject();
+        riakObj.setContentType("application/json");
+        riakObj.setValue(BinaryValue.create(jsonString));
+        riakObj.getIndexes().getIndex(StringBinIndex.named("index_email")).add(user.getEmailAddress());
+        // Store the object
+        StoreValue storeOp = new StoreValue.Builder(riakObj).withLocation(location).build();
         client.execute(storeOp);
     }
 
@@ -72,7 +85,7 @@ public class AuthenticationRepository
     {
         String bucket = properties.getBucketUsers();
         Namespace namespace = new Namespace(bucket);
-        BinIndexQuery indexQuery = new BinIndexQuery.Builder(namespace, "emailAddress",
+        BinIndexQuery indexQuery = new BinIndexQuery.Builder(namespace, "index_email",
                 emailAddress).build();
         BinIndexQuery.Response resp = client.execute(indexQuery);
         if (resp.hasEntries())

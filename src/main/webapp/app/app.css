@@ -243,6 +243,10 @@ a {
     color: #f7ce2b;
 }
 
+.register {
+    margin-left: 15px;
+}
+
 .product-main .price > .caption {
     font-size: 13px;
     color: #555;
@@ -280,8 +284,46 @@ a {
 
 .product-reviews {
     clear: both;
-    margin-left: 32%;
+    margin-left: 8%;
     margin-right: 260px;
+}
+
+.product-reviews .reviewsTitle {
+    margin-bottom: 15px;
+}
+
+.product-reviews .create-review {
+    margin-bottom: 30px;
+}
+
+.product-reviews .create-review .title {
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.product-reviews .create-review .content {
+    margin-bottom: 5px;
+}
+
+.product-reviews .write-review {
+    margin-bottom: 30px;
+}
+
+.product-reviews .write-review .title {
+    font-weight: bold;
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+
+.product-reviews .write-review .content {
+    margin-bottom: 5px;
+    max-width: 50%;
+}
+
+.product-reviews .write-review .content .newReviewRating .content {
+    color: #f7ce2b;
+    font-weight: bold;
+    font-size: 13px;
 }
 
 .product-reviews .review {
@@ -489,6 +531,8 @@ a {
 
 .login {
     padding: 12px 16px;
+    max-width: 20%;
+
 }
 
 .home {

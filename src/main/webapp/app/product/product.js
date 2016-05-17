@@ -61,21 +61,39 @@ angular.module('myApp.product', [])
         };
 
         this.getReviews = function (id, callback) {
-            // TODO get data from backend
-            var data = [{
-                name: "Max Mustermann",
-                time: Date.now(),
-                title: "Tolles Produkt",
-                text: "Gutes Produkt.\r\nSchnelle Lieferung, einwandfrei.",
-                rating: 4
-            }, {
-                name: "Foo Bar",
-                time: Date.now(),
-                title: "Schlechtes Produkt",
-                text: "Schlechtes Produkt.\r\nLangsame Lieferung :(.",
-                rating: 1
-            }];
-            callback(data);
+
+            $http.get('/article/getReviews?articleId=' + id).then(
+                function success(response) {
+                    var data = response.data;
+                    callback(data);
+                },
+                function error(response) {
+                }
+            );
+        };
+
+        this.submitReview = function (id, name, value, title, content, callback) {
+
+            var dataObject = {
+                articleId: id,
+                author: name,
+                date: Date.now(),
+                ratingValue: value,
+                reviewTitle: title,
+                reviewContent: content
+            };
+
+            $http.post('/article/submitReview', dataObject).then(function(config) {
+                // if there is a result -> register successful
+                if (config.data != "") {
+                    var response = {message: 'Review submitted.'};
+                    callback(response);
+                }
+                else {
+                    var response = {message: 'An error occurred when submitting your review. Please try again.'};
+                    callback(response);
+                }
+            });
         };
 
         this.addToCart = function (id, quantity, callback) {
@@ -85,10 +103,15 @@ angular.module('myApp.product', [])
 
     }])
 
-    .controller('productCtrl', ['$scope', '$routeParams', '$timeout', 'productService', function ($scope, $routeParams, $timeout, productService) {
+    .controller('productCtrl', ['$scope', '$rootScope', '$routeParams', '$timeout', '$location', 'productService', function ($scope, $rootScope, $routeParams, $timeout, $location, productService) {
 
         var id = $routeParams.productid;
         $scope.product = "";
+        $scope.isCreatingReview = false;
+        $scope.isSubmittingReview = false;
+        $scope.newRatingValue = 0;
+        $scope.newRatingTitle = "";
+        $scope.newRatingContent = "";
 
         productService.getProductDetails(id, function (data) {
             $scope.product = data;
@@ -110,6 +133,32 @@ angular.module('myApp.product', [])
                 }, 2000);
 
                 // TODO callback?
+            });
+        };
+
+        $scope.createReview = function () {
+
+            // user is not logged in. Redirect to login page...
+            if (!$rootScope.loggedIn) {
+                $location.url('/login');
+            } else {
+                $scope.isCreatingReview = true;
+            }
+        };
+
+        $scope.submitReview = function () {
+            // id, name, value, title, content, callback
+            $scope.dataLoading = true;
+            productService.submitReview(id, $rootScope.loggedIn.name, $scope.newRatingValue, $scope.newRatingTitle, $scope.newRatingContent, function (response) {
+                // TODO callback (display success / error message?)
+                if(response.message == 'Review submitted.') {
+                    $scope.dataLoading = false;
+                    $scope.isCreatingReview = false;
+                    $location.reload(true);
+                } else {
+                    $scope.dataLoading = false;
+                    $scope.isCreatingReview = false;
+                }
             });
         };
 

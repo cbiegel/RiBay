@@ -86,17 +86,51 @@
 <hr>
 <div class="product-reviews">
     <div class="reviewsTitle text-medium text-bold colored">Product Reviews</div>
+    <div class="create-review" ng-show="!isCreatingReview">
+        <div class="title">Create Review</div>
+        <div class="content">Got feedback? Share your thoughts by creating a review for this product.</div>
+        <div class="button">
+            <button type="button" class="btn button-primary" ng-click="createReview()">Create Review</button>
+        </div>
+    </div>
+    <div class="write-review" ng-show="isCreatingReview">
+        <form>
+        <div class="title">Write a new review</div>
+        <div class="content">
+            <div class="newReviewRating">
+                <div class="title text-bold" style="font-size: 13px; margin-bottom: 5px;">Rating:</div>
+                <div class="content">
+                    <uib-rating class="rate" ng-model="newRatingValue" enable-reset="false"></uib-rating>
+                </div>
+            </div>
+
+            <fieldset class="form-group">
+                <label for="newReviewTitle">Title</label>
+                <input type="text" class="form-control" id="newReviewTitle" placeholder="The title of your review" ng-model="newRatingTitle">
+            </fieldset>
+            <fieldset class="form-group">
+                <label for="newReviewTextArea">Review</label>
+                <textarea class="form-control" id="newReviewTextArea" rows="5" placeholder="Write your review here" ng-model="newRatingContent"></textarea>
+            </fieldset>
+        </div>
+        <div class="button">
+            <button type="button" class="btn button-primary" ng-disabled="dataLoading" ng-click="submitReview()">Submit Review</button>
+            <img ng-if="dataLoading"
+                 src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+        </div>
+        </form>
+    </div>
     <div class="review" ng-repeat="review in reviews">
         <div class="review-caption-first">
-            <uib-rating class="rating noselect" ng-model="review.rating" max="5" readonly="true"></uib-rating>
-            <span>{{review.title}}</span>
+            <uib-rating class="rating noselect" ng-model="review.ratingValue" max="5" readonly="true"></uib-rating>
+            <span>{{review.reviewTitle}}</span>
         </div>
         <div class="review-caption-second">
-            <span>By {{review.name}} on</span>
-            <span ng-bind="review.time | date:'MM/dd/yyyy HH:mm:ss'"></span>
+            <span>By {{review.author}} on</span>
+            <span ng-bind="review.date | date:'MM/dd/yyyy HH:mm:ss'"></span>
         </div>
         <div class="review-content">
-            <span>{{review.text}}</span>
+            <span>{{review.reviewContent}}</span>
         </div>
     </div>
 </div>

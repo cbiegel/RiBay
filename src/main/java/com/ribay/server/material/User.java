@@ -7,7 +7,6 @@ import com.basho.riak.client.api.annotations.RiakIndex;
 public class User
 {
     private UUID uuid;
-    @RiakIndex(name = "emailAddress")
     private String emailAddress;
     private String password;
     private String name;

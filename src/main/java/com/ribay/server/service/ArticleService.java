@@ -1,14 +1,13 @@
 package com.ribay.server.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.ribay.server.material.ArticleReview;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ribay.server.material.Article;
 import com.ribay.server.material.ArticleQuery;
@@ -49,6 +48,37 @@ public class ArticleService {
     @RequestMapping(path = "/article/info", method = RequestMethod.GET)
     public Article getArticleInfo(@RequestParam(value = "articleId") String articleId) throws Exception {
         return articleRepository.getArticleInformation(articleId);
+    }
+
+    @RequestMapping(path = "/article/getReviews", method = RequestMethod.GET)
+    public List<ArticleReview> getArticleReviews(@RequestParam(value = "articleId") String articleId) throws Exception {
+        List<ArticleReview> reviews;
+
+        try {
+            reviews = articleRepository.getReviewsForArticle(articleId);
+        } catch (Exception e) {
+            LOGGER.error("Failed to get reviews for article " + articleId);
+            e.printStackTrace();
+            return null;
+        }
+
+        return reviews;
+    }
+
+    @RequestMapping(path = "/article/submitReview", method = RequestMethod.POST)
+    public ArticleReview submitArticleReview(@RequestBody ArticleReview review) throws Exception {
+
+        try
+        {
+            articleRepository.submitArticleReview(review);
+            return review;
+        }
+        catch (Exception e)
+        {
+            LOGGER.error("Failed to submit article review.");
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }
