@@ -1,4 +1,4 @@
-<div class="viewHeader">
+<div class="viewHeader" id="top">
     <div class="left">
         {{result.start}}-{{result.end}} of {{result.total_size}} results for <b class="colored">"{{query.text}}"</b> in
         <b>"{{search.category}}"</b>
@@ -16,15 +16,17 @@
     <div id="left">
         <div class="headline text-medium text-light">Show results for</div>
         <!-- TODO categories -->
-        <div class="headline text-medium text-light">Refine by</div>
+        <span class="headline text-medium text-light">Refine by</span>
         <div class="filter-category">
-            <div class="title text-bold text-small">
-                <span>Avg. Customer Review</span>
-            </div>
+            <input type="checkbox" ng-model="query.imageOnly"/>
+            <span class="text-small" ng-click="query.imageOnly = !query.imageOnly">With image only</span>
+        </div>
+        <div class="filter-category">
+            <span class="title text-bold text-small">Avg. Customer Review</span>
             <div class="content text-small">
-                <div ng-repeat="n in [] | range: 5 | reverse | limitTo: 4">
+                <div ng-repeat="n in [] | range: 11 | reverse | limitTo: 10">
                     <a ng-click="searchAgain(query.text)"> <!-- TODO build an url -->
-                        <uib-rating ng-model="n" max="5" readonly="true" class="rating"></uib-rating>
+                        <uib-rating ng-model="n" max="10" readonly="true" class="rating"></uib-rating>
                         <span>& Up</span>
                     </a>
                 </div>
@@ -51,7 +53,7 @@
                         </div>
                         <div class="details-right">
                             <div class="rating noselect">
-                                <uib-rating ng-model="item.sumRatings / item.votes" max="10" readonly="true"></uib-rating>
+                                <uib-rating ng-model="item.mediumRating" max="10" readonly="true"></uib-rating>
                             </div>
                         </div>
                     </div>
@@ -60,9 +62,10 @@
         </div>
         <div class="pagination">
             <!-- TODO build an url -->
-            <uib-pagination total-items="result.total_size" ng-model="result.page_no" items-per-page="result.page_size"
+            <uib-pagination total-items="result.total_size" ng-model="query.pageInfo.page_no"
+                            items-per-page="query.pageInfo.page_size"
                             max-size="10" class="pagination-sm" boundary-links="true" boundary-link-numbers="true"
-                            rotate="true" ng-change="searchAgain(query.text)"></uib-pagination>
+                            rotate="true" ng-change="onPageChange()"></uib-pagination>
         </div>
     </div>
 </div>

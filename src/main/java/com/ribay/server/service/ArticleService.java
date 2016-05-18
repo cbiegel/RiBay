@@ -1,15 +1,16 @@
 package com.ribay.server.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.ribay.server.material.*;
+import com.ribay.server.material.Article;
+import com.ribay.server.material.ArticleQuery;
+import com.ribay.server.material.ArticleReview;
+import com.ribay.server.material.ArticleSearchResult;
+import com.ribay.server.repository.ArticleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.ribay.server.repository.ArticleRepository;
+import java.util.List;
 
 /**
  * Created by CD on 01.05.2016.
@@ -23,7 +24,7 @@ public class ArticleService {
     private ArticleRepository articleRepository;
 
     @RequestMapping(path = "/article/search", method = RequestMethod.POST)
-    public List<ArticleForSearch> searchArticles(@RequestBody ArticleQuery query) throws Exception {
+    public ArticleSearchResult searchArticles(@RequestBody ArticleQuery query) throws Exception {
         return articleRepository.queryArticles(query);
     }
 

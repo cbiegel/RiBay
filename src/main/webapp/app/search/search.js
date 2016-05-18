@@ -20,23 +20,22 @@ angular.module('myApp.search', [])
 
             $http.post('/article/search', query).then(
                 function success(response) {
+                    var responseData = response.data;
+
                     var data = {
-                        // TODO get real data from backend
-                        suggestion: "My suggestion", // set undefined if no suggestion
-                        page_no: query.page_no,
-                        page_size: query.page_size,
-                        start: 1, // TODO
-                        end: 20, // TODO
-                        total_size: 200, // TODO
-                        list: response.data
+                        suggestion: undefined, // TODO get real suggestion from backend
+                        start: ((query.pageInfo.page_no - 1) * query.pageInfo.page_size) + 1,
+                        end: ((query.pageInfo.page_no - 1) * query.pageInfo.page_size) + responseData.articles.length,
+                        total_size: responseData.numResults,
+                        list: responseData.articles
                     };
 
-                    data.list.forEach(function (currentValue) {
-                        if (currentValue.image) {
-                            // resolve images
-                            var url = imageService.createImageURLFromId(currentValue.image);
-                            currentValue.image = url;
-                        }
+                    data.list.forEach(function (item) {
+                        // resolve images
+                        item.image = imageService.createImageURLFromId(item.image);
+
+                        // add float attribute
+                        item.mediumRating = (item.sumRatings / item.votes).toFixed(0); // round
                     });
 
                     callback(data);
@@ -49,30 +48,38 @@ angular.module('myApp.search', [])
 
     }])
 
-    .controller('searchCtrl', ['$scope', '$routeParams', 'searchService', function ($scope, $routeParams, searchService) {
+    .controller('searchCtrl', ['$scope', '$routeParams', '$location', '$anchorScroll', 'searchService', function ($scope, $routeParams, $location, $anchorScroll, searchService) {
+
+        $scope.query = undefined;
+
+        $scope.$watch("query", function () {
+
+            // when query or its inner members changes -> load articles from server
+            searchService.search($scope.query, function (data) {
+                $scope.result = data;
+            });
+
+        }, true);
+
         $scope.query = {
             text: decodeURIComponent($routeParams.text),
-            movie: undefined,
+            movie: undefined, // TODO make configurable through ui
             imageOnly: true,
-            genre: undefined,
-            price_low: 300, // 3 euro
-            price_high: 2000, // 20 euro
-            rating_low: undefined,
-            rating_high: undefined,
-            votes_low: undefined,
-            votes_high: undefined,
+            genre: undefined, // TODO make configurable through ui
+            price_low: 300, // 3 euro // TODO make configurable through ui
+            price_high: 2000, // 20 euro // TODO make configurable through ui
+            rating_low: undefined, // TODO make configurable through ui
+            rating_high: undefined, // TODO make configurable through ui
+            votes_low: undefined, // TODO make configurable through ui
+            votes_high: undefined, // TODO make configurable through ui
             pageInfo: {
                 page_no: 1,
                 page_size: 20
             }
-            // TODO make all field configurable through ui
             // TODO sort by
         };
 
-        searchService.search($scope.query, function (data) {
-            $scope.result = data;
-        });
-
+        // TODO replace categories with genre multi-select
         $scope.sortCategories = [{
             id: "1",
             label: "Relevance"
@@ -91,6 +98,10 @@ angular.module('myApp.search', [])
         }];
 
         $scope.sortCategory = $scope.sortCategories[0];
+
+        $scope.onPageChange = function () {
+            $anchorScroll('top');
+        };
 
         $scope.searchAgain = function (text) {
             alert("search again " + text);

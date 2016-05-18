@@ -54,7 +54,7 @@ public class ArticleRepository {
         return client.executeAsync(storeOp);
     }
 
-    public List<ArticleForSearch> queryArticles(ArticleQuery query) throws Exception {
+    public ArticleSearchResult queryArticles(ArticleQuery query) throws Exception {
         QueryBuilder<ArticleQuery> queryBuilder = new QueryBuilderArticle();
         String queryString = queryBuilder.buildQuery(query);
 
@@ -67,6 +67,7 @@ public class ArticleRepository {
         SearchOperation command = new SearchOperation.Builder(BinaryValue.create("articles"), queryString) //
                 .withStart(start) //
                 .withNumRows(pageSize) //
+                .withPresort("key") // to get the same results when filtering with same settings
                 .build();
         // TODO specify sort field and order
 
@@ -88,7 +89,10 @@ public class ArticleRepository {
             item.setPrice(Integer.valueOf(map.getOrDefault("price_register", Collections.singletonList("0")).get(0)));
             return item;
         }).collect(Collectors.toList());
-        return result;
+
+        int numResults = response.numResults();
+
+        return new ArticleSearchResult(result, numResults);
     }
 
     public Article getArticleInformation(final String articleId) throws Exception {

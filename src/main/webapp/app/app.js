@@ -2,24 +2,24 @@
 
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
-        'ngRoute',
-        'ngCookies',
-        'ngAnimate',
-        'jsonFormatter',
-        'ui.bootstrap',
-        'myApp.home',
-        'myApp.view1',
-        'myApp.view2',
-        'myApp.view3',
-        'myApp.search',
-        'myApp.product',
-        'myApp.cart',
-        'myApp.login',
-        'myApp.loginSuccess',
-        'myApp.status',
-        'myApp.version',
-        'myApp.register'
-    ])
+    'ngRoute',
+    'ngCookies',
+    'ngAnimate',
+    'jsonFormatter',
+    'ui.bootstrap',
+    'myApp.home',
+    'myApp.view1',
+    'myApp.view2',
+    'myApp.view3',
+    'myApp.search',
+    'myApp.product',
+    'myApp.cart',
+    'myApp.login',
+    'myApp.loginSuccess',
+    'myApp.status',
+    'myApp.version',
+    'myApp.register'
+])
 
     .run(['$rootScope', '$location', '$log', '$http', function ($rootScope, $location, $log, $http) {
         $rootScope.$on("$locationChangeStart", function (event, next, current) {
@@ -36,10 +36,23 @@ angular.module('myApp', [
         $routeProvider.otherwise({redirectTo: '/'});
     }])
 
-    .service('imageService', ['$http', function ($http) {
+    .service('imageService', [function () {
 
         this.createImageURLFromId = function (imageId) {
-            return "/image/" + imageId;
+            if (imageId) {
+                if (imageId.indexOf("http") == 0) {
+                    // image link in db, not the image data itself
+                    return imageId;
+                }
+                else {
+                    //resolve path
+                    return "/image/" + imageId;
+                }
+            }
+            else {
+                // attribute not set
+                return undefined;
+            }
         };
 
     }])
@@ -67,24 +80,28 @@ angular.module('myApp', [
         $scope.searchText = '';
 
         $scope.getArticles = function (val) {
-            // TODO lazy load articles
-            return $http.get('//maps.googleapis.com/maps/api/geocode/json', {
-                params: {
-                    address: val,
-                    sensor: false
-                }
-            }).then(function (response) {
-                return response.data.results.map(function (item) {
-                    return item.formatted_address;
-                });
-            });
+            // TODO lazy load article suggestions
+            /*
+             return $http.get('//maps.googleapis.com/maps/api/geocode/json', {
+             params: {
+             address: val,
+             sensor: false
+             }
+             }).then(function (response) {
+             return response.data.results.map(function (item) {
+             return item.formatted_address;
+             });
+             });
+             */
+            return [];
         };
 
         $scope.search = function () {
             // switch to search view
             // TODO handle 'null' input
             // TODO handle input 'all' as category
-            $location.path('search/' + encodeURIComponent($scope.searchText) + '/' + encodeURIComponent($scope.category.selected.value));
+            // TODO no category!
+            $location.path('search/' + encodeURIComponent($scope.searchText));
 
             // reset textfield content
             // $scope.searchText = '';
