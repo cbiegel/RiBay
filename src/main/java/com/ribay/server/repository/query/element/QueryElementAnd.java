@@ -15,7 +15,11 @@ public class QueryElementAnd implements QueryElement {
     private List<QueryElement> clauses;
 
     public QueryElementAnd(QueryElement... clauses) {
-        this.clauses = (clauses == null) ? new ArrayList<>() : Arrays.asList(clauses);
+        this.clauses = (clauses == null) ? new ArrayList<>() : new ArrayList<>(Arrays.asList(clauses));
+    }
+
+    public void addClause(QueryElement clause) {
+        clauses.add(clause);
     }
 
     @Override

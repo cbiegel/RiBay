@@ -1,6 +1,6 @@
 <div class="viewHeader">
     <div class="left">
-        {{result.start}}-{{result.end}} of {{result.total_size}} results for <b class="colored">"{{search.text}}"</b> in
+        {{result.start}}-{{result.end}} of {{result.total_size}} results for <b class="colored">"{{query.text}}"</b> in
         <b>"{{search.category}}"</b>
     </div>
     <div class="right">
@@ -8,7 +8,7 @@
         <!-- TODO build an url -->
         <!--<select ng-model="sortcategory" ng-options="value.id as value.label for value in sortcategories"-->
         <select ng-model="sortCategory" ng-options="value.label for value in sortCategories"
-                ng-change="searchAgain(search.text)">
+                ng-change="searchAgain(query.text)">
         </select>
     </div>
 </div>
@@ -23,7 +23,7 @@
             </div>
             <div class="content text-small">
                 <div ng-repeat="n in [] | range: 5 | reverse | limitTo: 4">
-                    <a ng-click="searchAgain(search.text)"> <!-- TODO build an url -->
+                    <a ng-click="searchAgain(query.text)"> <!-- TODO build an url -->
                         <uib-rating ng-model="n" max="5" readonly="true" class="rating"></uib-rating>
                         <span>& Up</span>
                     </a>
@@ -62,7 +62,7 @@
             <!-- TODO build an url -->
             <uib-pagination total-items="result.total_size" ng-model="result.page_no" items-per-page="result.page_size"
                             max-size="10" class="pagination-sm" boundary-links="true" boundary-link-numbers="true"
-                            rotate="true" ng-change="searchAgain(search.text)"></uib-pagination>
+                            rotate="true" ng-change="searchAgain(query.text)"></uib-pagination>
         </div>
     </div>
 </div>

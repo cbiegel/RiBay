@@ -9,6 +9,7 @@ public class ArticleQuery {
 
     private String text;
     private Boolean movie;
+    private boolean imageOnly;
     private List<String> genre;
     private Integer price_low;
     private Integer price_high;
@@ -16,6 +17,7 @@ public class ArticleQuery {
     private Integer rating_high;
     private Integer votes_low;
     private Integer votes_high;
+    private PageInfo pageInfo;
 
     // TODO add order by
 
@@ -33,6 +35,14 @@ public class ArticleQuery {
 
     public void setMovie(Boolean movie) {
         this.movie = movie;
+    }
+
+    public boolean getImageOnly() {
+        return imageOnly;
+    }
+
+    public void setImageOnly(boolean imageOnly) {
+        this.imageOnly = imageOnly;
     }
 
     public List<String> getGenre() {
@@ -89,6 +99,14 @@ public class ArticleQuery {
 
     public void setVotes_high(Integer votes_high) {
         this.votes_high = votes_high;
+    }
+
+    public PageInfo getPageInfo() {
+        return pageInfo;
+    }
+
+    public void setPageInfo(PageInfo pageInfo) {
+        this.pageInfo = pageInfo;
     }
 
 }

@@ -15,6 +15,6 @@ public class QueryElementStartsWith implements QueryElement {
 
     @Override
     public String toQuery() {
-        return field.isEmpty() ? "" : String.format("%s:%s*", field, prefix);
+        return field.isEmpty() ? "" : String.format("%s:(%s*)", field, prefix);
     }
 }

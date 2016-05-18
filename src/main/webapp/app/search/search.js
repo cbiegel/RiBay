@@ -7,10 +7,6 @@
 angular.module('myApp.search', [])
 
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/search/:text/:category', {
-            templateUrl: 'search/search.html',
-            controller: 'searchCtrl'
-        });
         $routeProvider.when('/search/:text', {
             templateUrl: 'search/search.html',
             controller: 'searchCtrl'
@@ -20,25 +16,24 @@ angular.module('myApp.search', [])
     .service('searchService', ['$http', 'imageService', function ($http, imageService) {
 
         // TODO add parameters for filter and sort-by
-        this.search = function (category, text, page_no, page_size, callback) {
+        this.search = function (query, callback) {
 
-
-            $http.get('/article/search').then(
+            $http.post('/article/search', query).then(
                 function success(response) {
-
                     var data = {
                         // TODO get real data from backend
                         suggestion: "My suggestion", // set undefined if no suggestion
-                        page_no: page_no,
-                        page_size: page_size,
+                        page_no: query.page_no,
+                        page_size: query.page_size,
                         start: 1, // TODO
-                        end: 6, // TODO
+                        end: 20, // TODO
                         total_size: 200, // TODO
                         list: response.data
                     };
 
-                    data.list.forEach(function (currentValue, index, array) {
+                    data.list.forEach(function (currentValue) {
                         if (currentValue.image) {
+                            // resolve images
                             var url = imageService.createImageURLFromId(currentValue.image);
                             currentValue.image = url;
                         }
@@ -55,15 +50,26 @@ angular.module('myApp.search', [])
     }])
 
     .controller('searchCtrl', ['$scope', '$routeParams', 'searchService', function ($scope, $routeParams, searchService) {
-        $scope.search = {
-            category: decodeURIComponent($routeParams.category) || '',
+        $scope.query = {
             text: decodeURIComponent($routeParams.text),
-            page_no: 1, // TODO from url
-            page_size: 20 // TODO from url
+            movie: undefined,
+            imageOnly: true,
+            genre: undefined,
+            price_low: 300, // 3 euro
+            price_high: 2000, // 20 euro
+            rating_low: undefined,
+            rating_high: undefined,
+            votes_low: undefined,
+            votes_high: undefined,
+            pageInfo: {
+                page_no: 1,
+                page_size: 20
+            }
+            // TODO make all field configurable through ui
             // TODO sort by
         };
 
-        searchService.search($scope.search.category, $scope.search.text, $scope.search.page_no, $scope.search.page_size, function (data) {
+        searchService.search($scope.query, function (data) {
             $scope.result = data;
         });
 

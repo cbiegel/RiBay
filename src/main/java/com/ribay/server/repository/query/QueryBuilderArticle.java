@@ -8,6 +8,7 @@ import com.ribay.server.repository.query.element.*;
  */
 public class QueryBuilderArticle implements QueryBuilder<ArticleQuery> {
 
+    private static final String NUMBERFORMAT_PRICE = "%04d";
 
     @Override
     public String buildQuery(ArticleQuery query) {
@@ -17,12 +18,19 @@ public class QueryBuilderArticle implements QueryBuilder<ArticleQuery> {
 
         // TODO filter genre
         QueryElementBool movieFilter = new QueryElementBool("isMovie_flag", query.isMovie());
+        QueryElementTextRange priceFilter = new QueryElementTextRange("price_register", formatPrice(query.getPrice_low()), formatPrice(query.getPrice_high()), false);
         // TODO enable
-        // QueryElementRange priceFilter = new QueryElementRange("price_register", query.getPrice_low(), query.getPrice_high());
         // QueryElementRange ratingFilter = new QueryElementRange("rating", query.getRating_low(), query.getRating_high());
         QueryElementRange votesFilter = new QueryElementRange("votes_counter", query.getVotes_low(), query.getVotes_high());
-        QueryElementAnd fullFilter = new QueryElementAnd(textFilter, movieFilter, /* priceFilter, ratingFilter, */ votesFilter);
+        QueryElementAnd fullFilter = new QueryElementAnd(textFilter, movieFilter, priceFilter, /* ratingFilter, */ votesFilter);
+        if (query.getImageOnly()) {
+            fullFilter.addClause(new QueryNotNull("image_register"));
+        }
         return fullFilter.toQuery();
+    }
+
+    private String formatPrice(Integer value) {
+        return (value == null) ? null : String.format(NUMBERFORMAT_PRICE, value);
     }
 
 }

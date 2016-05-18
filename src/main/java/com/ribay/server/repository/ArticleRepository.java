@@ -54,12 +54,13 @@ public class ArticleRepository {
         return client.executeAsync(storeOp);
     }
 
-    public List<ArticleForSearch> queryArticles(ArticleQuery query, PageInfo pageInfo) throws Exception {
+    public List<ArticleForSearch> queryArticles(ArticleQuery query) throws Exception {
         QueryBuilder<ArticleQuery> queryBuilder = new QueryBuilderArticle();
         String queryString = queryBuilder.buildQuery(query);
 
         LOGGER.info("query: " + queryString);
 
+        PageInfo pageInfo = query.getPageInfo();
         int start = pageInfo.getStart();
         int pageSize = pageInfo.getPage_size();
 
@@ -67,6 +68,7 @@ public class ArticleRepository {
                 .withStart(start) //
                 .withNumRows(pageSize) //
                 .build();
+        // TODO specify sort field and order
 
         client.execute(command);
 

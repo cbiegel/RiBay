@@ -22,24 +22,9 @@ public class ArticleService {
     @Autowired
     private ArticleRepository articleRepository;
 
-    @RequestMapping(path = "/article/search", method = RequestMethod.GET)
-    public List<ArticleForSearch> searchArticles() throws Exception {
-        // TODO pass arguments from browser
-        ArticleQuery query = new ArticleQuery();
-        query.setText("So");
-        query.setMovie(null);
-        query.setGenre(null);
-        query.setPrice_low(null);
-        query.setPrice_high(null);
-        query.setRating_low(null);
-        query.setRating_high(null);
-        query.setVotes_low(null);
-        query.setVotes_high(null);
-        PageInfo pageInfo = new PageInfo();
-        pageInfo.setPage_no(1);
-        pageInfo.setPage_size(20);
-
-        return articleRepository.queryArticles(query, pageInfo);
+    @RequestMapping(path = "/article/search", method = RequestMethod.POST)
+    public List<ArticleForSearch> searchArticles(@RequestBody ArticleQuery query) throws Exception {
+        return articleRepository.queryArticles(query);
     }
 
     @RequestMapping(path = "/article/info", method = RequestMethod.GET)
