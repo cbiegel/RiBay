@@ -66,8 +66,8 @@ angular.module('myApp.search', [])
             movie: undefined, // TODO make configurable through ui
             imageOnly: true,
             genre: undefined, // TODO make configurable through ui
-            price_low: 300, // 3 euro // TODO make configurable through ui
-            price_high: 2000, // 20 euro // TODO make configurable through ui
+            price_low: 0, // 0 euro
+            price_high: 2000, // 20 euro
             rating_low: undefined, // TODO make configurable through ui
             rating_high: undefined, // TODO make configurable through ui
             votes_low: undefined, // TODO make configurable through ui
@@ -96,6 +96,22 @@ angular.module('myApp.search', [])
             id: "5",
             label: "Newest Arrivals"
         }];
+
+        $scope.priceSliderOptions = {
+            min: $scope.query.price_low,
+            max: $scope.query.price_high,
+            floor: 0, // minimum 0 euro
+            ceil: 2000, // maximum 20 euro
+            step: 1, // 1 cent steps
+            translate: function (value) {
+                return '€' + (value / 100).toFixed(2);
+            },
+            onEnd: function () {
+                // after releasing mouse
+                $scope.query.price_low = $scope.priceSliderOptions.min;
+                $scope.query.price_high = $scope.priceSliderOptions.max;
+            }
+        }
 
         $scope.sortCategory = $scope.sortCategories[0];
 

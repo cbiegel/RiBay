@@ -18,8 +18,20 @@
         <!-- TODO categories -->
         <span class="headline text-medium text-light">Refine by</span>
         <div class="filter-category">
-            <input type="checkbox" ng-model="query.imageOnly"/>
-            <span class="text-small" ng-click="query.imageOnly = !query.imageOnly">With image only</span>
+            <span class="title text-bold text-small">Image option</span>
+            <div>
+                <input type="checkbox" ng-model="query.imageOnly"/>
+                <span class="text-small" ng-click="query.imageOnly = !query.imageOnly">With image only</span>
+            </div>
+        </div>
+        <div class="filter-category">
+            <span class="title text-bold text-small">Price</span>
+            <div>
+                <rzslider rz-slider-model="priceSliderOptions.min"
+                          rz-slider-high="priceSliderOptions.max"
+                          rz-slider-options="priceSliderOptions"
+                          class="text-small"></rzslider>
+            </div>
         </div>
         <div class="filter-category">
             <span class="title text-bold text-small">Avg. Customer Review</span>

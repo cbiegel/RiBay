@@ -6,6 +6,7 @@ angular.module('myApp', [
     'ngCookies',
     'ngAnimate',
     'jsonFormatter',
+    'rzModule',
     'ui.bootstrap',
     'myApp.home',
     'myApp.view1',
