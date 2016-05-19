@@ -7,6 +7,7 @@ angular.module('myApp', [
     'ngAnimate',
     'jsonFormatter',
     'rzModule',
+    'checklist-model',
     'ui.bootstrap',
     'myApp.home',
     'myApp.view1',

@@ -14,33 +14,44 @@
 </div>
 <div class="search-main">
     <div id="left">
-        <div class="headline text-medium text-light">Show results for</div>
-        <!-- TODO categories -->
-        <span class="headline text-medium text-light">Refine by</span>
-        <div class="filter-category">
-            <span class="title text-bold text-small">Image option</span>
-            <div>
-                <input type="checkbox" ng-model="query.imageOnly"/>
-                <span class="text-small" ng-click="query.imageOnly = !query.imageOnly">With image only</span>
+        <div>
+            <span class="headline text-medium text-light">Show results for</span>
+            <div class="filter-category">
+                <span class="title text-bold text-small">Genre (match all)</span>
+                <div>
+                    <div ng-repeat="genre in genres">
+                        <input type="checkbox" checklist-model="query.genre" checklist-value="genre"> {{genre}}
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="filter-category">
-            <span class="title text-bold text-small">Price</span>
-            <div>
-                <rzslider rz-slider-model="priceSliderOptions.min"
-                          rz-slider-high="priceSliderOptions.max"
-                          rz-slider-options="priceSliderOptions"
-                          class="text-small"></rzslider>
+        <div>
+            <span class="headline text-medium text-light">Refine by</span>
+            <div class="filter-category">
+                <span class="title text-bold text-small">Image option</span>
+                <div>
+                    <input type="checkbox" ng-model="query.imageOnly"/>
+                    <span class="text-small" ng-click="query.imageOnly = !query.imageOnly">With image only</span>
+                </div>
             </div>
-        </div>
-        <div class="filter-category">
-            <span class="title text-bold text-small">Avg. Customer Review</span>
-            <div class="content text-small">
-                <div ng-repeat="n in [] | range: 11 | reverse | limitTo: 10">
-                    <a ng-click="searchAgain(query.text)"> <!-- TODO build an url -->
-                        <uib-rating ng-model="n" max="10" readonly="true" class="rating"></uib-rating>
-                        <span>& Up</span>
-                    </a>
+            <div class="filter-category">
+                <span class="title text-bold text-small">Price</span>
+                <div>
+                    <rzslider rz-slider-model="priceSliderOptions.min"
+                              rz-slider-high="priceSliderOptions.max"
+                              rz-slider-options="priceSliderOptions"
+                              class="text-small"></rzslider>
+                </div>
+            </div>
+            <div class="filter-category">
+                <span class="title text-bold text-small">Avg. Customer Review</span>
+                <div class="content text-small">
+                    <div ng-repeat="n in [] | range: 11 | reverse | limitTo: 10">
+                        <a ng-click="searchAgain(query.text)"> <!-- TODO build an url -->
+                            <uib-rating ng-model="n" max="10" readonly="true" class="rating"></uib-rating>
+                            <span>& Up</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

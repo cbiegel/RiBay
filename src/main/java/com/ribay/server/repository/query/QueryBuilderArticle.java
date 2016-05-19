@@ -16,13 +16,13 @@ public class QueryBuilderArticle implements QueryBuilder<ArticleQuery> {
         QueryElementStartsWith actorsFilter = new QueryElementStartsWith("actors_set", query.getText());
         QueryElementOr textFilter = new QueryElementOr(titleFilter, actorsFilter); // text must be in either title or actors
 
-        // TODO filter genre
+        QueryElementMatchAll genreFilter = new QueryElementMatchAll("genre_set", query.getGenre());
         QueryElementBool movieFilter = new QueryElementBool("isMovie_flag", query.isMovie());
         QueryElementTextRange priceFilter = new QueryElementTextRange("price_register", formatPrice(query.getPrice_low()), formatPrice(query.getPrice_high()), false);
         // TODO enable
         // QueryElementRange ratingFilter = new QueryElementRange("rating", query.getRating_low(), query.getRating_high());
         QueryElementRange votesFilter = new QueryElementRange("votes_counter", query.getVotes_low(), query.getVotes_high());
-        QueryElementAnd fullFilter = new QueryElementAnd(textFilter, movieFilter, priceFilter, /* ratingFilter, */ votesFilter);
+        QueryElementAnd fullFilter = new QueryElementAnd(textFilter, genreFilter, movieFilter, priceFilter, /* ratingFilter, */ votesFilter);
         if (query.getImageOnly()) {
             fullFilter.addClause(new QueryNotNull("image_register"));
         }

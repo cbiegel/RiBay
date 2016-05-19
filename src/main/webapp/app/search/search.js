@@ -65,7 +65,7 @@ angular.module('myApp.search', [])
             text: decodeURIComponent($routeParams.text),
             movie: undefined, // TODO make configurable through ui
             imageOnly: true,
-            genre: undefined, // TODO make configurable through ui
+            genre: [],
             price_low: 0, // 0 euro
             price_high: 2000, // 20 euro
             rating_low: undefined, // TODO make configurable through ui
@@ -97,6 +97,22 @@ angular.module('myApp.search', [])
             label: "Newest Arrivals"
         }];
 
+        $scope.genres = [
+            'Action',
+            'Adventure',
+            'Animation',
+            'Comedy',
+            'Crime',
+            'Family',
+            'Fantasy',
+            'Music',
+            'Romance',
+            'Sci-Fi',
+            'Short',
+            'Thriller'
+            // TODO get all distinct genre from db
+        ];
+
         $scope.priceSliderOptions = {
             min: $scope.query.price_low,
             max: $scope.query.price_high,
@@ -111,7 +127,7 @@ angular.module('myApp.search', [])
                 $scope.query.price_low = $scope.priceSliderOptions.min;
                 $scope.query.price_high = $scope.priceSliderOptions.max;
             }
-        }
+        };
 
         $scope.sortCategory = $scope.sortCategories[0];
 
