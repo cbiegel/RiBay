@@ -492,6 +492,11 @@ rzslider .rz-pointer.rz-active:after {
     margin: 8px 0;
 }
 
+.search-main .filter-category label {
+    font-weight: initial;
+    margin-bottom: 0;
+}
+
 .search-list .search-entry {
     padding: 7px 0px;
     height: 174px;

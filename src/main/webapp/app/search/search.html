@@ -20,7 +20,8 @@
                 <span class="title text-bold text-small">Genre (match all)</span>
                 <div>
                     <div ng-repeat="genre in genres">
-                        <input type="checkbox" checklist-model="query.genre" checklist-value="genre"> {{genre}}
+                        <input id="cb_{{genre}}" type="checkbox" checklist-model="query.genre" checklist-value="genre">
+                        <label for="cb_{{genre}}" class="text-small">{{genre}}</label>
                     </div>
                 </div>
             </div>

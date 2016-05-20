@@ -101,16 +101,31 @@ angular.module('myApp.search', [])
             'Action',
             'Adventure',
             'Animation',
+            'Biography',
             'Comedy',
             'Crime',
+            'Documentary',
+            'Drama',
             'Family',
             'Fantasy',
+            'Film-Noir',
+            'Game-Show',
+            'History',
+            'Horror',
+            'Lifestyle',
             'Music',
+            'Musical',
+            'Mystery',
+            'News',
+            'Reality-TV',
             'Romance',
             'Sci-Fi',
             'Short',
-            'Thriller'
-            // TODO get all distinct genre from db
+            'Sport',
+            'Talk-Show',
+            'Thriller',
+            'Western',
+            'War'
         ];
 
         $scope.priceSliderOptions = {
