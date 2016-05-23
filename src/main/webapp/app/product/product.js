@@ -40,10 +40,12 @@ angular.module('myApp.product', [])
                         data.images.push({src: url});
                     }
 
-                    // convert release timestamps from unix time to date string
-                    for (var i = 0; i < data.releases.length; i++) {
-                        var date = new Date(data.releases[i].date);
-                        data.releases[i].date = date;
+                    if (data.releases) {
+                        // convert release timestamps from unix time to date string
+                        for (var i = 0; i < data.releases.length; i++) {
+                            var date = new Date(data.releases[i].date);
+                            data.releases[i].date = date;
+                        }
                     }
 
                     callback(data);
@@ -83,7 +85,7 @@ angular.module('myApp.product', [])
                 reviewContent: content
             };
 
-            $http.post('/article/submitReview', dataObject).then(function(config) {
+            $http.post('/article/submitReview', dataObject).then(function (config) {
                 // if there is a result -> register successful
                 if (config.data != "") {
                     var response = {message: 'Review submitted.'};
@@ -151,7 +153,7 @@ angular.module('myApp.product', [])
             $scope.dataLoading = true;
             productService.submitReview(id, $rootScope.loggedIn.name, $scope.newRatingValue, $scope.newRatingTitle, $scope.newRatingContent, function (response) {
                 // TODO callback (display success / error message?)
-                if(response.message == 'Review submitted.') {
+                if (response.message == 'Review submitted.') {
                     $scope.dataLoading = false;
                     $scope.isCreatingReview = false;
                     $location.reload(true);
