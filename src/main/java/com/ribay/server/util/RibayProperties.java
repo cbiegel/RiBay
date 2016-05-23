@@ -2,6 +2,8 @@ package com.ribay.server.util;
 
 import java.util.Properties;
 
+import com.basho.riak.client.core.query.Location;
+import com.basho.riak.client.core.query.Namespace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -72,6 +74,23 @@ public class RibayProperties {
     public String getBucketArticleReviews() {
         String value = databaseProperties.getProperty("bucket.articleReviews");
         return value;
+    }
+
+    public Namespace getBucketSession() {
+        String[] attrs = databaseProperties.getProperty("bucket.session").split("#");
+
+        String bucketType;
+        String bucketName;
+        if (attrs.length == 1) {
+            bucketType = Namespace.DEFAULT_BUCKET_TYPE;
+            bucketName = attrs[0];
+        } else if (attrs.length == 2) {
+            bucketType = attrs[0];
+            bucketName = attrs[1];
+        } else {
+            throw new IllegalArgumentException();
+        }
+        return new Namespace(bucketType, bucketName);
     }
 
 }

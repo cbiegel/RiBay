@@ -6,9 +6,6 @@ import com.basho.riak.client.core.query.Namespace;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.deser.std.ArrayBlockingQueueDeserializer;
-import com.fasterxml.jackson.databind.deser.std.CollectionDeserializer;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.util.Converter;
 import com.fasterxml.jackson.databind.util.StdConverter;
@@ -58,8 +55,8 @@ public class DemoService {
     public void createDemo() throws Exception {
         logger.info("create demo");
 
-        createDemoArticles(); // NOTE: This operation takes some time! (first test: 49 minutes!!!)
-        createDemoCart();
+//        createDemoArticles(); // NOTE: This operation takes some time! (first test: 49 minutes!!!)
+//        createDemoCart();
 
         // TODO create more demo data
     }
@@ -95,22 +92,22 @@ public class DemoService {
         }
     }
 
-    private void createDemoCart() throws Exception {
-        Cart demoCart = new Cart(Arrays.asList(
-                new ArticleShort("abc", "My first article in shopping cart",
-                        "http://placehold.it/200x400", 12.34, 2),
-                new ArticleShort("def", "2nd article", "http://placehold.it/400x200", 5.99, 1),
-                new ArticleShort("ghi", "last article in this cart", "http://placehold.it/50x50",
-                        1.99, 10)));
-
-        Namespace cartBucket = new Namespace(properties.getBucketCart());
-        Location cartObjectLocation = new Location(cartBucket, DEMO_SESSION_ID);
-
-        StoreValue storeOp = new StoreValue.Builder(demoCart).withLocation(cartObjectLocation)
-                .build();
-
-        client.execute(storeOp);
-    }
+//    private void createDemoCart() throws Exception {
+//        Cart demoCart = new Cart(Arrays.asList(
+//                new ArticleForCart("abc", "My first article in shopping cart",
+//                        "http://placehold.it/200x400", 12.34, 2),
+//                new ArticleForCart("def", "2nd article", "http://placehold.it/400x200", 5.99, 1),
+//                new ArticleForCart("ghi", "last article in this cart", "http://placehold.it/50x50",
+//                        1.99, 10)));
+//
+//        Namespace cartBucket = new Namespace(properties.getBucketCart());
+//        Location cartObjectLocation = new Location(cartBucket, DEMO_SESSION_ID);
+//
+//        StoreValue storeOp = new StoreValue.Builder(demoCart).withLocation(cartObjectLocation)
+//                .build();
+//
+//        client.execute(storeOp);
+//    }
 
     public static class MoviesJSONConverter extends StdConverter<MoviesJSONEntry, Article> {
 

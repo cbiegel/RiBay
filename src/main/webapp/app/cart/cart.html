@@ -4,7 +4,7 @@
             <div class="box-content">
                 <div class="subtotal">
                     <span class="text-medium text-bold">Subtotal ({{subtotal.amount}} items): </span>
-                    <span class="price">{{subtotal.price | currency: "€"}}</span>
+                    <span class="price">{{subtotal.price / 100 | currency: "€"}}</span>
                 </div>
                 <button type="button" class="btn button-primary" ng-click="checkout()">Proceed to Checkout</button>
             </div>
@@ -40,7 +40,7 @@
                         </div>
                     </td>
                     <td>
-                        <span class="price">{{item.price | currency: "€"}}</span>
+                        <span class="price">{{item.price / 100 | currency: "€"}}</span>
                     </td>
                     <td>
                         <div class="btn-group" uib-dropdown>
@@ -58,7 +58,7 @@
             <div class="cart-footer">
                 <div class="cart-footer-content">
                     <span class="text-medium text-bold">Subtotal ({{subtotal.amount}} items): </span>
-                    <span class="price">{{subtotal.price | currency: "€"}}</span>
+                    <span class="price">{{subtotal.price / 100 | currency: "€"}}</span>
                 </div>
             </div>
         </div>

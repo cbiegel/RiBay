@@ -13,20 +13,45 @@ angular.module('myApp.cart', [])
         });
     }])
 
-    .service('cartService', ['$http', function ($http) {
+    .service('cartService', ['$http', 'imageService', function ($http, imageService) {
 
         this.getCart = function (callback) {
-            $http.get('/cart').success(callback);
+            $http.get('/cart').success(function (response) {
+
+                response.articles.forEach(function (article) {
+                    // resolve images
+                    article.image = imageService.createImageURLFromId(article.image);
+                });
+
+                callback(response);
+            });
         };
 
-        this.deleteItem = function (item) {
-            // TODO delete item from cart
-            alert("delete " + item.id);
+        this.deleteItem = function (item, callback) {
+            $http.delete('/cart/remove/' + item.id).success(function (response) {
+
+                response.articles.forEach(function (article) {
+                    // resolve images
+                    article.image = imageService.createImageURLFromId(article.image);
+                });
+
+                callback(response);
+            });
         };
 
-        this.setQuantity = function (item, quantity) {
-            // TODO set quantity of item
-            alert("set quantity of " + item.id + " to " + quantity);
+        this.setQuantity = function (item, oldQuantity, newQuantity, callback) {
+            var delta = newQuantity - oldQuantity;
+            var url;
+            if (delta > 0) {
+                url = '/cart/add/' + item.id + '/' + delta;
+            }
+            else if (delta < 0) {
+                url = '/cart/remove/' + item.id + '/' + Math.abs(delta);
+            }
+
+            if (url) {
+                $http.put(url).success(callback);
+            }
         };
 
         this.checkout = function () {
@@ -42,7 +67,8 @@ angular.module('myApp.cart', [])
         $scope.subtotal = undefined;
         $scope.isEmpty = true;
 
-        cartService.getCart(function (data) {
+
+        var update = function (data) {
             $scope.cart = data.articles;
             $scope.isEmpty = (data.articles.length == 0);
 
@@ -60,11 +86,24 @@ angular.module('myApp.cart', [])
                 amount: total_amount,
                 price: total_price
             };
-        });
+        }
 
-        $scope.deleteItem = cartService.deleteItem;
+        cartService.getCart(update); // init cart
 
-        $scope.setQuantity = cartService.setQuantity;
+
+        $scope.deleteItem = function (item) {
+            cartService.deleteItem(item, function (data) {
+                // update with new cart from callback
+                update(data);
+            })
+        };
+
+        $scope.setQuantity = function (item, quantity) {
+            cartService.setQuantity(item, item.quantity, quantity, function () {
+                // TODO update without need for additional call for getting updated cart?
+                cartService.getCart(update); // update cart
+            });
+        };
 
         $scope.checkout = cartService.checkout;
 

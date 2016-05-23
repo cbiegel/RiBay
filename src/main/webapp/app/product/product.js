@@ -99,8 +99,7 @@ angular.module('myApp.product', [])
         };
 
         this.addToCart = function (id, quantity, callback) {
-            // TODO integrate actual shopping cart
-            callback();
+            $http.put('/cart/add/' + id + '/' + quantity, undefined).success(callback);
         };
 
     }])

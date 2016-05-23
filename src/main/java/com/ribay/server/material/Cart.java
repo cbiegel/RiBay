@@ -1,31 +1,28 @@
 package com.ribay.server.material;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class Cart
-{
+public class Cart {
 
-    private List<ArticleShort> articles;
+    private List<ArticleForCartWithQ> articles;
 
-    public Cart()
-    {
-        this(new ArrayList<>());
+    public Cart() {
+        this(Collections.emptyList());
     }
 
-    public Cart(List<ArticleShort> articles)
-    {
-        this.articles = articles;
+    public Cart(List<ArticleForCartWithQ> articles) {
+        this.articles = new ArrayList<>(articles);
     }
 
-    public List<ArticleShort> getArticles()
-    {
-        return articles;
+    public List<ArticleForCartWithQ> getArticles() {
+        return Collections.unmodifiableList(articles);
     }
 
-    public void setArticles(List<ArticleShort> articles)
+    public void removeArticle(ArticleForCartWithQ article)
     {
-        this.articles = articles;
+
     }
 
 }

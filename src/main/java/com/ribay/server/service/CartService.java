@@ -1,32 +1,69 @@
 package com.ribay.server.service;
 
+import com.ribay.server.material.Article;
+import com.ribay.server.material.ArticleForCart;
+import com.ribay.server.material.Cart;
+import com.ribay.server.material.converter.Converter;
+import com.ribay.server.repository.ArticleRepository;
+import com.ribay.server.repository.CartRepository;
+import com.ribay.server.util.RequestScopeData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ribay.server.material.Cart;
-import com.ribay.server.repository.CartRepository;
-import com.ribay.server.util.RequestScopeData;
-
 @RestController
-public class CartService
-{
+public class CartService {
 
     @Autowired
     private CartRepository cartRepository;
 
     @Autowired
+    private ArticleRepository articleRepository;
+
+    @Autowired
+    private Converter<Article, ArticleForCart> articleConverter;
+
+    @Autowired
     private RequestScopeData requestData;
 
-    @RequestMapping(path = "/cart", method = RequestMethod.GET)
-    public Cart getCart() throws Exception
-    {
+    @RequestMapping(path = "/cart", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Cart getCart() throws Exception {
         String sessionId = requestData.getSessionId();
-
-        // TODO comment the next line to prevent getting only the same demo data
-        sessionId = DemoService.DEMO_SESSION_ID;
 
         return cartRepository.getCart(sessionId);
     }
+
+    @RequestMapping(path = "/cart/add/{articleId}/{amount}", method = RequestMethod.PUT)
+    public void addArticle(@PathVariable("articleId") String articleId, @PathVariable("amount") int amount) throws Exception {
+        String sessionId = requestData.getSessionId();
+
+        Article article = articleRepository.getArticleInformation(articleId);
+        ArticleForCart articleForCart = articleConverter.convert(article);
+
+        cartRepository.changeArticleAmount(sessionId, articleForCart, amount);
+    }
+
+    @RequestMapping(path = "/cart/remove/{articleId}/{amount}", method = RequestMethod.PUT)
+    public void removeArticle(@PathVariable("articleId") String articleId, @PathVariable("amount") int amount) throws Exception {
+        String sessionId = requestData.getSessionId();
+
+        Article article = articleRepository.getArticleInformation(articleId);
+        ArticleForCart articleForCart = articleConverter.convert(article);
+
+        cartRepository.changeArticleAmount(sessionId, articleForCart, -amount);
+    }
+
+    @RequestMapping(path = "/cart/remove/{articleId}", method = RequestMethod.DELETE)
+    public Cart removeArticle(@PathVariable("articleId") String articleId) throws Exception {
+        String sessionId = requestData.getSessionId();
+
+        Article article = articleRepository.getArticleInformation(articleId);
+        ArticleForCart articleForCart = articleConverter.convert(article);
+
+        return cartRepository.removeArticle(sessionId, articleForCart);
+    }
+
 }
