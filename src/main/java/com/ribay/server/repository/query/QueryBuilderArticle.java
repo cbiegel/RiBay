@@ -20,6 +20,7 @@ public class QueryBuilderArticle implements QueryBuilder<ArticleQuery> {
         QueryElementBool movieFilter = new QueryElementBool("isMovie_flag", query.isMovie());
         QueryElementTextRange priceFilter = new QueryElementTextRange("price_register", formatPrice(query.getPrice_low()), formatPrice(query.getPrice_high()), false);
         // TODO check why filtering by medium rating does not work
+        // https://cwiki.apache.org/confluence/display/solr/Function+Queries
         // http://134.100.11.158:8098/search/query/articles?q=(title_register:(So*)%20OR%20actors_set:(So*))%20AND%20price_register:[0000%20TO%202000]%20AND%20image_register:[%27%27%20TO%20*]%20AND%20(_val_:[*%20TO%20*]%20_val_:%22div(sumRatings_counter,votes_counter)%22)
         QueryElementRange ratingFilter = new QueryElementRange("_val_", query.getRating_low(), query.getRating_high(), "_val_:\"div(sumRatings_counter,votes_counter)\"");
         QueryElementRange votesFilter = new QueryElementRange("votes_counter", query.getVotes_low(), query.getVotes_high());
