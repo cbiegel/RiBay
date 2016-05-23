@@ -68,8 +68,8 @@ angular.module('myApp.search', [])
             genre: [],
             price_low: 0, // 0 euro
             price_high: 2000, // 20 euro
-            rating_low: undefined, // TODO make configurable through ui
-            rating_high: undefined, // TODO make configurable through ui
+            rating_low: undefined,
+            rating_high: undefined,
             votes_low: undefined, // TODO make configurable through ui
             votes_high: undefined, // TODO make configurable through ui
             pageInfo: {
@@ -79,7 +79,6 @@ angular.module('myApp.search', [])
             // TODO sort by
         };
 
-        // TODO replace categories with genre multi-select
         $scope.sortCategories = [{
             id: "1",
             label: "Relevance"

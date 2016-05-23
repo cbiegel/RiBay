@@ -48,7 +48,7 @@
                 <span class="title text-bold text-small">Avg. Customer Review</span>
                 <div class="content text-small">
                     <div ng-repeat="n in [] | range: 11 | reverse | limitTo: 10">
-                        <a ng-click="searchAgain(query.text)"> <!-- TODO build an url -->
+                        <a ng-click="query.rating_low = n" ng-class="{'text-bold': (query.rating_low == n)}">
                             <uib-rating ng-model="n" max="10" readonly="true" class="rating"></uib-rating>
                             <span>& Up</span>
                         </a>
