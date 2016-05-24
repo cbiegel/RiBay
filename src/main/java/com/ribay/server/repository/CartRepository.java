@@ -27,8 +27,6 @@ import java.util.stream.Collectors;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class CartRepository {
 
-    private static final String SESSION_KEY_CART = "cart";
-
     @Autowired
     private RibayProperties properties;
 
@@ -36,42 +34,43 @@ public class CartRepository {
     private MyRiakClient client;
 
     public Cart getCart(final String sessionId) throws Exception {
-        Namespace bucket = properties.getBucketSession();
+        Namespace bucket = properties.getBucketSessionCart();
         String key = sessionId;
         Location location = new Location(bucket, key);
 
         FetchMap command = new FetchMap.Builder(location).build();
         FetchMap.Response response = client.execute(command);
 
-        RiakMap responseFromDB = response.getDatatype().getMap(SESSION_KEY_CART);
+        RiakMap responseFromDB = response.getDatatype();
         return getCartFromRiakMap(responseFromDB);
     }
 
     public void changeArticleAmount(String sessionId, ArticleShort article, int delta) throws Exception {
-        Namespace bucket = properties.getBucketSession();
+        Namespace bucket = properties.getBucketSessionCart();
         String key = sessionId;
         Location location = new Location(bucket, key);
 
         String articleAsString = JSONUtil.write(article);
-        MapUpdate update = new MapUpdate().update(SESSION_KEY_CART, new MapUpdate().update(articleAsString, new CounterUpdate(delta)));
+        MapUpdate update = new MapUpdate().update(articleAsString, new CounterUpdate(delta));
 
         UpdateMap command = new UpdateMap.Builder(location, update).build();
         client.execute(command);
     }
 
     public Cart removeArticle(String sessionId, ArticleShort article) throws Exception {
-        Namespace bucket = properties.getBucketSession();
+        Namespace bucket = properties.getBucketSessionCart();
         String key = sessionId;
         Location location = new Location(bucket, key);
 
         FetchMap fetchCommand = new FetchMap.Builder(location).build();
         FetchMap.Response fetchResponse = client.execute(fetchCommand);
-        RiakMap responseFromDB = fetchResponse.getDatatype().getMap(SESSION_KEY_CART);
+
+        RiakMap responseFromDB = fetchResponse.getDatatype();
         Cart oldCart = getCartFromRiakMap(responseFromDB); // this is the cart before deleting the article
         Context ctx = fetchResponse.getContext(); // needs context when deleting from set or map
 
         String articleAsString = JSONUtil.write(article);
-        MapUpdate update = new MapUpdate().update(SESSION_KEY_CART, new MapUpdate().removeCounter(articleAsString)); // remove article from cart in db
+        MapUpdate update = new MapUpdate().removeCounter(articleAsString); // remove article from cart in db
 
         UpdateMap updateCommand = new UpdateMap.Builder(location, update).withContext(ctx).build();
         client.execute(updateCommand);
@@ -110,7 +109,7 @@ public class CartRepository {
     }
 
     public Future<?> deleteCart(String sessionId) throws Exception {
-        Namespace bucket = properties.getBucketSession();
+        Namespace bucket = properties.getBucketSessionCart();
         String key = sessionId;
 
         DeleteOperation command = new DeleteOperation.Builder(new Location(bucket, key)).build();

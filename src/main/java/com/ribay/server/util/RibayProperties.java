@@ -40,11 +40,6 @@ public class RibayProperties {
         return value.split(",");
     }
 
-    public String getBucketCart() {
-        String value = databaseProperties.getProperty("bucket.cart");
-        return value;
-    }
-
     public String getBucketSessionLastAccess() {
         String value = databaseProperties.getProperty("bucket.session.lastaccess");
         return value;
@@ -53,6 +48,23 @@ public class RibayProperties {
     public String getBucketSessionLogin() {
         String value = databaseProperties.getProperty("bucket.session.login");
         return value;
+    }
+
+    public Namespace getBucketSessionCart() {
+        String[] attrs = databaseProperties.getProperty("bucket.session.cart").split("#");
+
+        String bucketType;
+        String bucketName;
+        if (attrs.length == 1) {
+            bucketType = Namespace.DEFAULT_BUCKET_TYPE;
+            bucketName = attrs[0];
+        } else if (attrs.length == 2) {
+            bucketType = attrs[0];
+            bucketName = attrs[1];
+        } else {
+            throw new IllegalArgumentException();
+        }
+        return new Namespace(bucketType, bucketName);
     }
 
     public String getBucketUsers() {
@@ -73,23 +85,6 @@ public class RibayProperties {
     public String getBucketArticleReviews() {
         String value = databaseProperties.getProperty("bucket.articleReviews");
         return value;
-    }
-
-    public Namespace getBucketSession() {
-        String[] attrs = databaseProperties.getProperty("bucket.session").split("#");
-
-        String bucketType;
-        String bucketName;
-        if (attrs.length == 1) {
-            bucketType = Namespace.DEFAULT_BUCKET_TYPE;
-            bucketName = attrs[0];
-        } else if (attrs.length == 2) {
-            bucketType = attrs[0];
-            bucketName = attrs[1];
-        } else {
-            throw new IllegalArgumentException();
-        }
-        return new Namespace(bucketType, bucketName);
     }
 
 }
