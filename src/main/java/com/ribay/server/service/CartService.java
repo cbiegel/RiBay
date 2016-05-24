@@ -1,7 +1,7 @@
 package com.ribay.server.service;
 
 import com.ribay.server.material.Article;
-import com.ribay.server.material.ArticleForCart;
+import com.ribay.server.material.ArticleShort;
 import com.ribay.server.material.Cart;
 import com.ribay.server.material.converter.Converter;
 import com.ribay.server.repository.ArticleRepository;
@@ -24,7 +24,7 @@ public class CartService {
     private ArticleRepository articleRepository;
 
     @Autowired
-    private Converter<Article, ArticleForCart> articleConverter;
+    private Converter<Article, ArticleShort> articleConverter;
 
     @Autowired
     private RequestScopeData requestData;
@@ -41,9 +41,9 @@ public class CartService {
         String sessionId = requestData.getSessionId();
 
         Article article = articleRepository.getArticleInformation(articleId);
-        ArticleForCart articleForCart = articleConverter.convert(article);
+        ArticleShort articleShort = articleConverter.convert(article);
 
-        cartRepository.changeArticleAmount(sessionId, articleForCart, amount);
+        cartRepository.changeArticleAmount(sessionId, articleShort, amount);
     }
 
     @RequestMapping(path = "/cart/remove/{articleId}/{amount}", method = RequestMethod.PUT)
@@ -51,9 +51,9 @@ public class CartService {
         String sessionId = requestData.getSessionId();
 
         Article article = articleRepository.getArticleInformation(articleId);
-        ArticleForCart articleForCart = articleConverter.convert(article);
+        ArticleShort articleShort = articleConverter.convert(article);
 
-        cartRepository.changeArticleAmount(sessionId, articleForCart, -amount);
+        cartRepository.changeArticleAmount(sessionId, articleShort, -amount);
     }
 
     @RequestMapping(path = "/cart/remove/{articleId}", method = RequestMethod.DELETE)
@@ -61,9 +61,9 @@ public class CartService {
         String sessionId = requestData.getSessionId();
 
         Article article = articleRepository.getArticleInformation(articleId);
-        ArticleForCart articleForCart = articleConverter.convert(article);
+        ArticleShort articleShort = articleConverter.convert(article);
 
-        return cartRepository.removeArticle(sessionId, articleForCart);
+        return cartRepository.removeArticle(sessionId, articleShort);
     }
 
 }

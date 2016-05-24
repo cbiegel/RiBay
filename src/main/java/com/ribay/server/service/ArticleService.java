@@ -30,7 +30,9 @@ public class ArticleService {
 
     @RequestMapping(path = "/article/info", method = RequestMethod.GET)
     public Article getArticleInfo(@RequestParam(value = "articleId") String articleId) throws Exception {
-        return articleRepository.getArticleInformation(articleId);
+        Article result = articleRepository.getArticleInformation(articleId);
+
+        return result;
     }
 
     @RequestMapping(path = "/article/getReviews", method = RequestMethod.GET)

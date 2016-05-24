@@ -94,10 +94,10 @@ public class DemoService {
 
 //    private void createDemoCart() throws Exception {
 //        Cart demoCart = new Cart(Arrays.asList(
-//                new ArticleForCart("abc", "My first article in shopping cart",
+//                new ArticleShort("abc", "My first article in shopping cart",
 //                        "http://placehold.it/200x400", 12.34, 2),
-//                new ArticleForCart("def", "2nd article", "http://placehold.it/400x200", 5.99, 1),
-//                new ArticleForCart("ghi", "last article in this cart", "http://placehold.it/50x50",
+//                new ArticleShort("def", "2nd article", "http://placehold.it/400x200", 5.99, 1),
+//                new ArticleShort("ghi", "last article in this cart", "http://placehold.it/50x50",
 //                        1.99, 10)));
 //
 //        Namespace cartBucket = new Namespace(properties.getBucketCart());

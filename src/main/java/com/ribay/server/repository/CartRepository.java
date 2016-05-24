@@ -1,6 +1,7 @@
 package com.ribay.server.repository;
 
 import com.basho.riak.client.api.commands.datatypes.*;
+import com.basho.riak.client.core.operations.DeleteOperation;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
 import com.basho.riak.client.core.query.crdt.types.RiakDatatype;
@@ -8,7 +9,7 @@ import com.basho.riak.client.core.query.crdt.types.RiakMap;
 import com.basho.riak.client.core.util.BinaryValue;
 import com.ribay.server.db.MyRiakClient;
 import com.ribay.server.material.ArticleForCart;
-import com.ribay.server.material.ArticleForCartWithQ;
+import com.ribay.server.material.ArticleShort;
 import com.ribay.server.material.Cart;
 import com.ribay.server.util.JSONUtil;
 import com.ribay.server.util.RibayProperties;
@@ -17,10 +18,9 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 @Component
@@ -47,7 +47,7 @@ public class CartRepository {
         return getCartFromRiakMap(responseFromDB);
     }
 
-    public void changeArticleAmount(String sessionId, ArticleForCart article, int delta) throws Exception {
+    public void changeArticleAmount(String sessionId, ArticleShort article, int delta) throws Exception {
         Namespace bucket = properties.getBucketSession();
         String key = sessionId;
         Location location = new Location(bucket, key);
@@ -59,7 +59,7 @@ public class CartRepository {
         client.execute(command);
     }
 
-    public Cart removeArticle(String sessionId, ArticleForCart article) throws Exception {
+    public Cart removeArticle(String sessionId, ArticleShort article) throws Exception {
         Namespace bucket = properties.getBucketSession();
         String key = sessionId;
         Location location = new Location(bucket, key);
@@ -76,7 +76,7 @@ public class CartRepository {
         UpdateMap updateCommand = new UpdateMap.Builder(location, update).withContext(ctx).build();
         client.execute(updateCommand);
 
-        List<ArticleForCartWithQ> newArticles = oldCart.getArticles().stream() //
+        List<ArticleForCart> newArticles = oldCart.getArticles().stream() //
                 .filter((articleInCart) -> !articleInCart.getId().equals(article.getId())) // remove article from cart for client result
                 .collect(Collectors.toList()); //
         Cart newCart = new Cart(newArticles);
@@ -89,13 +89,13 @@ public class CartRepository {
         } else {
             Map<BinaryValue, List<RiakDatatype>> map = responseFromDB.view();
 
-            List<ArticleForCartWithQ> cartAsList = map.entrySet().stream() //
+            List<ArticleForCart> cartAsList = map.entrySet().stream() //
                     .filter((entry) -> entry.getValue().get(0).getAsCounter().view() > 0) // only articles with a natural number as quantity
                     .map((entry) -> { //
-                        ArticleForCart fromDB = JSONUtil.read(entry.getKey().getValue(), ArticleForCart.class);
+                        ArticleShort fromDB = JSONUtil.read(entry.getKey().getValue(), ArticleShort.class);
                         int quantity = entry.getValue().get(0).getAsCounter().view().intValue();
 
-                        ArticleForCartWithQ forCart = new ArticleForCartWithQ();
+                        ArticleForCart forCart = new ArticleForCart();
                         forCart.setId(fromDB.getId());
                         forCart.setName(fromDB.getName());
                         forCart.setImage(fromDB.getImage());
@@ -107,6 +107,14 @@ public class CartRepository {
 
             return new Cart(cartAsList);
         }
+    }
+
+    public Future<?> deleteCart(String sessionId) throws Exception {
+        Namespace bucket = properties.getBucketSession();
+        String key = sessionId;
+
+        DeleteOperation command = new DeleteOperation.Builder(new Location(bucket, key)).build();
+        return client.execute(command);
     }
 
 }

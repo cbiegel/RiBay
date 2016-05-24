@@ -1,9 +1,6 @@
 package com.ribay.server.util;
 
-import com.basho.riak.client.api.commands.kv.StoreValue;
-import com.basho.riak.client.core.query.Location;
-import com.basho.riak.client.core.query.Namespace;
-import com.ribay.server.db.MyRiakClient;
+import com.ribay.server.repository.AuthenticationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +25,10 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     public static final String COOKIE_NAME = "rsessionid";
 
     @Autowired
-    private MyRiakClient client;
-
-    @Autowired
-    private RibayProperties properties;
-
-    @Autowired
     private RequestScopeData requestData;
+
+    @Autowired
+    private AuthenticationRepository authRepository;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
@@ -69,7 +63,11 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         // get the session id
         requestData.setSessionId(sessionId);
 
-        saveLastAccess();
+        try {
+            authRepository.saveLastAccess(sessionId);
+        } catch (Exception e) {
+            logger.error("Was not able to save last access time for session", e);
+        }
 
         return super.preHandle(request, response, handler);
     }
@@ -81,16 +79,6 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         } else {
             return Arrays.stream(request.getCookies()).filter((cookie) -> cookie.getName().equals(COOKIE_NAME)).findAny();
         }
-    }
-
-    private void saveLastAccess() {
-        String bucket = properties.getBucketSessionLastAccess();
-        String key = requestData.getSessionId();
-        Long value = System.currentTimeMillis();
-
-        Location cartObjectLocation = new Location(new Namespace(bucket), key);
-        StoreValue storeOp = new StoreValue.Builder(value).withLocation(cartObjectLocation).build();
-        client.executeAsync(storeOp); // exceute async
     }
 
 }

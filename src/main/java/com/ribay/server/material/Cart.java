@@ -6,21 +6,21 @@ import java.util.List;
 
 public class Cart {
 
-    private List<ArticleForCartWithQ> articles;
+    private List<ArticleForCart> articles;
 
     public Cart() {
         this(Collections.emptyList());
     }
 
-    public Cart(List<ArticleForCartWithQ> articles) {
+    public Cart(List<ArticleForCart> articles) {
         this.articles = new ArrayList<>(articles);
     }
 
-    public List<ArticleForCartWithQ> getArticles() {
+    public List<ArticleForCart> getArticles() {
         return Collections.unmodifiableList(articles);
     }
 
-    public void removeArticle(ArticleForCartWithQ article)
+    public void removeArticle(ArticleForCart article)
     {
 
     }

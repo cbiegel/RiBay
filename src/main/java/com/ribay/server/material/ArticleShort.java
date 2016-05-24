@@ -1,14 +1,13 @@
 package com.ribay.server.material;
 
-public class ArticleForCartWithQ {
+public class ArticleShort {
 
     private String id;
     private String name;
     private String image;
     private int price;
-    private int quantity;
 
-    public ArticleForCartWithQ() {
+    public ArticleShort() {
     }
 
     public String getId() {
@@ -41,14 +40,6 @@ public class ArticleForCartWithQ {
 
     public void setPrice(int price) {
         this.price = price;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 
 }

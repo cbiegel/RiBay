@@ -1,14 +1,13 @@
 package com.ribay.server.util;
 
-import java.util.Properties;
-
-import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import java.util.Properties;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -31,9 +30,9 @@ public class RibayProperties {
                 RibayProperties.class.getClassLoader().getResourceAsStream("database.properties"));
     }
 
-    public int getSessionTimeout() {
+    public long getSessionTimeout() {
         String value = applicationProperties.getProperty("session.timeout.seconds");
-        return Integer.parseInt(value);
+        return Long.parseLong(value);
     }
 
     public String[] getDatabaseIps() throws Exception {
