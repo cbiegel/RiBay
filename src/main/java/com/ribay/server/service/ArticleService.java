@@ -1,10 +1,10 @@
 package com.ribay.server.service;
 
-import com.ribay.server.material.Article;
-import com.ribay.server.material.ArticleQuery;
-import com.ribay.server.material.ArticleReview;
-import com.ribay.server.material.ArticleSearchResult;
+import com.ribay.server.material.*;
+import com.ribay.server.material.converter.Converter;
 import com.ribay.server.repository.ArticleRepository;
+import com.ribay.server.repository.MarketingRepository;
+import com.ribay.server.util.RequestScopeData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,15 @@ public class ArticleService {
     @Autowired
     private ArticleRepository articleRepository;
 
+    @Autowired
+    private MarketingRepository marketingRepository;
+
+    @Autowired
+    private Converter<Article, ArticleShort> articleConverter;
+
+    @Autowired
+    private RequestScopeData requestData;
+
     @RequestMapping(path = "/article/search", method = RequestMethod.POST)
     public ArticleSearchResult searchArticles(@RequestBody ArticleQuery query) throws Exception {
         return articleRepository.queryArticles(query);
@@ -30,9 +39,16 @@ public class ArticleService {
 
     @RequestMapping(path = "/article/info", method = RequestMethod.GET)
     public Article getArticleInfo(@RequestParam(value = "articleId") String articleId) throws Exception {
-        Article result = articleRepository.getArticleInformation(articleId);
-
-        return result;
+        Article article = articleRepository.getArticleInformation(articleId);
+        try {
+            // save last visited article
+            String sessionId = requestData.getSessionId();
+            ArticleShort articleShort = articleConverter.convert(article);
+            marketingRepository.addVisitedArticle(sessionId, articleShort); // is async: fire and forget
+        } catch (Exception e) {
+            LOGGER.error("Was not able to save last visited article", e);
+        }
+        return article;
     }
 
     @RequestMapping(path = "/article/getReviews", method = RequestMethod.GET)

@@ -52,19 +52,12 @@ public class RibayProperties {
 
     public Namespace getBucketSessionCart() {
         String[] attrs = databaseProperties.getProperty("bucket.session.cart").split("#");
+        return buildBucketFromAttrs(attrs);
+    }
 
-        String bucketType;
-        String bucketName;
-        if (attrs.length == 1) {
-            bucketType = Namespace.DEFAULT_BUCKET_TYPE;
-            bucketName = attrs[0];
-        } else if (attrs.length == 2) {
-            bucketType = attrs[0];
-            bucketName = attrs[1];
-        } else {
-            throw new IllegalArgumentException();
-        }
-        return new Namespace(bucketType, bucketName);
+    public Namespace getBucketVisitedArticles() {
+        String[] attrs = databaseProperties.getProperty("bucket.session.visitedArticles").split("#");
+        return buildBucketFromAttrs(attrs);
     }
 
     public String getBucketUsers() {
@@ -85,6 +78,21 @@ public class RibayProperties {
     public String getBucketArticleReviews() {
         String value = databaseProperties.getProperty("bucket.articleReviews");
         return value;
+    }
+
+    private Namespace buildBucketFromAttrs(String... attrs) {
+        String bucketType;
+        String bucketName;
+        if (attrs.length == 1) {
+            bucketType = Namespace.DEFAULT_BUCKET_TYPE; // 'default'
+            bucketName = attrs[0];
+        } else if (attrs.length == 2) {
+            bucketType = attrs[0];
+            bucketName = attrs[1];
+        } else {
+            throw new IllegalArgumentException();
+        }
+        return new Namespace(bucketType, bucketName);
     }
 
 }

@@ -2,6 +2,7 @@ package com.ribay.server.job;
 
 import com.ribay.server.repository.AuthenticationRepository;
 import com.ribay.server.repository.CartRepository;
+import com.ribay.server.repository.MarketingRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class CleanSessionJob {
     @Autowired
     private CartRepository cartRepository;
 
+    @Autowired
+    private MarketingRepository marketingRepository;
+
     @Scheduled(fixedDelay = JOB_INTERVAL)
     public void cleanSessions() throws Exception {
         List<String> sessionsToClean = authRepository.getSessionIdsOlderThan(SESSION_KEEP_ALIVE_INTERVAL);
@@ -42,6 +46,7 @@ public class CleanSessionJob {
         for (String sessionId : sessionsToClean) {
             authRepository.logout(sessionId); // logout session
             cartRepository.deleteCart(sessionId); // delete cart
+            marketingRepository.deleteLastVisitedArticles(sessionId); // delete last visited articles
             authRepository.deleteSessionLastAccess(sessionId); // remove last access timestamp so this session will not be found again
             // TODO do more cleanup
         }

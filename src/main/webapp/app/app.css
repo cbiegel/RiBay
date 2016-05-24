@@ -628,6 +628,13 @@ rzslider .rz-pointer.rz-active:after {
     margin-right: 18%;
 }
 
+.home .itemrow .content .item img {
+    max-width: 160px;
+    max-height: 200px;
+    margin: 0 auto;
+    display: block;
+}
+
 .home #promo-split {
     margin: 48px 16px;
 }

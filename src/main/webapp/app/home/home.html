@@ -74,5 +74,24 @@
                 </div>
             </div>
         </div>
+        <div class="itemrow">
+            <div class="caption">
+                <span class="text-big">Your recently watched articles</span>
+                <a>See more</a>
+            </div>
+            <div class="content">
+                <div class="items">
+                    <div class="item" ng-repeat="article in lastVisited" ng-init="focused = false"
+                         ng-mouseover="focused = true"
+                         ng-mouseleave="focused = false">
+                        <button type="button" class="detail-button box" ng-show="focused"
+                                ng-click="showDetails(article)">Show details
+                        </button>
+                        <a ng-href="#/product/{{article.id}}"><img ng-src="{{article.image}}"></a>
+                        <!-- icons here -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
