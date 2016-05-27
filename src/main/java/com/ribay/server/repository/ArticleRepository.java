@@ -4,12 +4,15 @@ import java.util.*;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import com.basho.riak.client.api.commands.indexes.BinIndexQuery;
 import com.basho.riak.client.api.convert.ConversionException;
 import com.basho.riak.client.core.query.RiakObject;
+import com.basho.riak.client.core.query.indexes.StringBinIndex;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ribay.server.exception.NotFoundException;
 import com.ribay.server.material.*;
+import com.ribay.server.material.continuation.ArticleReviewsContinuation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,63 +113,57 @@ public class ArticleRepository {
         }
     }
 
-    public List<ArticleReview> getReviewsForArticle(String articleId) throws Exception {
+    public ArticleReviewsContinuation getReviewsForArticle(String articleId, String uuid) throws Exception {
         String bucket = properties.getBucketArticleReviews() + articleId;
-        String key = "1";
-        Location location = new Location(new Namespace(bucket), key);
-        FetchValue fetchOp = new FetchValue.Builder(location).build();
-        FetchValue.Response fetchResp = client.execute(fetchOp);
+        Namespace namespace = new Namespace(bucket);
 
-        // At least one review already exists for this article
-        try {
-            List<ArticleReview[]> result = fetchResp.getValues(ArticleReview[].class);
-            List<ArticleReview> reviews = new ArrayList<>(Arrays.asList(result.get(0)));
-            return reviews;
-        } catch (Exception e) {
-            // Only one review exists...
-            List<ArticleReview> result = fetchResp.getValues(ArticleReview.class);
-            return result;
+        BinIndexQuery biq = new BinIndexQuery.Builder(namespace, "index_rating", "0", "5")
+                .withMaxResults(10)
+                .withPaginationSort(true)
+                .build();
+        BinIndexQuery.Response response = client.execute(biq);
+
+        if(!response.hasEntries()) {
+            throw new NotFoundException();
+        } else {
+            ArticleReviewsContinuation resultValue = new ArticleReviewsContinuation();
+
+           List<ArticleReview> reviews =  response.getEntries().stream().parallel().map(BinIndexQuery.Response.Entry::getRiakObjectLocation).map(
+                    (location) -> {
+                        FetchValue fetchValue = new FetchValue.Builder(location).build();
+                        try {
+                            FetchValue.Response result = client.execute(fetchValue);
+                            return result.getValue(ArticleReview.class);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }).collect(Collectors.toList());
+            resultValue.setReviews(reviews);
+
+            if(response.hasContinuation()) {
+                resultValue.setContinuation(response.getContinuation().toString());
+            }
+
+            return resultValue;
         }
     }
 
-    public void submitArticleReview(ArticleReview review) throws Exception {
-
-        // TODO: Check if article reviews needs to be split and put into new key
+    public void submitArticleReview(ArticleReview review, String uuid) throws Exception {
 
         // "article_reviews_<articleId>"
         String bucket = properties.getBucketArticleReviews() + review.getArticleId();
-        String key = "1";
-        Location location = new Location(new Namespace(bucket), key);
+        Location location = new Location(new Namespace(bucket), uuid);
 
-        FetchValue fetchOp = new FetchValue.Builder(location).build();
-        FetchValue.Response fetchResp = client.execute(fetchOp);
-        if (!fetchResp.isNotFound()) {
-            // At least one review already exists for this article
-            try {
-                List<ArticleReview[]> valuesList = fetchResp.getValues(ArticleReview[].class);
-                List<ArticleReview> values = new ArrayList<>();
-                for (ArticleReview[] value : valuesList) {
-                    for (ArticleReview reviewValue : value) {
-                        values.add(reviewValue);
-                    }
-                }
-                values.add(review);
+        String jsonString = new ObjectMapper().writeValueAsString(review);
+        RiakObject riakObj = new RiakObject();
+        riakObj.setContentType("application/json");
+        riakObj.setValue(BinaryValue.create(jsonString));
+        riakObj.getIndexes().getIndex(StringBinIndex.named("index_date")).add(review.getDate());
+        riakObj.getIndexes().getIndex(StringBinIndex.named("index_rating")).add(review.getRatingValue());
 
-                StoreValue storeOp = new StoreValue.Builder(values).withLocation(location).build();
-                client.execute(storeOp);
-            } catch (Exception e) {
-                // Only one review already exists
-                List<ArticleReview> values = fetchResp.getValues(ArticleReview.class);
-                values.add(review);
-                StoreValue storeOp = new StoreValue.Builder(values).withLocation(location).build();
-                client.execute(storeOp);
-            }
-        } else {
-            // No reviews exist for this article yet...
-            StoreValue storeOp = new StoreValue.Builder(review).withLocation(location).build();
-            client.execute(storeOp);
-        }
+        StoreValue storeOp = new StoreValue.Builder(riakObj).withLocation(location).build();
 
+        client.execute(storeOp);
     }
-
 }

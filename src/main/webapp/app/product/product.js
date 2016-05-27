@@ -155,7 +155,9 @@ angular.module('myApp.product', [])
                 if (response.message == 'Review submitted.') {
                     $scope.dataLoading = false;
                     $scope.isCreatingReview = false;
-                    $location.reload(true);
+                    productService.getReviews(id, function (data) {
+                        $scope.reviews = data.reviews;
+                    });
                 } else {
                     $scope.dataLoading = false;
                     $scope.isCreatingReview = false;
@@ -168,7 +170,7 @@ angular.module('myApp.product', [])
         };
 
         productService.getReviews(id, function (data) {
-            $scope.reviews = data;
+            $scope.reviews = data.reviews;
         });
 
         // return only the first n entries of the actors

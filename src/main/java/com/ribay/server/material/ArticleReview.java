@@ -7,6 +7,7 @@ public class ArticleReview {
 
     private String articleId;
     private String author;
+    private String uuid;
     private String date;
     private String ratingValue;
     private String reviewTitle;
@@ -17,10 +18,11 @@ public class ArticleReview {
 
     }
 
-    public ArticleReview(String articleId, String author, String date, String ratingValue, String reviewTitle, String reviewContent)
+    public ArticleReview(String articleId, String author, String uuid, String date, String ratingValue, String reviewTitle, String reviewContent)
     {
         this.articleId = articleId;
         this.author = author;
+        this.uuid = uuid;
         this.date = date;
         this.ratingValue = ratingValue;
         this.reviewTitle = reviewTitle;
@@ -41,6 +43,14 @@ public class ArticleReview {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getDate() {
