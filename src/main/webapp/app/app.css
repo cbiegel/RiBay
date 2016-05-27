@@ -131,7 +131,6 @@ a {
 .application-logo > img {
     width: 120px;
     height: 42px;
-    background-color: green; /* TODO remove */
 }
 
 .headline-first > div {
