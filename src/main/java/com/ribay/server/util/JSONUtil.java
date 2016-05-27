@@ -15,7 +15,7 @@ public class JSONUtil {
         }
     }
 
-    public static <T> String write(T object) throws Exception {
+    public static <T> String write(T object) {
         try {
             return new ObjectMapper().writeValueAsString(object);
         } catch (Exception e) {

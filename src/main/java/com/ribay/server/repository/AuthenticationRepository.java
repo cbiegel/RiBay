@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.primitives.Longs;
 import com.ribay.server.db.MyRiakClient;
 import com.ribay.server.material.User;
+import com.ribay.server.util.RiakObjectBuilder;
 import com.ribay.server.util.RibayProperties;
 import com.ribay.server.util.clock.RibayClock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,12 +111,9 @@ public class AuthenticationRepository {
 
         // now store time for sessionId
 
-        RiakObject obj = new RiakObject()
-                .setContentType("application/json")
-                .setValue(BinaryValue.create(Longs.toByteArray(value)));
-
-        // store time as secondary index
-        obj.getIndexes().getIndex(LongIntIndex.named(INDEX_NAME_TIME)).add(value);
+        RiakObject obj = new RiakObjectBuilder(Longs.toByteArray(value)) //
+                .withIndex(LongIntIndex.named(INDEX_NAME_TIME), value) //
+                .build(); //
 
         Location cartObjectLocation = new Location(new Namespace(bucket), key);
         StoreValue storeOp = new StoreValue.Builder(obj).withLocation(cartObjectLocation).build();
