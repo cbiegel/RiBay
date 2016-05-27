@@ -68,13 +68,14 @@ public class AuthenticationRepository {
 
     public void register(final User user) throws Exception {
         String bucket = properties.getBucketUsers();
-        Location location = new Location(new Namespace(bucket), user.getUuid().toString());
+        String key = user.getUuid().toString();
+        Location location = new Location(new Namespace(bucket), key);
+
         // Set the email index for the new object. This requires a RiakObject type
-        String jsonString = new ObjectMapper().writeValueAsString(user);
-        RiakObject riakObj = new RiakObject();
-        riakObj.setContentType("application/json");
-        riakObj.setValue(BinaryValue.create(jsonString));
-        riakObj.getIndexes().getIndex(StringBinIndex.named("index_email")).add(user.getEmailAddress());
+        RiakObject riakObj = new RiakObjectBuilder(user) //
+                .withIndex(StringBinIndex.named("index_email"), user.getEmailAddress()) //
+                .build(); //
+
         // Store the object
         StoreValue storeOp = new StoreValue.Builder(riakObj).withLocation(location).build();
         client.execute(storeOp);
