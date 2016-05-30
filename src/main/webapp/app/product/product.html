@@ -65,7 +65,7 @@
             </div>
             <div class="actors">
                 <span class="caption text-bold">Actors: </span>
-                <span class="value" ng-repeat="actor in getFirstNActors(5)">{{actor}}{{$last ? '' : ', '}}</span>
+                <span class="value" ng-repeat="actor in product.actors | limitTo : 5">{{actor}}{{$last ? '' : ', '}}</span>
             </div>
             <div class="details">
                 <span class="caption text-bold">Plot information:</span>
@@ -132,5 +132,8 @@
         <div class="review-content">
             <span>{{review.reviewContent}}</span>
         </div>
+    </div>
+    <div class="button">
+        <button type="button" class="btn button-primary" ng-show="reviews_continuation != null" ng-click="loadMoreReviews()">Load more reviews</button>
     </div>
 </div>

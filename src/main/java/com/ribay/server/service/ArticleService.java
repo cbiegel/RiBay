@@ -56,29 +56,18 @@ public class ArticleService {
         return article;
     }
 
-    @RequestMapping(path = "/article/getReviews", method = RequestMethod.GET)
-    public ArticleReviewsContinuation getArticleReviews(@RequestParam(value = "articleId") String articleId) throws Exception {
-        ArticleReviewsContinuation result = null;
-
-        try {
-            // TODO: Save User in requestData when logging in so that we can just read it here instead of querying
-            User loggedInUser = authenticationRepository.getLoggedInUser(requestData.getSessionId());
-            result = articleRepository.getReviewsForArticle(articleId, loggedInUser.getUuid().toString());
-        } catch (Exception e) {
-            LOGGER.error("Failed to get reviews for article " + articleId);
-            e.printStackTrace();
-            return null;
-        }
-
-        return result;
+    @RequestMapping(path = "/article/reviews", method = RequestMethod.GET)
+    public ArticleReviewsContinuation getArticleReviews(@RequestParam(value = "articleId") String articleId,
+                                                        @RequestParam(value = "continuation", required = false) String continuation) throws Exception {
+        return articleRepository.getReviewsForArticle(articleId, continuation);
     }
 
     @RequestMapping(path = "/article/submitReview", method = RequestMethod.POST)
     public ArticleReview submitArticleReview(@RequestBody ArticleReview review) throws Exception {
-
+        String sessionId = requestData.getSessionId();
         try {
             // TODO: Save User in requestData when logging in so that we can just read it here instead of querying
-            User loggedInUser = authenticationRepository.getLoggedInUser(requestData.getSessionId());
+            User loggedInUser = authenticationRepository.getLoggedInUser(sessionId);
             articleRepository.submitArticleReview(review, loggedInUser.getUuid().toString());
             return review;
         } catch (Exception e) {

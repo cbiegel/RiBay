@@ -62,9 +62,17 @@ angular.module('myApp.product', [])
             );
         };
 
-        this.getReviews = function (id, callback) {
+        this.getReviews = function (articleId, continuation, callback) {
 
-            $http.get('/article/getReviews?articleId=' + id).then(
+            var url;
+            if (continuation == undefined) {
+                url = '/article/reviews?articleId=' + articleId;
+            }
+            else {
+                url = '/article/reviews?articleId=' + articleId + '&continuation=' + continuation;
+            }
+
+            $http.get(url).then(
                 function success(response) {
                     var data = response.data;
                     callback(data);
@@ -137,6 +145,16 @@ angular.module('myApp.product', [])
             });
         };
 
+        $scope.reviews = [];
+        $scope.reviews_continuation = undefined; // undefined -> initial value, non-null -> there are more reviews, null -> there are no more reviews
+
+        var updateReviews = function (data) {
+            $scope.reviews = $scope.reviews.concat(data.reviews); // append at the end of list
+            $scope.reviews_continuation = data.continuation;
+        };
+
+        productService.getReviews(id, $scope.reviews_continuation, updateReviews);
+
         $scope.createReview = function () {
 
             // user is not logged in. Redirect to login page...
@@ -155,9 +173,10 @@ angular.module('myApp.product', [])
                 if (response.message == 'Review submitted.') {
                     $scope.dataLoading = false;
                     $scope.isCreatingReview = false;
-                    productService.getReviews(id, function (data) {
-                        $scope.reviews = data.reviews;
-                    });
+
+                    $scope.reviews = []; // reset reviews
+                    $scope.reviews_continuation = null; // reset continuation
+                    productService.getReviews(id, $scope.reviews_continuation, updateReviews); // reload reviews
                 } else {
                     $scope.dataLoading = false;
                     $scope.isCreatingReview = false;
@@ -165,24 +184,12 @@ angular.module('myApp.product', [])
             });
         };
 
+        $scope.loadMoreReviews = function () {
+            productService.getReviews(id, $scope.reviews_continuation, updateReviews);
+        };
+
         $scope.switchBool = function (boolValue) {
             $scope[boolValue] = !$scope[boolValue];
         };
-
-        productService.getReviews(id, function (data) {
-            $scope.reviews = data.reviews;
-        });
-
-        // return only the first n entries of the actors
-        $scope.getFirstNActors = function (n) {
-            if ($scope.product.actors) {
-                var limit = Math.min(n, $scope.product.actors.length);
-                var result = new Array(limit);
-                for (var i = 0; i < limit; i++) {
-                    result[i] = $scope.product.actors[i];
-                }
-                return result;
-            }
-        }
 
     }]);

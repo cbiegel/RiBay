@@ -1,18 +1,22 @@
 package com.ribay.server.repository;
 
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-
 import com.basho.riak.client.api.commands.indexes.BinIndexQuery;
-import com.basho.riak.client.api.convert.ConversionException;
+import com.basho.riak.client.api.commands.kv.FetchValue;
+import com.basho.riak.client.api.commands.kv.StoreValue;
+import com.basho.riak.client.core.operations.SearchOperation;
+import com.basho.riak.client.core.query.Location;
+import com.basho.riak.client.core.query.Namespace;
 import com.basho.riak.client.core.query.RiakObject;
 import com.basho.riak.client.core.query.indexes.StringBinIndex;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.basho.riak.client.core.util.BinaryValue;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ribay.server.db.MyRiakClient;
 import com.ribay.server.exception.NotFoundException;
 import com.ribay.server.material.*;
 import com.ribay.server.material.continuation.ArticleReviewsContinuation;
+import com.ribay.server.repository.query.QueryBuilder;
+import com.ribay.server.repository.query.QueryBuilderArticle;
+import com.ribay.server.util.RibayProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +24,11 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.basho.riak.client.api.commands.kv.FetchValue;
-import com.basho.riak.client.api.commands.kv.StoreValue;
-import com.basho.riak.client.core.operations.SearchOperation;
-import com.basho.riak.client.core.query.Location;
-import com.basho.riak.client.core.query.Namespace;
-import com.basho.riak.client.core.util.BinaryValue;
-import com.ribay.server.db.MyRiakClient;
-import com.ribay.server.repository.query.QueryBuilder;
-import com.ribay.server.repository.query.QueryBuilderArticle;
-import com.ribay.server.util.RibayProperties;
-
-import javax.websocket.Decoder;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * Created by CD on 30.04.2016.
@@ -113,40 +110,42 @@ public class ArticleRepository {
         }
     }
 
-    public ArticleReviewsContinuation getReviewsForArticle(String articleId, String uuid) throws Exception {
+    public ArticleReviewsContinuation getReviewsForArticle(String articleId, String continuation) throws Exception {
         String bucket = properties.getBucketArticleReviews() + articleId;
         Namespace namespace = new Namespace(bucket);
 
         BinIndexQuery biq = new BinIndexQuery.Builder(namespace, "index_rating", "0", "5")
                 .withMaxResults(10)
                 .withPaginationSort(true)
+                .withContinuation((continuation == null) ? null : BinaryValue.create(continuation))
                 .build();
+
         BinIndexQuery.Response response = client.execute(biq);
 
-        if(!response.hasEntries()) {
-            throw new NotFoundException();
-        } else {
-            ArticleReviewsContinuation resultValue = new ArticleReviewsContinuation();
+        ArticleReviewsContinuation resultValue = new ArticleReviewsContinuation();
 
-           List<ArticleReview> reviews =  response.getEntries().stream().parallel().map(BinIndexQuery.Response.Entry::getRiakObjectLocation).map(
-                    (location) -> {
-                        FetchValue fetchValue = new FetchValue.Builder(location).build();
-                        try {
-                            FetchValue.Response result = client.execute(fetchValue);
-                            return result.getValue(ArticleReview.class);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }).collect(Collectors.toList());
-            resultValue.setReviews(reviews);
+        List<ArticleReview> reviews = response.getEntries().stream() //
+                .parallel() // parallel for faster fetching
+                .map(BinIndexQuery.Response.Entry::getRiakObjectLocation) // get location
+                .map((location) -> {
+                    FetchValue fetchValue = new FetchValue.Builder(location).build();
+                    try {
+                        FetchValue.Response result = client.execute(fetchValue);
+                        return result.getValue(ArticleReview.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                }) // get value for location
+                .collect(Collectors.toList());
+        resultValue.setReviews(reviews);
 
-            if(response.hasContinuation()) {
-                resultValue.setContinuation(response.getContinuation().toString());
-            }
-
-            return resultValue;
+        if (response.hasContinuation()) {
+            String newContinuation = response.getContinuation().toStringUtf8();
+            resultValue.setContinuation(newContinuation);
         }
+
+        return resultValue;
     }
 
     public void submitArticleReview(ArticleReview review, String uuid) throws Exception {
