@@ -64,22 +64,24 @@ angular.module('myApp.product', [])
 
         this.getReviews = function (articleId, continuation, callback) {
 
-            var url;
-            if (continuation == undefined) {
-                url = '/article/reviews?articleId=' + articleId;
-            }
-            else {
-                url = '/article/reviews?articleId=' + articleId + '&continuation=' + continuation;
-            }
-
-            $http.get(url).then(
-                function success(response) {
-                    var data = response.data;
-                    callback(data);
-                },
-                function error(response) {
+            if (continuation != null) { // do no try to load more reviews after reaching end of list (null means end of list)
+                var url;
+                if (continuation == undefined) {
+                    url = '/article/reviews?articleId=' + articleId;
                 }
-            );
+                else {
+                    url = '/article/reviews?articleId=' + articleId + '&continuation=' + continuation;
+                }
+
+                $http.get(url).then(
+                    function success(response) {
+                        var data = response.data;
+                        callback(data);
+                    },
+                    function error(response) {
+                    }
+                );
+            }
         };
 
         this.submitReview = function (id, name, value, title, content, callback) {
