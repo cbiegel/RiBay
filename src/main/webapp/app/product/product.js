@@ -64,7 +64,7 @@ angular.module('myApp.product', [])
 
         this.getReviews = function (articleId, continuation, callback) {
 
-            if (continuation != null) { // do no try to load more reviews after reaching end of list (null means end of list)
+            if (continuation !== null) { // do no try to load more reviews after reaching end of list (null means end of list)
                 var url;
                 if (continuation == undefined) {
                     url = '/article/reviews?articleId=' + articleId;
