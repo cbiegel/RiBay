@@ -69,14 +69,14 @@ public class ArticleRepository {
                 .build();
         // TODO specify sort field and order
 
-        LOGGER.info("query: " + command.getQueryInfo().toStringUtf8());
+        LOGGER.debug("query: " + command.getQueryInfo().toStringUtf8());
 
         client.execute(command);
 
         SearchOperation.Response response = command.get();
         List<Map<String, List<String>>> searchResults = response.getAllResults();
 
-        LOGGER.info("result: " + searchResults);
+        LOGGER.debug("result: " + searchResults);
 
         // map solr result document to object
         List<ArticleForSearch> result = searchResults.stream().map((map) -> {
