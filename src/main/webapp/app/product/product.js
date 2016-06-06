@@ -177,7 +177,7 @@ angular.module('myApp.product', [])
                     $scope.isCreatingReview = false;
 
                     $scope.reviews = []; // reset reviews
-                    $scope.reviews_continuation = null; // reset continuation
+                    $scope.reviews_continuation = undefined; // reset continuation
                     productService.getReviews(id, $scope.reviews_continuation, updateReviews); // reload reviews
                 } else {
                     $scope.dataLoading = false;
