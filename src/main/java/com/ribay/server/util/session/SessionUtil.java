@@ -1,15 +1,14 @@
-package com.ribay.server.util;
+package com.ribay.server.util.session;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jackson.JacksonUtils;
-import org.apache.tomcat.util.codec.binary.Base64;
+import com.ribay.server.util.RibayProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Base64Utils;
 import org.springframework.util.DigestUtils;
 
 import javax.servlet.http.Cookie;
@@ -21,7 +20,6 @@ import java.io.ObjectOutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.UUID;
 
 /**

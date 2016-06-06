@@ -1,6 +1,7 @@
 package com.ribay.server.util;
 
 import com.ribay.server.material.User;
+import com.ribay.server.util.session.SessionData;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

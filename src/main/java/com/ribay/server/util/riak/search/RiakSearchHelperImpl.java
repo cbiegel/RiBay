@@ -1,4 +1,4 @@
-package com.ribay.server.util.riak;
+package com.ribay.server.util.riak.search;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;

@@ -1,8 +1,7 @@
-package com.ribay.server.util;
+package com.ribay.server.util.session;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ribay.server.material.Cart;
 import com.ribay.server.material.User;
 
 import java.io.Serializable;

@@ -1,8 +1,9 @@
-package com.ribay.server.util;
+package com.ribay.server.util.riak;
 
 import com.basho.riak.client.core.query.RiakObject;
 import com.basho.riak.client.core.query.indexes.RiakIndex;
 import com.basho.riak.client.core.util.BinaryValue;
+import com.ribay.server.util.JSONUtil;
 
 import java.util.HashMap;
 import java.util.Map;

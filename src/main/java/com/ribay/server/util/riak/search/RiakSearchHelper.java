@@ -1,4 +1,4 @@
-package com.ribay.server.util.riak;
+package com.ribay.server.util.riak.search;
 
 import java.util.Collections;
 import java.util.List;

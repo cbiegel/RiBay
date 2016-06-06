@@ -1,6 +1,8 @@
 package com.ribay.server.util;
 
 import com.ribay.server.repository.AuthenticationRepository;
+import com.ribay.server.util.session.SessionData;
+import com.ribay.server.util.session.SessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.UUID;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)

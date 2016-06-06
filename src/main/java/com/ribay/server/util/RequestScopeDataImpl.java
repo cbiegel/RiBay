@@ -1,6 +1,8 @@
 package com.ribay.server.util;
 
 import com.ribay.server.material.User;
+import com.ribay.server.util.session.SessionData;
+import com.ribay.server.util.session.SessionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;

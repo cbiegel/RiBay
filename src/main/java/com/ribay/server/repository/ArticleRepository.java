@@ -17,7 +17,7 @@ import com.ribay.server.material.continuation.ArticleReviewsContinuation;
 import com.ribay.server.repository.query.QueryBuilder;
 import com.ribay.server.repository.query.QueryBuilderArticle;
 import com.ribay.server.util.RibayProperties;
-import com.ribay.server.util.riak.RiakSearchHelper;
+import com.ribay.server.util.riak.search.RiakSearchHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
