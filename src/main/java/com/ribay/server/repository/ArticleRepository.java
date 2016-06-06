@@ -17,6 +17,7 @@ import com.ribay.server.material.continuation.ArticleReviewsContinuation;
 import com.ribay.server.repository.query.QueryBuilder;
 import com.ribay.server.repository.query.QueryBuilderArticle;
 import com.ribay.server.util.RibayProperties;
+import com.ribay.server.util.riak.RiakSearchHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,9 @@ public class ArticleRepository {
 
     @Autowired
     private RibayProperties properties;
+
+    @Autowired
+    private RiakSearchHelper riakSearchHelper;
 
     public Future<?> storeArticle(Article article) throws Exception {
         String bucket = properties.getBucketArticles();
@@ -81,14 +85,14 @@ public class ArticleRepository {
         // map solr result document to object
         List<ArticleForSearch> result = searchResults.stream().map((map) -> {
             ArticleForSearch item = new ArticleForSearch();
-            item.setId(map.getOrDefault("id_register", Collections.singletonList(null)).get(0));
-            item.setTitle(map.getOrDefault("title_register", Collections.singletonList(null)).get(0));
-            item.setYear(map.getOrDefault("year_register", Collections.singletonList(null)).get(0));
-            item.setVotes(Integer.valueOf(map.getOrDefault("votes_counter", Collections.singletonList("0")).get(0)));
-            item.setSumRatings(Integer.valueOf(map.getOrDefault("sumRatings_counter", Collections.singletonList("0")).get(0)));
-            item.setImage(map.getOrDefault("image_register", Collections.singletonList(null)).get(0));
-            item.setMovie(Boolean.valueOf(map.getOrDefault("isMovie_flag", Collections.singletonList("false")).get(0)));
-            item.setPrice(Integer.valueOf(map.getOrDefault("price_register", Collections.singletonList("0")).get(0)));
+            item.setId(riakSearchHelper.getString("id_register", map));
+            item.setTitle(riakSearchHelper.getString("title_register", map));
+            item.setYear(riakSearchHelper.getString("year_register", map));
+            item.setVotes(riakSearchHelper.getInteger("votes_counter", map));
+            item.setSumRatings(riakSearchHelper.getInteger("sumRatings_counter", map));
+            item.setImage(riakSearchHelper.getString("image_register", map));
+            item.setMovie(riakSearchHelper.getBoolean("isMovie_flag", map));
+            item.setPrice(riakSearchHelper.getInteger("price_register", map));
             return item;
         }).collect(Collectors.toList());
 
