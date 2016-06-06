@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.Cookie;
@@ -63,13 +64,19 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         // get the session id
         requestData.setSessionId(sessionId);
 
+        return super.preHandle(request, response, handler);
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        super.postHandle(request, response, handler, modelAndView);
+
         try {
+            String sessionId = requestData.getSessionId();
             authRepository.saveLastAccess(sessionId);
         } catch (Exception e) {
             logger.error("Was not able to save last access time for session", e);
         }
-
-        return super.preHandle(request, response, handler);
     }
 
     private Optional<Cookie> getSessionCookie(HttpServletRequest request) {
@@ -77,7 +84,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         if (cookies == null) {
             return Optional.empty();
         } else {
-            return Arrays.stream(request.getCookies()).filter((cookie) -> cookie.getName().equals(COOKIE_NAME)).findAny();
+            return Arrays.stream(cookies) //
+                    .filter((cookie) -> cookie.getName().equals(COOKIE_NAME)) //
+                    .findAny();
         }
     }
 
