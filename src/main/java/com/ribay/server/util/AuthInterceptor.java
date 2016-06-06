@@ -29,16 +29,19 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private AuthenticationRepository authRepository;
 
+    @Autowired
+    private SessionUtil sessionUtil;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
                              Object handler) throws Exception {
 
         // get or generate session
-        SessionData session = SessionUtil.readSession(request);
+        SessionData session = sessionUtil.readSession(request);
 
         if (session.isNew()) {
             // if created session. make sure that a cookie is generated
-            SessionUtil.writeSession(response, session);
+            sessionUtil.writeSession(response, session);
         }
 
         // set session data of request scope data so that the actual rest services can use that

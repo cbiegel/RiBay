@@ -30,9 +30,9 @@ public class RibayProperties {
                 RibayProperties.class.getClassLoader().getResourceAsStream("database.properties"));
     }
 
-    public long getSessionTimeout() {
+    public int getSessionTimeout() {
         String value = applicationProperties.getProperty("session.timeout.seconds");
-        return Long.parseLong(value);
+        return Integer.parseInt(value);
     }
 
     public String[] getDatabaseIps() throws Exception {

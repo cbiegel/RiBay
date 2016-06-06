@@ -1,7 +1,7 @@
 package com.ribay.server.util;
 
-import com.ribay.server.material.Cart;
 import com.ribay.server.material.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.INTERFACES)
 public class RequestScopeDataImpl implements RequestScopeData {
+
+    @Autowired
+    private SessionUtil sessionUtil;
 
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -42,11 +45,11 @@ public class RequestScopeDataImpl implements RequestScopeData {
     }
 
     private void updateCookie() {
-        SessionData oldSessionData = SessionUtil.readSession(request);
+        SessionData oldSessionData = sessionUtil.readSession(request);
         SessionData newSessionData = session;
         if (!newSessionData.equals(oldSessionData)) {
             // if session data changed or there was no session data -> update cookie
-            SessionUtil.writeSession(response, newSessionData);
+            sessionUtil.writeSession(response, newSessionData);
         }
     }
 

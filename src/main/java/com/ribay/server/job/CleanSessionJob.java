@@ -3,6 +3,7 @@ package com.ribay.server.job;
 import com.ribay.server.repository.AuthenticationRepository;
 import com.ribay.server.repository.CartRepository;
 import com.ribay.server.repository.MarketingRepository;
+import com.ribay.server.util.RibayProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,6 @@ public class CleanSessionJob {
     private static final Logger LOGGER = LoggerFactory.getLogger(CleanSessionJob.class);
 
     private static final long JOB_INTERVAL = 60 * 60 * 1000; // one hour
-    private static final long SESSION_KEEP_ALIVE_INTERVAL = 24 * 60 * 60 * 1000; // one day
 
     @Autowired
     private AuthenticationRepository authRepository;
@@ -37,9 +37,13 @@ public class CleanSessionJob {
     @Autowired
     private MarketingRepository marketingRepository;
 
+    @Autowired
+    private RibayProperties properties;
+
     @Scheduled(fixedDelay = JOB_INTERVAL)
     public void cleanSessions() throws Exception {
-        List<String> sessionsToClean = authRepository.getSessionIdsOlderThan(SESSION_KEEP_ALIVE_INTERVAL);
+        long sessionTimeoutInMs = properties.getSessionTimeout() * 1000L;
+        List<String> sessionsToClean = authRepository.getSessionIdsOlderThan(sessionTimeoutInMs);
 
         LOGGER.info("sessions to clean: " + sessionsToClean);
 

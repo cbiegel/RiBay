@@ -5,6 +5,10 @@ import com.github.fge.jackson.JacksonUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.DigestUtils;
 
@@ -23,6 +27,8 @@ import java.util.UUID;
 /**
  * Created by CD on 06.06.2016.
  */
+@Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SessionUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(SessionUtil.class);
@@ -31,7 +37,10 @@ public class SessionUtil {
 
     private static final Charset COOKIE_CHARSET = StandardCharsets.US_ASCII; // use ascii because it is easy to decode with js
 
-    public static SessionData readSession(HttpServletRequest request) {
+    @Autowired
+    private RibayProperties properties;
+
+    public SessionData readSession(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
             // if no cookies -> create session
@@ -48,14 +57,14 @@ public class SessionUtil {
         }
     }
 
-    public static void writeSession(HttpServletResponse response, SessionData sessionData) {
+    public void writeSession(HttpServletResponse response, SessionData sessionData) {
         String hashValue = generateHash(sessionData);
         sessionData.setHash(hashValue);
 
         byte[] sessionBytes = SessionUtil.sessionToJSON(sessionData);
         String sessionValue = new String(sessionBytes, COOKIE_CHARSET);
         Cookie sessionCookie = new Cookie(SessionUtil.SESSION_COOKIE_NAME, sessionValue);
-        sessionCookie.setMaxAge(60 * 60 * 24); // one day
+        sessionCookie.setMaxAge(properties.getSessionTimeout());
         sessionCookie.setPath("/");
         response.addCookie(sessionCookie);
     }
