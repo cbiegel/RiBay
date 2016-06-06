@@ -18,6 +18,7 @@ import com.ribay.server.util.RequestScopeData;
 
 @RestController
 public class AuthenticationService {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationService.class);
 
     @Autowired
@@ -26,25 +27,27 @@ public class AuthenticationService {
     @Autowired
     private RequestScopeData requestData;
 
-    @RequestMapping(path = "/auth/loggedin", method = RequestMethod.GET)
-    public User getLoggedInUser() throws Exception {
-
-        String key = requestData.getSessionId();
-        return repository.getLoggedInUser(key);
-    }
-
     @RequestMapping(path = "/auth/login", method = RequestMethod.POST)
     public User login(@RequestParam(value = "email") String emailAddress,
                       @RequestParam(value = "password") String password) throws Exception {
         // TODO encrypt password and send as header
-        User user = null;
-        user = repository.lookupExistingUser(emailAddress);
+        User user = repository.lookupExistingUser(emailAddress);
 
-        // User exists in database
-        if (null != user) {
-            String key = requestData.getSessionId();
-            return repository.login(key, user);
+        // TODO do not return 'null'. send http error message instead!
+
+        if (user != null) {
+            // User exists in database
+            if (password.equals(user.getPassword())) {
+                requestData.setUser(user); // add user to session
+
+                String key = requestData.getSessionId();
+                return repository.login(key, user);
+            } else {
+                // password is wrong
+                return null;
+            }
         } else {
+            // user does not exist
             return null;
         }
     }
@@ -53,6 +56,8 @@ public class AuthenticationService {
     public void logout() throws Exception {
         String key = requestData.getSessionId();
         try {
+            requestData.setUser(null); // remove user from session
+
             Future<?> future = repository.logout(key);
             future.get(); // wait for
         } catch (Exception e) {
@@ -66,9 +71,8 @@ public class AuthenticationService {
         // TODO: This operation is not transactional. It might be possible that a new user is
         // created in the meantime (dirty read)
         try {
-            User existingUser = null;
-            existingUser = repository.lookupExistingUser(user.getEmailAddress());
-            if (null != existingUser) {
+            User existingUser = repository.lookupExistingUser(user.getEmailAddress());
+            if (existingUser != null) {
                 return null;
             }
         } catch (Exception e) {

@@ -23,14 +23,36 @@ angular.module('myApp', [
     'myApp.register'
 ])
 
-    .run(['$rootScope', '$location', '$log', '$http', function ($rootScope, $location, $log, $http) {
+    .service('UserService', ['$cookies', function ($cookies) {
+
+        var self = this;
+
+        this.getSession = function () {
+            var sessionString = $cookies.get('session');
+            if (sessionString) {
+                // object in session is double escaped. so double parse the string
+                var sessionObject = JSON.parse(JSON.parse(sessionString));
+                return sessionObject;
+            }
+            else {
+                // no session
+                return null;
+            }
+        }
+
+        this.getLoggedInUser = function () {
+            var session = self.getSession();
+            return (session == null) ? null : session.user;
+        }
+
+    }])
+
+    .run(['$rootScope', '$location', '$log', 'UserService', function ($rootScope, $location, $log, UserService) {
         $rootScope.$on("$locationChangeStart", function (event, next, current) {
-            $log.info("location changing to:" + next);
+            $log.debug("location changing to:" + next);
 
             // when changing view -> check if logged in and set as global variable
-            $http.get('/auth/loggedin').success(function (data) {
-                $rootScope.loggedIn = data;
-            });
+            $rootScope.loggedIn = UserService.getLoggedInUser();
         });
     }])
 

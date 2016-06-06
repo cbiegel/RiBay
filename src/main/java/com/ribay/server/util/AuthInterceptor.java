@@ -21,9 +21,7 @@ import java.util.UUID;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class AuthInterceptor extends HandlerInterceptorAdapter {
 
-    private final Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
-
-    public static final String COOKIE_NAME = "rsessionid";
+    private static final Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
 
     @Autowired
     private RequestScopeData requestData;
@@ -35,34 +33,16 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
                              Object handler) throws Exception {
 
-        Optional<Cookie> sessionCookie = getSessionCookie(request);
+        // get or generate session
+        SessionData session = SessionUtil.readSession(request);
 
-        String sessionId;
-        if (!sessionCookie.isPresent()) {
-            // if no session id is set, a unique one will be created and set as response header
-            // the client has to create a cookie from that response header
-
-            sessionId = UUID.randomUUID().toString();
-
-            logger.info("No session id set. create one: " + sessionId);
-
-            Cookie newCookie = new Cookie(COOKIE_NAME, sessionId);
-            newCookie.setMaxAge(60 * 60 * 24); // one day
-            newCookie.setPath("/");
-            response.addCookie(newCookie);
-
-        } else {
-            Cookie existingCookie = sessionCookie.get();
-            sessionId = existingCookie.getValue();
-
-            logger.debug("session id is already set: " + sessionId);
-
-            // TODO check if valid?
+        if (session.isNew()) {
+            // if created session. make sure that a cookie is generated
+            SessionUtil.writeSession(response, session);
         }
 
-        // set session id of request scope data so that the actual rest services can use that to
-        // get the session id
-        requestData.setSessionId(sessionId);
+        // set session data of request scope data so that the actual rest services can use that
+        requestData.init(request, response, session);
 
         return super.preHandle(request, response, handler);
     }
@@ -76,17 +56,6 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             authRepository.saveLastAccess(sessionId);
         } catch (Exception e) {
             logger.error("Was not able to save last access time for session", e);
-        }
-    }
-
-    private Optional<Cookie> getSessionCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return Optional.empty();
-        } else {
-            return Arrays.stream(cookies) //
-                    .filter((cookie) -> cookie.getName().equals(COOKIE_NAME)) //
-                    .findAny();
         }
     }
 

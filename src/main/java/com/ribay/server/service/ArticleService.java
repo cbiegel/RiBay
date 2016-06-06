@@ -64,16 +64,12 @@ public class ArticleService {
 
     @RequestMapping(path = "/article/submitReview", method = RequestMethod.POST)
     public ArticleReview submitArticleReview(@RequestBody ArticleReview review) throws Exception {
-        String sessionId = requestData.getSessionId();
-        try {
-            // TODO: Save User in requestData when logging in so that we can just read it here instead of querying
-            User loggedInUser = authenticationRepository.getLoggedInUser(sessionId);
+        User loggedInUser = requestData.getUser();
+        if (loggedInUser == null) {
+            throw new Exception("Not logged in!");
+        } else {
             articleRepository.submitArticleReview(review, loggedInUser.getUuid().toString());
             return review;
-        } catch (Exception e) {
-            LOGGER.error("Failed to submit article review.");
-            e.printStackTrace();
-            return null;
         }
     }
 
