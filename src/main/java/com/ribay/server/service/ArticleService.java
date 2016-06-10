@@ -73,4 +73,23 @@ public class ArticleService {
         }
     }
 
+    @RequestMapping(path = "/article/isFirstReview", method = RequestMethod.GET)
+    public ArticleReview isFirstReviewForArticle(@RequestParam(value = "articleId") String articleId) throws Exception {
+        ArticleReview result = null;
+
+        User loggedInUser = requestData.getUser();
+        if(loggedInUser == null) {
+            try {
+                String sessionId = requestData.getSessionId();
+                loggedInUser = authenticationRepository.getLoggedInUser(sessionId);
+            } catch (Exception e) {
+                throw new Exception("Not logged in!");
+            }
+        }
+
+        result = articleRepository.iSFirstReviewForArticle(articleId, loggedInUser.getUuid().toString());
+
+        return result;
+    }
+
 }

@@ -112,6 +112,16 @@ angular.module('myApp.product', [])
             $http.put('/cart/add/' + id + '/' + quantity, undefined).success(callback);
         };
 
+        this.isFirstReviewForArticle = function (articleId, callback) {
+            $http.get('/article/isFirstReview' + '?articleId=' + articleId).then(function (config) {
+                if (config.data != "") {
+                    callback(config.data);
+                } else {
+                    callback(null);
+                }
+            });
+        }
+
     }])
 
     .controller('productCtrl', ['$scope', '$rootScope', '$routeParams', '$timeout', '$location', 'productService', function ($scope, $rootScope, $routeParams, $timeout, $location, productService) {
@@ -120,12 +130,28 @@ angular.module('myApp.product', [])
         $scope.product = "";
         $scope.isCreatingReview = false;
         $scope.isSubmittingReview = false;
+        $scope.isEditingReview = false;
         $scope.newRatingValue = 0;
         $scope.newRatingTitle = "";
         $scope.newRatingContent = "";
+        $scope.oldRatingValue = 0;
+        $scope.oldRatingTitle = "";
+        $scope.oldRatingContent = "";
+        $scope.oldReviewDate = "";
+        $scope.isFirstReview = true;
 
         productService.getProductDetails(id, function (data) {
             $scope.product = data;
+        });
+
+        productService.isFirstReviewForArticle(id, function(response) {
+            if (response != null) {
+                $scope.isFirstReview = false;
+                $scope.oldRatingValue = response.ratingValue;
+                $scope.oldRatingTitle = response.reviewTitle;
+                $scope.oldRatingContent = response.reviewContent;
+                $scope.oldReviewDate = response.date;
+            }
         });
 
         $scope.isSuccessAlertDisplayed = false;
@@ -167,6 +193,14 @@ angular.module('myApp.product', [])
             }
         };
 
+        $scope.createReview = function () {
+            $scope.isEditingReview = true;
+        };
+
+        $scope.editReview = function () {
+            $scope.isEditingReview = true;
+        }
+
         $scope.submitReview = function () {
             // id, name, value, title, content, callback
             $scope.dataLoading = true;
@@ -175,6 +209,7 @@ angular.module('myApp.product', [])
                 if (response.message == 'Review submitted.') {
                     $scope.dataLoading = false;
                     $scope.isCreatingReview = false;
+                    $scope.isEditingReview = false;
 
                     $scope.reviews = []; // reset reviews
                     $scope.reviews_continuation = undefined; // reset continuation
@@ -182,8 +217,17 @@ angular.module('myApp.product', [])
                 } else {
                     $scope.dataLoading = false;
                     $scope.isCreatingReview = false;
+                    $scope.isEditingReview = false;
                 }
             });
+        };
+
+        $scope.submitEditedReview = function () {
+            $scope.newRatingValue = $scope.oldRatingValue;
+            $scope.newRatingTitle = $scope.oldRatingTitle;
+            $scope.newRatingContent = $scope.oldRatingContent;
+            $scope.oldReviewDate = Date.now();
+            $scope.submitReview();
         };
 
         $scope.loadMoreReviews = function () {

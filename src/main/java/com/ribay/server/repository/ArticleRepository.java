@@ -117,6 +117,7 @@ public class ArticleRepository {
         String bucket = properties.getBucketArticleReviews() + articleId;
         Namespace namespace = new Namespace(bucket);
 
+        // TODO: allow client to choose range of ratings
         BinIndexQuery biq = new BinIndexQuery.Builder(namespace, "index_rating", "0", "5")
                 .withMaxResults(10)
                 .withPaginationSort(true)
@@ -167,5 +168,22 @@ public class ArticleRepository {
         StoreValue storeOp = new StoreValue.Builder(riakObj).withLocation(location).build();
 
         client.execute(storeOp);
+    }
+
+    public ArticleReview iSFirstReviewForArticle(String articleId, String uuid) throws Exception {
+
+        // "article_reviews_<articleId>"
+        String bucket = properties.getBucketArticleReviews() + articleId;
+        Namespace namespace = new Namespace(bucket);
+
+        Location location = new Location(new Namespace(bucket), uuid);
+        FetchValue fetchOp = new FetchValue.Builder(location).build();
+        FetchValue.Response fetchResp = client.execute(fetchOp);
+
+        if(fetchResp.isNotFound()) {
+            throw new NotFoundException();
+        } else {
+            return fetchResp.getValue(ArticleReview.class);
+        }
     }
 }

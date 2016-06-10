@@ -323,8 +323,8 @@ rzslider .rz-pointer.rz-active:after {
 }
 
 .product-reviews .create-review {
-    margin-bottom: 30px;
-}
+     margin-bottom: 30px;
+ }
 
 .product-reviews .create-review .title {
     font-weight: bold;
@@ -332,6 +332,19 @@ rzslider .rz-pointer.rz-active:after {
 }
 
 .product-reviews .create-review .content {
+    margin-bottom: 5px;
+}
+
+.product-reviews .edit-review {
+    margin-bottom: 30px;
+}
+
+.product-reviews .edit-review .title {
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.product-reviews .edit-review .content {
     margin-bottom: 5px;
 }
 
@@ -351,6 +364,33 @@ rzslider .rz-pointer.rz-active:after {
 }
 
 .product-reviews .write-review .content .newReviewRating .content {
+    color: #f7ce2b;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.product-reviews .write-edit-review {
+    margin-bottom: 30px;
+}
+
+.product-reviews .write-edit-review .title {
+    font-weight: bold;
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+
+.product-reviews .write-edit-review .title .subtitle-date {
+    font-weight: normal;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.product-reviews .write-edit-review .content {
+    margin-bottom: 5px;
+    max-width: 50%;
+}
+
+.product-reviews .write-edit-review .content .newReviewRating .content {
     color: #f7ce2b;
     font-weight: bold;
     font-size: 13px;
