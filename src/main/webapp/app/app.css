@@ -29,9 +29,7 @@ body {
     height: 100%;
 }
 
-#loading-overlay .wrapper img {
-    width: 200px;
-    height: 200px;
+#loading-overlay .wrapper .uil-pacman-css {
     margin: auto;
 }
 
