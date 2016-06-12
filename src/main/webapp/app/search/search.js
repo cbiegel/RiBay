@@ -48,15 +48,19 @@ angular.module('myApp.search', [])
 
     }])
 
-    .controller('searchCtrl', ['$scope', '$routeParams', '$location', '$anchorScroll', 'searchService', function ($scope, $routeParams, $location, $anchorScroll, searchService) {
+    .controller('searchCtrl', ['$scope', '$routeParams', '$location', '$anchorScroll', 'searchService', 'waitingService', function ($scope, $routeParams, $location, $anchorScroll, searchService, waitingService) {
 
         $scope.query = undefined;
 
         $scope.$watch("query", function () {
 
+            waitingService.startWaiting();
+
             // when query or its inner members changes -> load articles from server
             searchService.search($scope.query, function (data) {
                 $scope.result = data;
+
+                waitingService.endWaiting();
             });
 
         }, true);

@@ -11,18 +11,36 @@ angular.module('myApp.status', [])
         });
     }])
 
-    .service('statusService', ['$http', function ($http) {
+    .service('statusService', ['$http', 'waitingService', function ($http, waitingService) {
 
         this.getBuckets = function (callback) {
-            $http.get('/status/db/buckets').success(callback);
+            waitingService.startWaiting();
+            $http.get('/status/db/buckets').then(function (response) {
+                callback(response.data);
+                waitingService.endWaiting();
+            }, function () {
+                waitingService.endWaiting();
+            });
         };
 
         this.getKeys = function (bucket, callback) {
-            $http.get('/status/db/keys?bucket=' + bucket).success(callback);
+            waitingService.startWaiting();
+            $http.get('/status/db/keys?bucket=' + bucket).then(function (response) {
+                callback(response.data);
+                waitingService.endWaiting();
+            }, function () {
+                waitingService.endWaiting();
+            });
         }
 
         this.getValue = function (bucket, key, callback) {
-            $http.get('/status/db/value?bucket=' + bucket + '&key=' + key).success(callback);
+            waitingService.startWaiting();
+            $http.get('/status/db/value?bucket=' + bucket + '&key=' + key).then(function (response) {
+                callback(response.data);
+                waitingService.endWaiting();
+            }, function () {
+                waitingService.endWaiting();
+            });
         }
 
         this.getBucketProperties = function (bucket, callback) {
