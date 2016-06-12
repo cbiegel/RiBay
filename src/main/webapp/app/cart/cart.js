@@ -61,12 +61,13 @@ angular.module('myApp.cart', [])
 
     }])
 
-    .controller('cartCtrl', ['$scope', 'cartService', function ($scope, cartService) {
+    .controller('cartCtrl', ['$scope', 'waitingService', 'cartService', function ($scope, waitingService, cartService) {
+
+        waitingService.startWaiting();
 
         $scope.cart = undefined;
         $scope.subtotal = undefined;
         $scope.isEmpty = true;
-
 
         var update = function (data) {
             $scope.cart = data.articles;
@@ -86,12 +87,16 @@ angular.module('myApp.cart', [])
                 amount: total_amount,
                 price: total_price
             };
+
+            waitingService.endWaiting();
         }
 
         cartService.getCart(update); // init cart
 
 
         $scope.deleteItem = function (item) {
+            waitingService.startWaiting();
+
             cartService.deleteItem(item, function (data) {
                 // update with new cart from callback
                 update(data);
@@ -99,6 +104,8 @@ angular.module('myApp.cart', [])
         };
 
         $scope.setQuantity = function (item, quantity) {
+            waitingService.startWaiting();
+
             cartService.setQuantity(item, item.quantity, quantity, function () {
                 // TODO update without need for additional call for getting updated cart?
                 cartService.getCart(update); // update cart

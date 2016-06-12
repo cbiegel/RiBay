@@ -23,6 +23,12 @@
     <script src="bower_components/highcharts-release/highcharts.js"></script>
 </head>
 <body>
+<div id="blocking-overlay" ng-show="blocking"></div>
+<div id="loading-overlay" ng-show="showLoadingAnimation">
+    <div class="wrapper">
+        <img src="components/img/pacman.svg">
+    </div>
+</div>
 <div class="header">
     <div class="headline-first">
         <div class="application-logo">
