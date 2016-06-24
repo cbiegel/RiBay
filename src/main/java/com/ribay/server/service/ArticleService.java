@@ -56,6 +56,12 @@ public class ArticleService {
         return article;
     }
 
+    @RequestMapping(path = "/article/info/dynamic", method = RequestMethod.GET)
+    public ArticleDynamic getArticleInfoDynamic(@RequestParam(value = "articleId") String articleId) throws Exception {
+        ArticleDynamic article = articleRepository.getArticleInformationDynamic(articleId);
+        return article;
+    }
+
     @RequestMapping(path = "/article/reviews", method = RequestMethod.GET)
     public ArticleReviewsContinuation getArticleReviews(@RequestParam(value = "articleId") String articleId,
                                                         @RequestParam(value = "continuation", required = false) String continuation) throws Exception {
@@ -78,7 +84,7 @@ public class ArticleService {
         ArticleReview result = null;
 
         User loggedInUser = requestData.getUser();
-        if(loggedInUser == null) {
+        if (loggedInUser == null) {
             try {
                 String sessionId = requestData.getSessionId();
                 loggedInUser = authenticationRepository.getLoggedInUser(sessionId);

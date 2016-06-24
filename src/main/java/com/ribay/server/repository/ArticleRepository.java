@@ -118,8 +118,7 @@ public class ArticleRepository {
         }
     }
 
-    public ArticleDynamic getArticleInformationDynamic(final String articleId) throws Exception
-    {
+    public ArticleDynamic getArticleInformationDynamic(final String articleId) throws Exception {
         Namespace bucket = properties.getBucketArticlesDynamic();
         String key = articleId;
         Location location = new Location(bucket, key);
@@ -138,7 +137,16 @@ public class ArticleRepository {
         RiakCounter countRatingsCounter = responseFromDB.getCounter("countRatings");
 
         int price = new BigInteger(priceRegister.getValue().getValue()).intValue();
+        int stock = stockCounter.view().intValue();
+        int sumRatings = sumRatingsCounter.view().intValue();
+        int countRatings = countRatingsCounter.view().intValue();
 
+        ArticleDynamic result = new ArticleDynamic();
+        result.setPrice(price);
+        result.setStock(stock);
+        result.setSumRatings(sumRatings);
+        result.setCountRatings(countRatings);
+        return result;
     }
 
     public ArticleReviewsContinuation getReviewsForArticle(String articleId, String continuation) throws Exception {
@@ -208,7 +216,7 @@ public class ArticleRepository {
         FetchValue fetchOp = new FetchValue.Builder(location).build();
         FetchValue.Response fetchResp = client.execute(fetchOp);
 
-        if(fetchResp.isNotFound()) {
+        if (fetchResp.isNotFound()) {
             throw new NotFoundException();
         } else {
             return fetchResp.getValue(ArticleReview.class);
