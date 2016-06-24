@@ -1,3 +1,40 @@
 <div class="admin">
 
+    <div class="filter">
+        <input type="text" ng-model="searchText" placeholder="Article" my-enter="search()" class="form-control">
+        <button type="button" class="btn btn-primary" ng-click="search()">Search</button>
+    </div>
+
+    <hr>
+
+    <table class="article-table">
+        <tr>
+            <th>Id</th>
+            <th style="width: 200px;">Name</th>
+            <th>Image</th>
+            <th>Price</th>
+            <th>Stock</th>
+        </tr>
+        <tr ng-repeat="product in searchResults">
+            <td>{{product.id}}</td>
+            <td>{{product.title}}</td>
+            <td>
+                <img ng-show="product.images"
+                     ng-src="{{product.images[0].src}}"
+                     style="margin:auto; max-height: 160px; max-width: 160px;">
+            </td>
+            <td class="inline">
+                <input type="number" ng-model="product.price" my-enter="confirmPrice(product)" class="form-control" style="width: 80px;">
+                <button type="button" class="btn" ng-click="confirmPrice(product)">Ok</button>
+            </td>
+            <td>
+                <button type="button" class="btn btn-primary" ng-click="changeStock(product, -10)">-10</button>
+                <button type="button" class="btn btn-primary" ng-click="changeStock(product, -1)">-1</button>
+                <span style="font-size: 24px; font-weight: bold; padding: 0 20px;">{{product.stock}}</span>
+                <button type="button" class="btn btn-primary" ng-click="changeStock(product, 1)">+1</button>
+                <button type="button" class="btn btn-primary" ng-click="changeStock(product, 10)">+10</button>
+            </td>
+        </tr>
+    </table>
+
 </div>

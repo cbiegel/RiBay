@@ -1,9 +1,6 @@
 package com.ribay.server.repository;
 
-import com.basho.riak.client.api.commands.datatypes.FetchMap;
-import com.basho.riak.client.api.commands.datatypes.CounterUpdate;
-import com.basho.riak.client.api.commands.datatypes.MapUpdate;
-import com.basho.riak.client.api.commands.datatypes.UpdateMap;
+import com.basho.riak.client.api.commands.datatypes.*;
 import com.basho.riak.client.api.commands.indexes.BinIndexQuery;
 import com.basho.riak.client.api.commands.kv.FetchValue;
 import com.basho.riak.client.api.commands.kv.StoreValue;
@@ -261,4 +258,37 @@ public class ArticleRepository {
             return fetchResp.getValue(ArticleReview.class);
         }
     }
+
+    public Integer changeStock(String articleId, int diff, boolean returnNewValue) throws Exception {
+        Namespace bucket = properties.getBucketArticlesDynamic();
+        String key = articleId;
+        Location location = new Location(bucket, key);
+
+        MapUpdate update = new MapUpdate().update("stock", new CounterUpdate(diff));
+        UpdateMap command = new UpdateMap.Builder(location, update).build();
+        client.execute(command);
+
+        if (returnNewValue) {
+            // fetch dynamic article values
+            FetchMap fetchCommand = new FetchMap.Builder(location).build();
+            FetchMap.Response fetchResponse = client.execute(fetchCommand);
+            RiakMap map = fetchResponse.getDatatype();
+
+            ArticleDynamic articleDynamic = getArticleDynamicFromRiakMap(map);
+            return articleDynamic.getStock();
+        } else {
+            return null;
+        }
+    }
+
+    public void setPrice(String articleId, int price) throws Exception {
+        Namespace bucket = properties.getBucketArticlesDynamic();
+        String key = articleId;
+        Location location = new Location(bucket, key);
+
+        MapUpdate update = new MapUpdate().update("price", new RegisterUpdate(BigInteger.valueOf(price).toByteArray()));
+        UpdateMap command = new UpdateMap.Builder(location, update).build();
+        client.execute(command);
+    }
+
 }

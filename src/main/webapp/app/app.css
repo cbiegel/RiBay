@@ -720,3 +720,21 @@ rzslider .rz-pointer.rz-active:after {
     background-color: #d3d3d3;
 }
 
+.admin {
+    padding: 12px 16px;
+}
+
+.admin .filter > * {
+    display: inline-block;
+}
+
+.admin .filter input[type=text] {
+    width: 240px;
+}
+
+.admin table {
+    border-spacing: 36px;
+    border-collapse: separate;
+}
+
+

@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
  * Created by CD on 01.05.2016.
  */
@@ -92,6 +90,19 @@ public class ArticleService {
         result = articleRepository.iSFirstReviewForArticle(articleId, loggedInUser.getUuid().toString());
 
         return result;
+    }
+
+    @RequestMapping(path = "/article/changeStock/{articleId}/{diff}", method = RequestMethod.PUT)
+    public Integer changeStock(
+            @PathVariable(value = "articleId") String articleId,
+            @PathVariable(value = "diff") int diff,
+            @RequestParam(value = "returnNewValue", required = false, defaultValue = "false") boolean returnNewValue) throws Exception {
+        return articleRepository.changeStock(articleId, diff, returnNewValue);
+    }
+
+    @RequestMapping(path = "/article/setPrice/{articleId}/{price}", method = RequestMethod.PUT)
+    public void setPrice(@PathVariable(value = "articleId") String articleId, @PathVariable(value = "price") int price) throws Exception {
+        articleRepository.setPrice(articleId, price);
     }
 
 }
