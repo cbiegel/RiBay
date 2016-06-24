@@ -136,7 +136,7 @@ angular.module('myApp.product', [])
 
     }])
 
-    .controller('productCtrl', ['$scope', '$rootScope', '$routeParams', '$timeout', '$location', 'productService', function ($scope, $rootScope, $routeParams, $timeout, $location, productService) {
+    .controller('productCtrl', ['$scope', 'UserService', '$routeParams', '$timeout', '$location', 'productService', function ($scope, UserService, $routeParams, $timeout, $location, productService) {
 
         var id = $routeParams.productid;
         $scope.product = "";
@@ -156,15 +156,17 @@ angular.module('myApp.product', [])
             $scope.product = data;
         });
 
-        productService.isFirstReviewForArticle(id, function (response) {
-            if (response != null) {
-                $scope.isFirstReview = false;
-                $scope.oldRatingValue = response.ratingValue;
-                $scope.oldRatingTitle = response.reviewTitle;
-                $scope.oldRatingContent = response.reviewContent;
-                $scope.oldReviewDate = response.date;
-            }
-        });
+        if(UserService.getLoggedInUser() != null) {
+            productService.isFirstReviewForArticle(id, function(response) {
+                if (response != null) {
+                    $scope.isFirstReview = false;
+                    $scope.oldRatingValue = response.ratingValue;
+                    $scope.oldRatingTitle = response.reviewTitle;
+                    $scope.oldRatingContent = response.reviewContent;
+                    $scope.oldReviewDate = response.date;
+                }
+            });
+        }
 
         $scope.isSuccessAlertDisplayed = false;
         $scope.successTextAlert = "Item \"" + $scope.product.title + "\" was added to the cart.";
@@ -198,7 +200,7 @@ angular.module('myApp.product', [])
         $scope.createReview = function () {
 
             // user is not logged in. Redirect to login page...
-            if (!$rootScope.loggedIn) {
+            if (UserService.getLoggedInUser() == null) {
                 $location.url('/login');
             } else {
                 $scope.isCreatingReview = true;
@@ -216,7 +218,7 @@ angular.module('myApp.product', [])
         $scope.submitReview = function () {
             // id, name, value, title, content, callback
             $scope.dataLoading = true;
-            productService.submitReview(id, $rootScope.loggedIn.name, $scope.newRatingValue, $scope.newRatingTitle, $scope.newRatingContent, function (response) {
+            productService.submitReview(id, UserService.getLoggedInUser().name, $scope.newRatingValue, $scope.newRatingTitle, $scope.newRatingContent, function (response) {
                 // TODO callback (display success / error message?)
                 if (response.message == 'Review submitted.') {
                     $scope.dataLoading = false;

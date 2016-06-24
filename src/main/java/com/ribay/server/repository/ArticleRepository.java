@@ -1,6 +1,9 @@
 package com.ribay.server.repository;
 
 import com.basho.riak.client.api.commands.datatypes.FetchMap;
+import com.basho.riak.client.api.commands.datatypes.CounterUpdate;
+import com.basho.riak.client.api.commands.datatypes.MapUpdate;
+import com.basho.riak.client.api.commands.datatypes.UpdateMap;
 import com.basho.riak.client.api.commands.indexes.BinIndexQuery;
 import com.basho.riak.client.api.commands.kv.FetchValue;
 import com.basho.riak.client.api.commands.kv.StoreValue;
@@ -43,6 +46,8 @@ import java.util.stream.Collectors;
 public class ArticleRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArticleRepository.class);
+    public static final String SUM_RATINGS_CRDT_NAME = "sumRatings";
+    public static final String COUNT_RATINGS_CRDT_NAME = "countRatings";
 
     @Autowired
     private MyRiakClient client;
@@ -188,8 +193,25 @@ public class ArticleRepository {
         return resultValue;
     }
 
-    public void submitArticleReview(ArticleReview review, String uuid) throws Exception {
+    public void submitArticleReview(ArticleReview review, String uuid, ArticleReview previousReview) throws Exception {
 
+        Long reviewRatingDelta = 0l;
+
+        submitReviewData(review, uuid);
+
+        if (previousReview != null) {
+            // A previous review exists. The review was edited. Calculate the delta of the ratings
+            reviewRatingDelta = Long.valueOf(review.getRatingValue()) - Long.valueOf(previousReview.getRatingValue());
+        } else {
+            // A new review does not need to calculate a delta, because there is no previous review
+            reviewRatingDelta = Long.valueOf(review.getRatingValue());
+        }
+
+        updateReviewCRDTs(review.getArticleId(), reviewRatingDelta);
+        // TODO Also update Search bucket CRDTS that contain ratings
+    }
+
+    private void submitReviewData(ArticleReview review, String uuid) throws Exception {
         // "article_reviews_<articleId>"
         String bucket = properties.getBucketArticleReviews() + review.getArticleId();
         Location location = new Location(new Namespace(bucket), uuid);
@@ -206,6 +228,18 @@ public class ArticleRepository {
         client.execute(storeOp);
     }
 
+    private void updateReviewCRDTs(String articleId, long deltaRatingSum) throws Exception {
+        Namespace bucket = properties.getBucketArticlesDynamic();
+        Location location = new Location(bucket, articleId);
+
+        // Update both rating CRDTS: sumRatings for the sum of all rating, countRatings for the count of ratings
+        // Increment count of ratings, update sum of ratings (can also be decremented)
+        MapUpdate update = new MapUpdate().update(COUNT_RATINGS_CRDT_NAME, new CounterUpdate(1))
+                .update(SUM_RATINGS_CRDT_NAME, new CounterUpdate(deltaRatingSum));
+        UpdateMap command = new UpdateMap.Builder(location, update).build();
+        client.execute(command);
+    }
+
     public ArticleReview iSFirstReviewForArticle(String articleId, String uuid) throws Exception {
 
         // "article_reviews_<articleId>"
@@ -217,7 +251,8 @@ public class ArticleRepository {
         FetchValue.Response fetchResp = client.execute(fetchOp);
 
         if (fetchResp.isNotFound()) {
-            throw new NotFoundException();
+            // no review exists for the given article
+            return null;
         } else {
             return fetchResp.getValue(ArticleReview.class);
         }

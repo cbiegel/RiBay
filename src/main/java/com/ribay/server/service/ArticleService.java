@@ -74,7 +74,8 @@ public class ArticleService {
         if (loggedInUser == null) {
             throw new Exception("Not logged in!");
         } else {
-            articleRepository.submitArticleReview(review, loggedInUser.getUuid().toString());
+            ArticleReview previousReview = isFirstReviewForArticle(review.getArticleId());
+            articleRepository.submitArticleReview(review, loggedInUser.getUuid().toString(), previousReview);
             return review;
         }
     }
@@ -85,12 +86,7 @@ public class ArticleService {
 
         User loggedInUser = requestData.getUser();
         if (loggedInUser == null) {
-            try {
-                String sessionId = requestData.getSessionId();
-                loggedInUser = authenticationRepository.getLoggedInUser(sessionId);
-            } catch (Exception e) {
-                throw new Exception("Not logged in!");
-            }
+            throw new Exception("Not logged in!");
         }
 
         result = articleRepository.iSFirstReviewForArticle(articleId, loggedInUser.getUuid().toString());
