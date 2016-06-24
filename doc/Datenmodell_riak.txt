@@ -94,7 +94,7 @@ bucket_type = ribay_crdt
 bucket_name = article_dynamic
 key = article_id
 value = map
-    price: register
+    price: register -> preis in cents als integer, dann in byte-array konvertiert
     stock: counter
     sumRatings: counter
     countRatings: counter

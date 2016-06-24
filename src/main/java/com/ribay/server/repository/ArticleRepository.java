@@ -1,5 +1,6 @@
 package com.ribay.server.repository;
 
+import com.basho.riak.client.api.commands.datatypes.FetchMap;
 import com.basho.riak.client.api.commands.indexes.BinIndexQuery;
 import com.basho.riak.client.api.commands.kv.FetchValue;
 import com.basho.riak.client.api.commands.kv.StoreValue;
@@ -7,6 +8,9 @@ import com.basho.riak.client.core.operations.SearchOperation;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
 import com.basho.riak.client.core.query.RiakObject;
+import com.basho.riak.client.core.query.crdt.types.RiakCounter;
+import com.basho.riak.client.core.query.crdt.types.RiakMap;
+import com.basho.riak.client.core.query.crdt.types.RiakRegister;
 import com.basho.riak.client.core.query.indexes.StringBinIndex;
 import com.basho.riak.client.core.util.BinaryValue;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +29,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -119,7 +124,21 @@ public class ArticleRepository {
         String key = articleId;
         Location location = new Location(bucket, key);
 
-        return null;
+        FetchMap command = new FetchMap.Builder(location).build();
+        FetchMap.Response response = client.execute(command);
+
+        RiakMap responseFromDB = response.getDatatype();
+        return getArticleDynamicFromRiakMap(responseFromDB);
+    }
+
+    private ArticleDynamic getArticleDynamicFromRiakMap(RiakMap responseFromDB) {
+        RiakRegister priceRegister = responseFromDB.getRegister("price");
+        RiakCounter stockCounter = responseFromDB.getCounter("stock");
+        RiakCounter sumRatingsCounter = responseFromDB.getCounter("sumRatings");
+        RiakCounter countRatingsCounter = responseFromDB.getCounter("countRatings");
+
+        int price = new BigInteger(priceRegister.getValue().getValue()).intValue();
+
     }
 
     public ArticleReviewsContinuation getReviewsForArticle(String articleId, String continuation) throws Exception {
