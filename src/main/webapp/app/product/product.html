@@ -30,16 +30,17 @@
             <span>{{product.title}}</span>
         </div>
         <div class="rating noselect">
-            <uib-rating ng-model="product.rate" max="10" readonly="true"></uib-rating>
-            <div class="ratingText">Rating: {{product.rate}} with {{product.votes}} votes</div>
+            <uib-rating ng-model="product.sumRatings / product.countRatings" max="10" readonly="true" ng-show="product.countRatings > 0"></uib-rating>
+            <div ng-show="product.countRatings >= 1" class="ratingText">Rating: {{product.sumRatings / product.countRatings}} with {{product.countRatings}} votes</div>
+            <div ng-show="product.countRatings <= 0" class="ratingText">Rating: No ratings yet!</div>
         </div>
         <hr>
         <div class="price">
             <span class="caption">Price: </span>
-            <span class="value">{{product.price}}</span>
+            <span class="value">{{(product.price / 100) | currency: "€"}}</span>
         </div>
         <div class="quantity">
-            <span>Only {{product.quantity}} left in stock</span>
+            <span>Only {{product.stock}} left in stock</span>
         </div>
         <hr>
         <div id="product-details">

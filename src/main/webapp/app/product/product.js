@@ -17,38 +17,35 @@ angular.module('myApp.product', [])
 
         this.getProductDetails = function (id, callback) {
 
+            var result = {};
+
             $http.get('/article/info?articleId=' + id).then(
                 function success(response) {
-                    var data = {
-                        id: response.data.id,
-                        title: response.data.title,
-                        rate: response.data.rating,
-                        votes: response.data.votes,
-                        year: response.data.year,
-                        releases: response.data.releases,
-                        genres: response.data.genre,
-                        actors: response.data.actors,
-                        runtime: response.data.runtime,
-                        price: "13,37€",
-                        quantity: 1337,
-                        details: response.data.plot,
-                        images: []
-                    };
+
+                    result.id = response.data.id;
+                    result.title = response.data.title;
+                    result.rate = response.data.rating;
+                    result.votes = response.data.votes;
+                    result.year = response.data.year;
+                    result.releases = response.data.releases;
+                    result.genres = response.data.genre;
+                    result.actors = response.data.actors;
+                    result.runtime = response.data.runtime;
+                    result.details = response.data.plot;
+                    result.images = [];
 
                     if (response.data.imageId) {
                         var url = imageService.createImageURLFromId(response.data.imageId);
-                        data.images.push({src: url});
+                        result.images.push({src: url});
                     }
 
-                    if (data.releases) {
+                    if (result.releases) {
                         // convert release timestamps from unix time to date string
-                        for (var i = 0; i < data.releases.length; i++) {
-                            var date = new Date(data.releases[i].date);
-                            data.releases[i].date = date;
+                        for (var i = 0; i < result.releases.length; i++) {
+                            var date = new Date(result.releases[i].date);
+                            result.releases[i].date = date;
                         }
                     }
-
-                    callback(data);
                 },
                 function error(response) {
                     if (response.status == 404) {
@@ -60,6 +57,20 @@ angular.module('myApp.product', [])
                     }
                 }
             );
+
+            $http.get('/article/info/dynamic?articleId=' + id).then(
+                function success(response) {
+                    // copy all properties into the result object
+                    for (var property in response.data) {
+                        result[property] = response.data[property];
+                    }
+                },
+                function error(response) {
+                    // TODO: handle error
+                }
+            );
+
+            callback(result);
         };
 
         this.getReviews = function (articleId, continuation, callback) {
@@ -144,7 +155,7 @@ angular.module('myApp.product', [])
             $scope.product = data;
         });
 
-        productService.isFirstReviewForArticle(id, function(response) {
+        productService.isFirstReviewForArticle(id, function (response) {
             if (response != null) {
                 $scope.isFirstReview = false;
                 $scope.oldRatingValue = response.ratingValue;

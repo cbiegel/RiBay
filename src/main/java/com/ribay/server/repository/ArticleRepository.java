@@ -136,10 +136,10 @@ public class ArticleRepository {
         RiakCounter sumRatingsCounter = responseFromDB.getCounter("sumRatings");
         RiakCounter countRatingsCounter = responseFromDB.getCounter("countRatings");
 
-        int price = new BigInteger(priceRegister.getValue().getValue()).intValue();
-        int stock = stockCounter.view().intValue();
-        int sumRatings = sumRatingsCounter.view().intValue();
-        int countRatings = countRatingsCounter.view().intValue();
+        int price = (priceRegister == null) ? 0 : new BigInteger(priceRegister.getValue().getValue()).intValue();
+        int stock = (stockCounter == null) ? 0 : stockCounter.view().intValue();
+        int sumRatings = (sumRatingsCounter == null) ? 0 : sumRatingsCounter.view().intValue();
+        int countRatings = (countRatingsCounter == null) ? 0 : countRatingsCounter.view().intValue();
 
         ArticleDynamic result = new ArticleDynamic();
         result.setPrice(price);

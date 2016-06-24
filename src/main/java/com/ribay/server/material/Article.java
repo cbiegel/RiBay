@@ -12,10 +12,16 @@ public class Article {
     private List<String> genre;
     private boolean movie;
     private String plot;
+    /**
+     * @deprecated can be calculated through {@link ArticleDynamic}
+     */
     private float rating;
     private List<Release> releases;
     private String runtime;
     private String title;
+    /**
+     * @deprecated is now in {@link ArticleDynamic}
+     */
     private int votes;
     private String year;
     private String comment;
@@ -62,10 +68,16 @@ public class Article {
         this.plot = plot;
     }
 
+    /**
+     * @deprecated can be calculated through {@link ArticleDynamic}
+     */
     public float getRating() {
         return rating;
     }
 
+    /**
+     * @deprecated can be calculated through {@link ArticleDynamic}
+     */
     public void setRating(float rating) {
         this.rating = rating;
     }
@@ -94,10 +106,16 @@ public class Article {
         this.title = title;
     }
 
+    /**
+     * @deprecated is now in {@link ArticleDynamic}
+     */
     public int getVotes() {
         return votes;
     }
 
+    /**
+     * @deprecated is now in {@link ArticleDynamic}
+     */
     public void setVotes(int votes) {
         this.votes = votes;
     }
