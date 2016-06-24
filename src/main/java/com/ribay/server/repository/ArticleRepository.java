@@ -113,6 +113,15 @@ public class ArticleRepository {
         }
     }
 
+    public ArticleDynamic getArticleInformationDynamic(final String articleId) throws Exception
+    {
+        Namespace bucket = properties.getBucketArticlesDynamic();
+        String key = articleId;
+        Location location = new Location(bucket, key);
+
+        return null;
+    }
+
     public ArticleReviewsContinuation getReviewsForArticle(String articleId, String continuation) throws Exception {
         String bucket = properties.getBucketArticleReviews() + articleId;
         Namespace namespace = new Namespace(bucket);

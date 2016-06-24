@@ -70,6 +70,11 @@ public class RibayProperties {
         return value;
     }
 
+    public Namespace getBucketArticlesDynamic() {
+        String[] attrs = databaseProperties.getProperty("bucket.articles.dynamic").split("#");
+        return buildBucketFromAttrs(attrs);
+    }
+
     public String getBucketImages() {
         String value = databaseProperties.getProperty("bucket.images");
         return value;
