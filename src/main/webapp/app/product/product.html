@@ -30,8 +30,8 @@
             <span>{{product.title}}</span>
         </div>
         <div class="rating noselect">
-            <uib-rating ng-model="averageRating" max="10" readonly="true" ng-show="product.countRatings > 0"></uib-rating>
-            <div ng-show="product.countRatings >= 1" class="ratingText">Rating: {{averageRating}} with {{product.countRatings}} votes</div>
+            <uib-rating ng-model="product.averageRating" max="10" readonly="true" ng-show="product.countRatings > 0"></uib-rating>
+            <div ng-show="product.countRatings >= 1" class="ratingText">Rating: {{product.averageRating}} with {{product.countRatings}} votes</div>
             <div ng-show="product.countRatings <= 0" class="ratingText">Rating: No ratings yet!</div>
         </div>
         <hr>

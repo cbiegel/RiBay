@@ -62,6 +62,8 @@ angular.module('myApp.product', [])
                     for (var property in response.data) {
                         result[property] = response.data[property];
                     }
+
+                    result.averageRating = result.sumRatings / result.countRatings;
                 },
                 function error(response) {
                     // TODO: handle error
@@ -152,7 +154,6 @@ angular.module('myApp.product', [])
 
         productService.getProductDetails(id, function (data) {
             $scope.product = data;
-            $scope.averageRating = data.sumRatings / data.countRatings;
         });
 
         productService.isFirstReviewForArticle(id, function (response) {
