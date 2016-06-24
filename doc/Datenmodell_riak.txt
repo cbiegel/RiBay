@@ -87,3 +87,14 @@ Allgemein gilt: Das Design der Datenstruktur richtet sich nach den Klienten. Die
 
 TODO: Bestellhistorie? Liste von unveränderlichen Einträgen?
 TODO: Zahlungsinformationen?
+
+
+Dynamische Artikeldaten:
+bucket_type = ribay_crdt
+bucket_name = article_dynamic
+key = article_id
+value = map
+    price: register
+    stock: counter
+    sumRatings: counter
+    countRatings: counter
