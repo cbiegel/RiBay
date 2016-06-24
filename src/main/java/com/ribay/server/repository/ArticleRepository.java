@@ -196,18 +196,20 @@ public class ArticleRepository {
     public void submitArticleReview(ArticleReview review, String uuid, ArticleReview previousReview) throws Exception {
 
         Long reviewRatingDelta = 0l;
+        boolean isFirstReview = true;
 
         submitReviewData(review, uuid);
 
         if (previousReview != null) {
             // A previous review exists. The review was edited. Calculate the delta of the ratings
             reviewRatingDelta = Long.valueOf(review.getRatingValue()) - Long.valueOf(previousReview.getRatingValue());
+            isFirstReview = false;
         } else {
             // A new review does not need to calculate a delta, because there is no previous review
             reviewRatingDelta = Long.valueOf(review.getRatingValue());
         }
 
-        updateReviewCRDTs(review.getArticleId(), reviewRatingDelta);
+        updateReviewCRDTs(review.getArticleId(), reviewRatingDelta, isFirstReview);
         // TODO Also update Search bucket CRDTS that contain ratings
     }
 
@@ -228,13 +230,15 @@ public class ArticleRepository {
         client.execute(storeOp);
     }
 
-    private void updateReviewCRDTs(String articleId, long deltaRatingSum) throws Exception {
+    private void updateReviewCRDTs(String articleId, long deltaRatingSum, boolean isFirstReview) throws Exception {
         Namespace bucket = properties.getBucketArticlesDynamic();
         Location location = new Location(bucket, articleId);
 
+        Long counterUpdate = isFirstReview ? 1l : 0;
+
         // Update both rating CRDTS: sumRatings for the sum of all rating, countRatings for the count of ratings
         // Increment count of ratings, update sum of ratings (can also be decremented)
-        MapUpdate update = new MapUpdate().update(COUNT_RATINGS_CRDT_NAME, new CounterUpdate(1))
+        MapUpdate update = new MapUpdate().update(COUNT_RATINGS_CRDT_NAME, new CounterUpdate(counterUpdate))
                 .update(SUM_RATINGS_CRDT_NAME, new CounterUpdate(deltaRatingSum));
         UpdateMap command = new UpdateMap.Builder(location, update).build();
         client.execute(command);

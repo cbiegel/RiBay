@@ -207,10 +207,6 @@ angular.module('myApp.product', [])
             }
         };
 
-        $scope.createReview = function () {
-            $scope.isEditingReview = true;
-        };
-
         $scope.editReview = function () {
             $scope.isEditingReview = true;
         }
