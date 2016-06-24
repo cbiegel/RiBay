@@ -24,8 +24,6 @@ angular.module('myApp.product', [])
 
                     result.id = response.data.id;
                     result.title = response.data.title;
-                    result.rate = response.data.rating;
-                    result.votes = response.data.votes;
                     result.year = response.data.year;
                     result.releases = response.data.releases;
                     result.genres = response.data.genre;
@@ -154,6 +152,7 @@ angular.module('myApp.product', [])
 
         productService.getProductDetails(id, function (data) {
             $scope.product = data;
+            $scope.averageRating = data.sumRatings / data.countRatings;
         });
 
         productService.isFirstReviewForArticle(id, function (response) {
