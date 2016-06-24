@@ -20,7 +20,8 @@ angular.module('myApp', [
     'myApp.loginSuccess',
     'myApp.status',
     'myApp.version',
-    'myApp.register'
+    'myApp.register',
+    'myApp.admin'
 ])
 
     .service('UserService', ['$cookies', function ($cookies) {
