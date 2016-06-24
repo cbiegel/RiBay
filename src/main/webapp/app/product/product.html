@@ -31,7 +31,7 @@
         </div>
         <div class="rating noselect">
             <uib-rating ng-model="product.averageRating" max="5" readonly="true" ng-show="product.countRatings > 0"></uib-rating>
-            <div ng-show="product.countRatings >= 1" class="ratingText">Rating: {{product.averageRating}} with {{product.countRatings}} votes</div>
+            <div ng-show="product.countRatings >= 1" class="ratingText">Rating: {{product.averageRating | number: 1}} with {{product.countRatings}} votes</div>
             <div ng-show="product.countRatings <= 0" class="ratingText">Rating: No ratings yet!</div>
         </div>
         <hr>
