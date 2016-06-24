@@ -70,6 +70,7 @@ angular.module('myApp.product', [])
                 }
             );
 
+            // return result object immediately. it will be filled, once the http-calls are successful
             callback(result);
         };
 
