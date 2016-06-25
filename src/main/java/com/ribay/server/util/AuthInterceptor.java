@@ -60,9 +60,6 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         } else {
             try {
                 String sessionId = requestData.getSessionId();
-
-                request.getPathInfo();
-
                 authRepository.saveLastAccess(sessionId);
             } catch (Exception e) {
                 logger.error("Was not able to save last access time for session", e);
