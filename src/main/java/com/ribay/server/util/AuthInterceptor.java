@@ -52,11 +52,21 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         super.postHandle(request, response, handler, modelAndView);
 
-        try {
-            String sessionId = requestData.getSessionId();
-            authRepository.saveLastAccess(sessionId);
-        } catch (Exception e) {
-            logger.error("Was not able to save last access time for session", e);
+        if ((request.getRequestURI() != null) && request.getRequestURI().startsWith("/image/")) {
+            // do not save last session access when loading images
+            // we do this because the client will load multiple images at once ...
+            // ... and while performing an other action that will save the last session access,
+            // so we do not have to set the last session access multiple times at once.
+        } else {
+            try {
+                String sessionId = requestData.getSessionId();
+
+                request.getPathInfo();
+
+                authRepository.saveLastAccess(sessionId);
+            } catch (Exception e) {
+                logger.error("Was not able to save last access time for session", e);
+            }
         }
     }
 
