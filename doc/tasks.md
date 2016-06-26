@@ -2,13 +2,6 @@ Open tasks:
 ===========
 
 
-* CD: Dynamische Artikel-Daten (price, stock, countRatings, sumRatings) in beiden Buckets synchronisieren
-    * Dynamische Daten zurücksetzen (evtl. inkl. Reviews)
-    * evtl. Bezeichner in beiden Buckets angleichen
-    * Dynamische Daten inital füllen
-    * Code anpassen, dass bei Update beide Buckets gefüllt werden
-    * Test, ob alles funktioniert (Suche, Artikelseite, Reviews, Administrationsbereich)
-
 * CD: Checkout-Vorgang
     * Checkout-Start
         * Generierung einer Bestellungs-ID
