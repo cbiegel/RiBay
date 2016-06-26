@@ -47,9 +47,9 @@
             <div class="filter-category">
                 <span class="title text-bold text-small">Avg. Customer Review</span>
                 <div class="content text-small">
-                    <div ng-repeat="n in [] | range: 11 | reverse | limitTo: 10">
+                    <div ng-repeat="n in [] | range: 6 | reverse | limitTo: 5">
                         <a ng-click="query.rating_low = n" ng-class="{'text-bold': (query.rating_low == n)}">
-                            <uib-rating ng-model="n" max="10" readonly="true" class="rating"></uib-rating>
+                            <uib-rating ng-model="n" max="5" readonly="true" class="rating"></uib-rating>
                             <span>& Up</span>
                         </a>
                     </div>
@@ -77,7 +77,7 @@
                         </div>
                         <div class="details-right">
                             <div class="rating noselect">
-                                <uib-rating ng-model="item.mediumRating" max="10" readonly="true"></uib-rating>
+                                <uib-rating ng-model="item.mediumRating" max="5" readonly="true"></uib-rating>
                             </div>
                         </div>
                     </div>

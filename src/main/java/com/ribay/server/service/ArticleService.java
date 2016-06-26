@@ -97,7 +97,9 @@ public class ArticleService {
             @PathVariable(value = "articleId") String articleId,
             @PathVariable(value = "diff") int diff,
             @RequestParam(value = "returnNewValue", required = false, defaultValue = "false") boolean returnNewValue) throws Exception {
-        return articleRepository.changeStock(articleId, diff, returnNewValue);
+        articleRepository.changeStock(articleId, diff);
+        Integer result = returnNewValue ? articleRepository.getStock(articleId) : null;
+        return result;
     }
 
     @RequestMapping(path = "/article/setPrice/{articleId}/{price}", method = RequestMethod.PUT)

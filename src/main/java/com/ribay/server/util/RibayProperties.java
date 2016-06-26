@@ -85,6 +85,11 @@ public class RibayProperties {
         return value;
     }
 
+    public Namespace getBucketArticlesSearch() {
+        String[] attrs = databaseProperties.getProperty("bucket.articles.search").split("#");
+        return buildBucketFromAttrs(attrs);
+    }
+
     private Namespace buildBucketFromAttrs(String... attrs) {
         String bucketType;
         String bucketName;

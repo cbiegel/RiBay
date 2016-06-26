@@ -4,6 +4,7 @@ import com.basho.riak.client.api.commands.datatypes.*;
 import com.basho.riak.client.api.commands.indexes.BinIndexQuery;
 import com.basho.riak.client.api.commands.kv.FetchValue;
 import com.basho.riak.client.api.commands.kv.StoreValue;
+import com.basho.riak.client.core.RiakFuture;
 import com.basho.riak.client.core.operations.SearchOperation;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
@@ -20,7 +21,9 @@ import com.ribay.server.material.*;
 import com.ribay.server.material.continuation.ArticleReviewsContinuation;
 import com.ribay.server.repository.query.QueryBuilder;
 import com.ribay.server.repository.query.QueryBuilderArticle;
+import com.ribay.server.util.RibayConstants;
 import com.ribay.server.util.RibayProperties;
+import com.ribay.server.util.riak.RiakObjectBuilder;
 import com.ribay.server.util.riak.search.RiakSearchHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +32,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +47,9 @@ import java.util.stream.Collectors;
 public class ArticleRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArticleRepository.class);
+
+    public static final String PRICE_CRDT_NAME = "price";
+    public static final String STOCK_CRDT_NAME = "stock";
     public static final String SUM_RATINGS_CRDT_NAME = "sumRatings";
     public static final String COUNT_RATINGS_CRDT_NAME = "countRatings";
 
@@ -94,7 +101,7 @@ public class ArticleRepository {
             item.setId(riakSearchHelper.getString("id_register", map));
             item.setTitle(riakSearchHelper.getString("title_register", map));
             item.setYear(riakSearchHelper.getString("year_register", map));
-            item.setVotes(riakSearchHelper.getInteger("votes_counter", map));
+            item.setVotes(riakSearchHelper.getInteger("countRatings_counter", map));
             item.setSumRatings(riakSearchHelper.getInteger("sumRatings_counter", map));
             item.setImage(riakSearchHelper.getString("image_register", map));
             item.setMovie(riakSearchHelper.getBoolean("isMovie_flag", map));
@@ -133,10 +140,10 @@ public class ArticleRepository {
     }
 
     private ArticleDynamic getArticleDynamicFromRiakMap(RiakMap responseFromDB) {
-        RiakRegister priceRegister = responseFromDB.getRegister("price");
-        RiakCounter stockCounter = responseFromDB.getCounter("stock");
-        RiakCounter sumRatingsCounter = responseFromDB.getCounter("sumRatings");
-        RiakCounter countRatingsCounter = responseFromDB.getCounter("countRatings");
+        RiakRegister priceRegister = responseFromDB.getRegister(PRICE_CRDT_NAME);
+        RiakCounter stockCounter = responseFromDB.getCounter(STOCK_CRDT_NAME);
+        RiakCounter sumRatingsCounter = responseFromDB.getCounter(SUM_RATINGS_CRDT_NAME);
+        RiakCounter countRatingsCounter = responseFromDB.getCounter(COUNT_RATINGS_CRDT_NAME);
 
         int price = (priceRegister == null) ? 0 : new BigInteger(priceRegister.getValue().getValue()).intValue();
         int stock = (stockCounter == null) ? 0 : stockCounter.view().intValue();
@@ -191,23 +198,23 @@ public class ArticleRepository {
     }
 
     public void submitArticleReview(ArticleReview review, String uuid, ArticleReview previousReview) throws Exception {
-
-        Long reviewRatingDelta = 0l;
-        boolean isFirstReview = true;
+        long reviewRatingDelta;
+        long countRatingDelta;
 
         submitReviewData(review, uuid);
 
         if (previousReview != null) {
             // A previous review exists. The review was edited. Calculate the delta of the ratings
             reviewRatingDelta = Long.valueOf(review.getRatingValue()) - Long.valueOf(previousReview.getRatingValue());
-            isFirstReview = false;
+            countRatingDelta = 0;
         } else {
             // A new review does not need to calculate a delta, because there is no previous review
             reviewRatingDelta = Long.valueOf(review.getRatingValue());
+            countRatingDelta = 1;
         }
 
-        updateReviewCRDTs(review.getArticleId(), reviewRatingDelta, isFirstReview);
-        // TODO Also update Search bucket CRDTS that contain ratings
+        // TODO make async?
+        updateReviewCRDTs(review.getArticleId(), reviewRatingDelta, countRatingDelta);
     }
 
     private void submitReviewData(ArticleReview review, String uuid) throws Exception {
@@ -215,37 +222,55 @@ public class ArticleRepository {
         String bucket = properties.getBucketArticleReviews() + review.getArticleId();
         Location location = new Location(new Namespace(bucket), uuid);
 
-        String jsonString = new ObjectMapper().writeValueAsString(review);
-        RiakObject riakObj = new RiakObject();
-        riakObj.setContentType("application/json");
-        riakObj.setValue(BinaryValue.create(jsonString));
-        riakObj.getIndexes().getIndex(StringBinIndex.named("index_date")).add(review.getDate());
-        riakObj.getIndexes().getIndex(StringBinIndex.named("index_rating")).add(review.getRatingValue());
-
+        RiakObject riakObj = new RiakObjectBuilder(review) //
+                .withIndex(StringBinIndex.named("index_date"), review.getDate()) //
+                .withIndex(StringBinIndex.named("index_rating"), review.getRatingValue()) //
+                .build(); //
         StoreValue storeOp = new StoreValue.Builder(riakObj).withLocation(location).build();
 
         client.execute(storeOp);
     }
 
-    private void updateReviewCRDTs(String articleId, long deltaRatingSum, boolean isFirstReview) throws Exception {
-        Namespace bucket = properties.getBucketArticlesDynamic();
-        Location location = new Location(bucket, articleId);
+    private void updateReviewCRDTs(String articleId, long deltaSumRatings, long deltaCountRatings) throws Exception {
+        Future<?> f1 = updateReviewCRDTsForDynamic(articleId, deltaSumRatings, deltaCountRatings);
+        Future<?> f2 = updateReviewCRDTsForSearch(articleId, deltaSumRatings, deltaCountRatings);
 
-        Long counterUpdate = isFirstReview ? 1l : 0;
+        f1.get();
+        f2.get();
+    }
+
+    private Future<?> updateReviewCRDTsForDynamic(String articleId, long deltaSumRatings, long deltaCountRatings) throws Exception {
+        Namespace bucket = properties.getBucketArticlesDynamic();
+        String key = articleId;
+        Location location = new Location(bucket, key);
 
         // Update both rating CRDTS: sumRatings for the sum of all rating, countRatings for the count of ratings
         // Increment count of ratings, update sum of ratings (can also be decremented)
-        MapUpdate update = new MapUpdate().update(COUNT_RATINGS_CRDT_NAME, new CounterUpdate(counterUpdate))
-                .update(SUM_RATINGS_CRDT_NAME, new CounterUpdate(deltaRatingSum));
+        MapUpdate update = new MapUpdate() //
+                .update(SUM_RATINGS_CRDT_NAME, new CounterUpdate(deltaSumRatings)) //
+                .update(COUNT_RATINGS_CRDT_NAME, new CounterUpdate(deltaCountRatings)); //
         UpdateMap command = new UpdateMap.Builder(location, update).build();
-        client.execute(command);
+        return client.executeAsync(command);
+    }
+
+    private Future<?> updateReviewCRDTsForSearch(String articleId, long deltaSumRatings, long deltaCountRatings) throws Exception {
+        Namespace bucket = properties.getBucketArticlesSearch();
+        String key = articleId;
+        Location location = new Location(bucket, key);
+
+        // Update both rating CRDTS: sumRatings for the sum of all rating, countRatings for the count of ratings
+        // Increment count of ratings, update sum of ratings (can also be decremented)
+        MapUpdate update = new MapUpdate() //
+                .update(SUM_RATINGS_CRDT_NAME, new CounterUpdate(deltaSumRatings)) //
+                .update(COUNT_RATINGS_CRDT_NAME, new CounterUpdate(deltaCountRatings)); //
+        UpdateMap command = new UpdateMap.Builder(location, update).build();
+        return client.executeAsync(command);
     }
 
     public ArticleReview iSFirstReviewForArticle(String articleId, String uuid) throws Exception {
 
         // "article_reviews_<articleId>"
         String bucket = properties.getBucketArticleReviews() + articleId;
-        Namespace namespace = new Namespace(bucket);
 
         Location location = new Location(new Namespace(bucket), uuid);
         FetchValue fetchOp = new FetchValue.Builder(location).build();
@@ -259,36 +284,75 @@ public class ArticleRepository {
         }
     }
 
-    public Integer changeStock(String articleId, int diff, boolean returnNewValue) throws Exception {
+    public int getStock(String articleId) throws Exception {
+        // fetch dynamic article values
         Namespace bucket = properties.getBucketArticlesDynamic();
         String key = articleId;
         Location location = new Location(bucket, key);
 
-        MapUpdate update = new MapUpdate().update("stock", new CounterUpdate(diff));
+        FetchMap fetchCommand = new FetchMap.Builder(location).build();
+        FetchMap.Response fetchResponse = client.execute(fetchCommand);
+        RiakMap map = fetchResponse.getDatatype();
+
+        ArticleDynamic articleDynamic = getArticleDynamicFromRiakMap(map);
+        return articleDynamic.getStock();
+    }
+
+    public void changeStock(String articleId, int diff) throws Exception {
+        Future<?> f1 = changeStockForDynamic(articleId, diff);
+        Future<?> f2 = changeStockForSearch(articleId, diff);
+
+        f1.get();
+        f2.get();
+    }
+
+    private Future<?> changeStockForDynamic(String articleId, int diff) throws Exception {
+        Namespace bucket = properties.getBucketArticlesDynamic();
+        String key = articleId;
+        Location location = new Location(bucket, key);
+
+        MapUpdate update = new MapUpdate().update(STOCK_CRDT_NAME, new CounterUpdate(diff));
         UpdateMap command = new UpdateMap.Builder(location, update).build();
-        client.execute(command);
+        return client.executeAsync(command);
+    }
 
-        if (returnNewValue) {
-            // fetch dynamic article values
-            FetchMap fetchCommand = new FetchMap.Builder(location).build();
-            FetchMap.Response fetchResponse = client.execute(fetchCommand);
-            RiakMap map = fetchResponse.getDatatype();
+    private Future<?> changeStockForSearch(String articleId, int diff) throws Exception {
+        Namespace bucket = properties.getBucketArticlesSearch();
+        String key = articleId;
+        Location location = new Location(bucket, key);
 
-            ArticleDynamic articleDynamic = getArticleDynamicFromRiakMap(map);
-            return articleDynamic.getStock();
-        } else {
-            return null;
-        }
+        MapUpdate update = new MapUpdate().update(STOCK_CRDT_NAME, new CounterUpdate(diff));
+        UpdateMap command = new UpdateMap.Builder(location, update).build();
+        return client.executeAsync(command);
     }
 
     public void setPrice(String articleId, int price) throws Exception {
+        // set price in dynamic bucket and in search bucket
+        Future<?> f1 = setPriceForDynamic(articleId, price);
+        Future<?> f2 = setPriceForSearch(articleId, price);
+
+        f1.get();
+        f2.get();
+    }
+
+    private Future<?> setPriceForDynamic(String articleId, int price) throws Exception {
         Namespace bucket = properties.getBucketArticlesDynamic();
         String key = articleId;
         Location location = new Location(bucket, key);
 
-        MapUpdate update = new MapUpdate().update("price", new RegisterUpdate(BigInteger.valueOf(price).toByteArray()));
+        MapUpdate update = new MapUpdate().update(PRICE_CRDT_NAME, new RegisterUpdate(BigInteger.valueOf(price).toByteArray()));
         UpdateMap command = new UpdateMap.Builder(location, update).build();
-        client.execute(command);
+        return client.executeAsync(command);
+    }
+
+    private Future<?> setPriceForSearch(String articleId, int price) throws Exception {
+        Namespace bucket = properties.getBucketArticlesSearch();
+        String key = articleId;
+        Location location = new Location(bucket, key);
+
+        MapUpdate update = new MapUpdate().update(PRICE_CRDT_NAME, new RegisterUpdate(String.format(RibayConstants.NUMBERFORMAT_PRICE_SEARCH, price)));
+        UpdateMap command = new UpdateMap.Builder(location, update).build();
+        return client.executeAsync(command);
     }
 
 }
