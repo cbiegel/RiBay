@@ -40,7 +40,8 @@
             <span class="value">{{(product.price / 100) | currency: "€"}}</span>
         </div>
         <div class="quantity">
-            <span>Only {{product.stock}} left in stock</span>
+            <span ng-show="product.stock <= 0" class="color-error text-bold">Currently not in stock</span>
+            <span ng-show="product.stock > 0" ng-class="{'color-warning': product.stock < 10}">Only {{product.stock}} left in stock</span>
         </div>
         <hr>
         <div id="product-details">
