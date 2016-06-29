@@ -42,6 +42,8 @@ angular.module('myApp.cart', [])
         this.setQuantity = function (item, oldQuantity, newQuantity, callback) {
             var delta = newQuantity - oldQuantity;
             var url;
+
+            // TODO provide service method for setting quantity of item
             if (delta > 0) {
                 url = '/cart/add/' + item.id + '/' + delta;
             }
