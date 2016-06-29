@@ -20,9 +20,4 @@ public class Cart {
         return Collections.unmodifiableList(articles);
     }
 
-    public void removeArticle(ArticleForCart article)
-    {
-
-    }
-
 }
