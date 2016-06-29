@@ -1,7 +1,5 @@
 package com.ribay.server.material;
 
-import java.util.Date;
-
 /**
  * Created by CD on 29.06.2016.
  */
@@ -11,7 +9,7 @@ public class OrderFinished {
     private String userId;
     private Address address;
     private Cart cart;
-    private Date timestamp;
+    private long timestamp;
 
     public String getId() {
         return id;
@@ -45,11 +43,11 @@ public class OrderFinished {
         this.cart = cart;
     }
 
-    public Date getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
