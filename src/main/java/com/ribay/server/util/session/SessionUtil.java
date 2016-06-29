@@ -3,6 +3,7 @@ package com.ribay.server.util.session;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jackson.JacksonUtils;
 import com.ribay.server.util.RibayProperties;
+import com.ribay.server.util.security.HashUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 /**
  * Created by CD on 06.06.2016.
@@ -109,21 +111,9 @@ public class SessionUtil {
     }
 
     public static String generateHash(SessionData sessionData) {
-        try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            // TODO encrypt and add salt
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
-            // use sessionId and user object for generation of hash
-            oos.writeObject(sessionData.getSessionId());
-            oos.writeObject(sessionData.getUser());
-
-            byte[] bytes = bos.toByteArray();
-            String digested = DigestUtils.md5DigestAsHex(bytes);
-
-            return digested;
-        } catch (Exception e) {
-            throw new RuntimeException("Error while generating hash", e);
-        }
+        // functions to use to generate hash
+        Supplier<?>[] suppliers = {sessionData::getSessionId, sessionData::getUser};
+        return HashUtil.generateHash(suppliers);
     }
 
 }
