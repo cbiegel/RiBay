@@ -14,6 +14,7 @@ import com.basho.riak.client.core.query.indexes.StringBinIndex;
 import com.google.common.primitives.Longs;
 import com.ribay.server.db.MyRiakClient;
 import com.ribay.server.material.User;
+import com.ribay.server.util.RequestScopeData;
 import com.ribay.server.util.riak.RiakObjectBuilder;
 import com.ribay.server.util.RibayProperties;
 import com.ribay.server.util.clock.RibayClock;
@@ -41,6 +42,12 @@ public class AuthenticationRepository {
     @Autowired
     private RibayClock clock;
 
+    /**
+     * @param sessionId
+     * @return
+     * @throws Exception use {@link RequestScopeData#getUser()} for getting the logged in user
+     * @deprecated use
+     */
     public User getLoggedInUser(final String sessionId) throws Exception {
         String bucket = properties.getBucketSessionLogin();
         Location location = new Location(new Namespace(bucket), sessionId);
