@@ -11,9 +11,11 @@ import java.util.function.Supplier;
 public class Order {
 
     private String id;
+    private String sessionId;
     private String userId;
     private Address address;
     private Cart cart;
+    private long dateStarted;
     private String hash;
 
     public String getId() {
@@ -22,6 +24,14 @@ public class Order {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     public String getUserId() {
@@ -48,6 +58,14 @@ public class Order {
         this.cart = cart;
     }
 
+    public long getDateStarted() {
+        return dateStarted;
+    }
+
+    public void setDateStarted(long dateStarted) {
+        this.dateStarted = dateStarted;
+    }
+
     public void updateHash() {
         this.hash = HashUtil.generateHash(getSuppliers());
     }
@@ -55,7 +73,7 @@ public class Order {
     public void checkHash() throws IncorrectHashException {
         String found = this.hash;
         String expected = HashUtil.generateHash(getSuppliers());
-        if (!found.equals(expected)) {
+        if (!expected.equals(found)) {
             throw new IncorrectHashException(expected, found);
         }
     }
