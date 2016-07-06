@@ -4,7 +4,6 @@ import com.basho.riak.client.api.commands.datatypes.*;
 import com.basho.riak.client.api.commands.indexes.BinIndexQuery;
 import com.basho.riak.client.api.commands.kv.FetchValue;
 import com.basho.riak.client.api.commands.kv.StoreValue;
-import com.basho.riak.client.core.RiakFuture;
 import com.basho.riak.client.core.operations.SearchOperation;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
@@ -14,7 +13,6 @@ import com.basho.riak.client.core.query.crdt.types.RiakMap;
 import com.basho.riak.client.core.query.crdt.types.RiakRegister;
 import com.basho.riak.client.core.query.indexes.StringBinIndex;
 import com.basho.riak.client.core.util.BinaryValue;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ribay.server.db.MyRiakClient;
 import com.ribay.server.exception.NotFoundException;
 import com.ribay.server.material.*;
@@ -32,7 +30,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
@@ -155,6 +152,39 @@ public class ArticleRepository {
         result.setStock(stock);
         result.setSumRatings(sumRatings);
         result.setCountRatings(countRatings);
+        return result;
+    }
+
+    public ArticleShort getArticleShort(final String articleId) throws Exception {
+        // articleShort data (id, title, image, price) can be fetched at once using the search bucket
+
+        Namespace bucket = properties.getBucketArticlesSearch();
+        String key = articleId;
+        Location location = new Location(bucket, key);
+
+        FetchMap fetchCommand = new FetchMap.Builder(location).build();
+        FetchMap.Response response = client.execute(fetchCommand);
+
+        RiakMap responseFromDB = response.getDatatype();
+        return getArticleShortFromRiakMap(responseFromDB);
+    }
+
+    private ArticleShort getArticleShortFromRiakMap(RiakMap responseFromDB) {
+        RiakRegister idRegister = responseFromDB.getRegister("id");
+        RiakRegister titleRegister = responseFromDB.getRegister("title");
+        RiakRegister imageRegister = responseFromDB.getRegister("image");
+        RiakRegister priceRegister = responseFromDB.getRegister(PRICE_CRDT_NAME);
+
+        String id = (idRegister == null) ? null : idRegister.getValue().toString();
+        String title = (titleRegister == null) ? null : titleRegister.getValue().toString();
+        String image = (imageRegister == null) ? null : imageRegister.getValue().toString();
+        int price = (priceRegister == null) ? 0 : Integer.parseInt(priceRegister.getValue().toString());
+
+        ArticleShort result = new ArticleShort();
+        result.setId(id);
+        result.setName(title);
+        result.setImage(image);
+        result.setPrice(price);
         return result;
     }
 

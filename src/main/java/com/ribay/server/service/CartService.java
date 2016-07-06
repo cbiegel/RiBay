@@ -1,9 +1,7 @@
 package com.ribay.server.service;
 
-import com.ribay.server.material.Article;
 import com.ribay.server.material.ArticleShort;
 import com.ribay.server.material.Cart;
-import com.ribay.server.material.converter.Converter;
 import com.ribay.server.repository.ArticleRepository;
 import com.ribay.server.repository.CartRepository;
 import com.ribay.server.util.RequestScopeData;
@@ -24,9 +22,6 @@ public class CartService {
     private ArticleRepository articleRepository;
 
     @Autowired
-    private Converter<Article, ArticleShort> articleConverter;
-
-    @Autowired
     private RequestScopeData requestData;
 
     @RequestMapping(path = "/cart", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,9 +35,7 @@ public class CartService {
     public void addArticle(@PathVariable("articleId") String articleId, @PathVariable("amount") int amount) throws Exception {
         String sessionId = requestData.getSessionId();
 
-        Article article = articleRepository.getArticleInformation(articleId);
-        ArticleShort articleShort = articleConverter.convert(article);
-
+        ArticleShort articleShort = articleRepository.getArticleShort(articleId);
         cartRepository.changeArticleAmount(sessionId, articleShort, amount);
     }
 
@@ -50,9 +43,7 @@ public class CartService {
     public void removeArticle(@PathVariable("articleId") String articleId, @PathVariable("amount") int amount) throws Exception {
         String sessionId = requestData.getSessionId();
 
-        Article article = articleRepository.getArticleInformation(articleId);
-        ArticleShort articleShort = articleConverter.convert(article);
-
+        ArticleShort articleShort = articleRepository.getArticleShort(articleId);
         cartRepository.changeArticleAmount(sessionId, articleShort, -amount);
     }
 
@@ -60,10 +51,7 @@ public class CartService {
     public Cart removeArticle(@PathVariable("articleId") String articleId) throws Exception {
         String sessionId = requestData.getSessionId();
 
-        Article article = articleRepository.getArticleInformation(articleId);
-        ArticleShort articleShort = articleConverter.convert(article);
-
-        return cartRepository.removeArticle(sessionId, articleShort);
+        return cartRepository.removeArticle(sessionId, articleId);
     }
 
 }
