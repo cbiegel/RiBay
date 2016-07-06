@@ -1,6 +1,9 @@
 package com.ribay.server.repository;
 
-import com.basho.riak.client.api.commands.datatypes.*;
+import com.basho.riak.client.api.commands.datatypes.FetchMap;
+import com.basho.riak.client.api.commands.datatypes.MapUpdate;
+import com.basho.riak.client.api.commands.datatypes.RegisterUpdate;
+import com.basho.riak.client.api.commands.datatypes.UpdateMap;
 import com.basho.riak.client.core.operations.DeleteOperation;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
@@ -9,7 +12,6 @@ import com.basho.riak.client.core.query.crdt.types.RiakMap;
 import com.basho.riak.client.core.util.BinaryValue;
 import com.google.common.primitives.Longs;
 import com.ribay.server.db.MyRiakClient;
-import com.ribay.server.material.ArticleForCart;
 import com.ribay.server.material.ArticleForLastVisited;
 import com.ribay.server.material.ArticleShort;
 import com.ribay.server.util.JSONUtil;

@@ -2,7 +2,6 @@ package com.ribay.server.service;
 
 import com.ribay.server.material.*;
 import com.ribay.server.material.continuation.ArticleReviewsContinuation;
-import com.ribay.server.material.converter.Converter;
 import com.ribay.server.repository.ArticleRepository;
 import com.ribay.server.repository.AuthenticationRepository;
 import com.ribay.server.repository.MarketingRepository;
@@ -30,9 +29,6 @@ public class ArticleService {
     private AuthenticationRepository authenticationRepository;
 
     @Autowired
-    private Converter<Article, ArticleShort> articleConverter;
-
-    @Autowired
     private RequestScopeData requestData;
 
     @RequestMapping(path = "/article/search", method = RequestMethod.POST)
@@ -43,14 +39,6 @@ public class ArticleService {
     @RequestMapping(path = "/article/info", method = RequestMethod.GET)
     public Article getArticleInfo(@RequestParam(value = "articleId") String articleId) throws Exception {
         Article article = articleRepository.getArticleInformation(articleId);
-        try {
-            // save last visited article
-            String sessionId = requestData.getSessionId();
-            ArticleShort articleShort = articleConverter.convert(article);
-            marketingRepository.addVisitedArticle(sessionId, articleShort); // is async: fire and forget
-        } catch (Exception e) {
-            LOGGER.error("Was not able to save last visited article", e);
-        }
         return article;
     }
 

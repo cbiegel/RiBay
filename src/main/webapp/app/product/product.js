@@ -70,6 +70,8 @@ angular.module('myApp.product', [])
                 }
             );
 
+            $http.get('/article/visit/' + id); // fire and forget
+
             // return result object immediately. it will be filled, once the http-calls are successful
             callback(result);
         };
@@ -156,8 +158,8 @@ angular.module('myApp.product', [])
             $scope.product = data;
         });
 
-        if(UserService.getLoggedInUser() != null) {
-            productService.isFirstReviewForArticle(id, function(response) {
+        if (UserService.getLoggedInUser() != null) {
+            productService.isFirstReviewForArticle(id, function (response) {
                 if (response != null) {
                     $scope.isFirstReview = false;
                     $scope.oldRatingValue = response.ratingValue;
