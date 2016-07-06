@@ -105,7 +105,7 @@ public class OrderService {
 
         Cart cartFromClient = order.getCart();
 
-        if (!cartFromDBRefreshed.equals(cartFromClient)) {
+        if (hasCartChanged(cartFromDBRefreshed, cartFromClient)) {
             // if cart has changed -> client has to confirm new cart explicitly
             throw new CartChangedException(cartFromDBRefreshed, cartFromClient);
         }
@@ -116,6 +116,7 @@ public class OrderService {
         }
 
         // TODO more preconditions?
+        // TODO can client handle exceptions? f.e. can client use info about outdated cart to confirm new cart?
 
         // ### now everything is alright - finish order ### //
 
@@ -127,9 +128,13 @@ public class OrderService {
         return orderFinished;
     }
 
-    private Cart getRefreshedCart(Cart cart) {
+    private boolean hasCartChanged(Cart c1, Cart c2) {
+        // TODO implement equals method or provide other check. otherwise this will always state that the carts are different when they are not the same instance
+        return !c1.equals(c2);
+    }
 
-        // TODO check price and update cart
+    private Cart getRefreshedCart(Cart cart) {
+        // TODO check price and update cart (maybe update db?)
         return cart;
     }
 
