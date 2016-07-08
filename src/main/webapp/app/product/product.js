@@ -76,15 +76,23 @@ angular.module('myApp.product', [])
             callback(result);
         };
 
-        this.getReviews = function (articleId, continuation, callback) {
+        this.getReviews = function (articleId, continuation, ratingRange, callback) {
 
             if (continuation !== null) { // do no try to load more reviews after reaching end of list (null means end of list)
                 var url;
                 if (continuation == undefined) {
-                    url = '/article/reviews?articleId=' + articleId;
+                    if(ratingRange == null) {
+                        url = '/article/reviews?articleId=' + articleId;
+                    } else {
+                        url = '/article/reviews?articleId=' + articleId + "&rating_range=" + JSON.stringify(ratingRange);
+                    }
                 }
                 else {
-                    url = '/article/reviews?articleId=' + articleId + '&continuation=' + continuation;
+                    if(ratingRange == null) {
+                        url = '/article/reviews?articleId=' + articleId + '&continuation=' + continuation;
+                    } else {
+                        url = '/article/reviews?articleId=' + articleId + '&continuation=' + continuation + "&rating_range=" + JSON.stringify(ratingRange);
+                    }
                 }
 
                 $http.get(url).then(
@@ -110,7 +118,6 @@ angular.module('myApp.product', [])
             };
 
             $http.post('/article/submitReview', dataObject).then(function (config) {
-                // if there is a result -> register successful
                 if (config.data != "") {
                     var response = {message: 'Review submitted.'};
                     callback(response);
@@ -176,6 +183,8 @@ angular.module('myApp.product', [])
 
         $scope.quantity = '1';
 
+        $scope.ratingFilter = null;
+
         $scope.addToCart = function () {
 
             productService.addToCart(id, $scope.quantity, function () {
@@ -197,7 +206,7 @@ angular.module('myApp.product', [])
             $scope.reviews_continuation = data.continuation;
         };
 
-        productService.getReviews(id, $scope.reviews_continuation, updateReviews);
+        productService.getReviews(id, $scope.reviews_continuation, $scope.ratingFilter, updateReviews);
 
         $scope.createReview = function () {
 
@@ -225,7 +234,7 @@ angular.module('myApp.product', [])
 
                     $scope.reviews = []; // reset reviews
                     $scope.reviews_continuation = undefined; // reset continuation
-                    productService.getReviews(id, $scope.reviews_continuation, updateReviews); // reload reviews
+                    productService.getReviews(id, $scope.reviews_continuation, $scope.ratingFilter, updateReviews); // reload reviews
                 } else {
                     $scope.dataLoading = false;
                     $scope.isCreatingReview = false;
@@ -243,11 +252,28 @@ angular.module('myApp.product', [])
         };
 
         $scope.loadMoreReviews = function () {
-            productService.getReviews(id, $scope.reviews_continuation, updateReviews);
+            productService.getReviews(id, $scope.reviews_continuation, $scope.ratingFilter, updateReviews);
         };
 
         $scope.switchBool = function (boolValue) {
             $scope[boolValue] = !$scope[boolValue];
         };
+
+        $scope.setRatingFilter = function (value) {
+            if(value == '-1') {
+                $scope.ratingFilter = null;
+            } else {
+                $scope.ratingFilter = {
+                    ratingFrom : value,
+                    ratingTo : value
+                };
+            }
+        }
+
+        $scope.reloadReviewsForFilter = function (filterValue) {
+            $scope.setRatingFilter(filterValue);
+            $scope.reviews = [];
+            productService.getReviews(id, undefined , $scope.ratingFilter, updateReviews);
+        }
 
     }]);

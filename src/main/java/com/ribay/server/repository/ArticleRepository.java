@@ -188,12 +188,14 @@ public class ArticleRepository {
         return result;
     }
 
-    public ArticleReviewsContinuation getReviewsForArticle(String articleId, String continuation) throws Exception {
+    public ArticleReviewsContinuation getReviewsForArticle(String articleId, String continuation, RatingFilterRange ratingRange) throws Exception {
         String bucket = properties.getBucketArticleReviews() + articleId;
         Namespace namespace = new Namespace(bucket);
 
-        // TODO: allow client to choose range of ratings
-        BinIndexQuery biq = new BinIndexQuery.Builder(namespace, "index_rating", "0", "5")
+        String ratingFrom = ratingRange == null ? "0" : ratingRange.getRatingFrom();
+        String ratingTo = ratingRange == null ? "5" : ratingRange.getRatingTo();
+
+        BinIndexQuery biq = new BinIndexQuery.Builder(namespace, "index_rating", ratingFrom, ratingTo)
                 .withMaxResults(10)
                 .withPaginationSort(true)
                 .withContinuation((continuation == null) ? null : BinaryValue.create(continuation))

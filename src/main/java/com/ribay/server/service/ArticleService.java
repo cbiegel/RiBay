@@ -1,5 +1,6 @@
 package com.ribay.server.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ribay.server.material.*;
 import com.ribay.server.material.continuation.ArticleReviewsContinuation;
 import com.ribay.server.repository.ArticleRepository;
@@ -50,8 +51,13 @@ public class ArticleService {
 
     @RequestMapping(path = "/article/reviews", method = RequestMethod.GET)
     public ArticleReviewsContinuation getArticleReviews(@RequestParam(value = "articleId") String articleId,
-                                                        @RequestParam(value = "continuation", required = false) String continuation) throws Exception {
-        return articleRepository.getReviewsForArticle(articleId, continuation);
+                                                        @RequestParam(value = "continuation", required = false) String continuation,
+                                                        @RequestParam(value = "rating_range", required = false) String ratingRange) throws Exception {
+        RatingFilterRange ratingRangeObj = null;
+        if(ratingRange != null) {
+            ratingRangeObj = new ObjectMapper().readValue(ratingRange, RatingFilterRange.class);
+        }
+        return articleRepository.getReviewsForArticle(articleId, continuation, ratingRangeObj);
     }
 
     @RequestMapping(path = "/article/submitReview", method = RequestMethod.POST)
