@@ -1,20 +1,17 @@
 package com.ribay.server.service;
 
 import com.ribay.server.exception.*;
-import com.ribay.server.material.Cart;
-import com.ribay.server.material.Order;
-import com.ribay.server.material.OrderFinished;
+import com.ribay.server.material.*;
 import com.ribay.server.material.converter.Converter;
 import com.ribay.server.repository.CartRepository;
+import com.ribay.server.repository.OrderRepository;
 import com.ribay.server.util.RequestScopeData;
 import com.ribay.server.util.RibayConstants;
 import com.ribay.server.util.clock.RibayClock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -27,6 +24,9 @@ public class OrderService {
     private CartRepository cartRepository;
 
     @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
     private RequestScopeData requestData;
 
     @Autowired
@@ -34,6 +34,23 @@ public class OrderService {
 
     @Autowired
     private Converter<Order, OrderFinished> orderConverter;
+
+    @RequestMapping(path = "/user/orders", method = RequestMethod.POST)
+    public OrderSearchResult getUserOrders(@RequestParam(value = "continuation", required = false) String continuation) throws Exception {
+        if (requestData.getUser() == null) {
+            // must be logged in
+            throw new NotLoggedInException();
+        }
+
+        String userId = requestData.getUser().getUuid().toString();
+        return orderRepository.getUserOrders(userId, continuation);
+    }
+
+    // TODO move to AdminService
+    @RequestMapping(path = "/admin/orders", method = RequestMethod.POST)
+    public OrderSearchResult getAllOrders(@RequestParam(value = "continuation", required = false) String continuation) throws Exception {
+        return orderRepository.getAllOrders(continuation);
+    }
 
     @RequestMapping(path = "/checkout/start", method = RequestMethod.POST)
     public Order startCheckout() throws Exception {
@@ -107,34 +124,61 @@ public class OrderService {
 
         if (hasCartChanged(cartFromDBRefreshed, cartFromClient)) {
             // if cart has changed -> client has to confirm new cart explicitly
-            throw new CartChangedException(cartFromDBRefreshed, cartFromClient);
+            order.setCart(cartFromDBRefreshed); // put actual cart from db into order and let client confirm the new cart
+            order.updateHash();
+            throw new CartChangedException(order);
         }
 
         if (order.getAddress() == null) {
             // address is missing
-            throw new MissingFieldException("address");
+            throw new IncompleteOrderException();
         }
 
         // TODO more preconditions?
-        // TODO can client handle exceptions? f.e. can client use info about outdated cart to confirm new cart?
 
         // ### now everything is alright - finish order ### //
 
         OrderFinished orderFinished = orderConverter.convert(order);
 
-        // TODO delete cart
-        // TODO store order in db
+        cartRepository.deleteCart(sessionId);
+        orderRepository.storeFinishedOrder(orderFinished);
 
         return orderFinished;
     }
 
     private boolean hasCartChanged(Cart c1, Cart c2) {
-        // TODO implement equals method or provide other check. otherwise this will always state that the carts are different when they are not the same instance
-        return !c1.equals(c2);
+        List<ArticleForCart> a1 = c1.getArticles();
+        List<ArticleForCart> a2 = c2.getArticles();
+        if (a1.size() != a2.size()) {
+            // different size of cart -> at least one article added to or removed from cart
+            return true;
+        }
+
+        // carts have same size. compare each element in order (articles have to be ordered for this to work)
+        for (int idx = 0; idx < a1.size(); idx++) {
+            ArticleForCart left = a1.get(idx);
+            ArticleForCart right = a2.get(idx);
+
+            if (!left.getId().equals(right.getId())) {
+                // different ids -> different article (at least one article added and another one removed from cart)
+                return true;
+            }
+            if (left.getQuantity() != right.getQuantity()) {
+                // same article but different quantity -> quantity changed
+                return true;
+            }
+            if (left.getPrice() != right.getPrice()) {
+                // same article, same quantity but different price -> price has changed!
+                return true;
+            }
+        }
+
+        // all articles are the same. cart has not been changed
+        return false;
     }
 
     private Cart getRefreshedCart(Cart cart) {
-        // TODO check price and update cart (maybe update db?)
+        // TODO check price for each article in cart and update cart (maybe update db?)
         return cart;
     }
 

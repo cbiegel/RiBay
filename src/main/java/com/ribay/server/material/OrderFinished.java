@@ -1,5 +1,7 @@
 package com.ribay.server.material;
 
+import java.util.List;
+
 /**
  * Created by CD on 29.06.2016.
  */
@@ -8,8 +10,11 @@ public class OrderFinished {
     private String id;
     private String userId;
     private Address address;
-    private Cart cart;
+    private List<ArticleForCart> articles;
     private long timestamp;
+
+    public OrderFinished() {
+    }
 
     public String getId() {
         return id;
@@ -35,12 +40,12 @@ public class OrderFinished {
         this.address = address;
     }
 
-    public Cart getCart() {
-        return cart;
+    public List<ArticleForCart> getArticles() {
+        return articles;
     }
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
+    public void setArticles(List<ArticleForCart> articles) {
+        this.articles = articles;
     }
 
     public long getTimestamp() {

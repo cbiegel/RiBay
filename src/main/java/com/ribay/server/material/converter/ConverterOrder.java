@@ -26,7 +26,7 @@ public class ConverterOrder implements Converter<Order, OrderFinished> {
         finished.setId(toFinish.getId());
         finished.setUserId(toFinish.getUserId());
         finished.setAddress(toFinish.getAddress());
-        finished.setCart(toFinish.getCart());
+        finished.setArticles(toFinish.getCart().getArticles());
         finished.setTimestamp(clock.getTime());
         return finished;
     }

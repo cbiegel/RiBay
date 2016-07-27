@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * Created by CD on 04.07.2016.
  */
-@ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "User is not correct")
+@ResponseStatus(value = HttpStatus.PRECONDITION_FAILED, reason = "User is not correct")
 public class IncorrectUserException extends Exception {
 }

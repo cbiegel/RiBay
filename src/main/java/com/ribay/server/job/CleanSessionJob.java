@@ -49,7 +49,7 @@ public class CleanSessionJob {
 
         for (String sessionId : sessionsToClean) {
             authRepository.logout(sessionId); // logout session
-            cartRepository.deleteCart(sessionId); // delete cart
+            cartRepository.deleteCart(sessionId); // delete articles
             marketingRepository.deleteLastVisitedArticles(sessionId); // delete last visited articles
             authRepository.deleteSessionLastAccess(sessionId); // remove last access timestamp so this session will not be found again
             // TODO do more cleanup

@@ -3,16 +3,12 @@ Open tasks:
 
 
 * CD: Checkout-Vorgang
-    * Checkout-Start
-        * Generierung einer Bestellungs-ID
     * Zwischenseite mit Warenkorb-Review, Adressliste, etc.
         * Nur **eine** Zwischenseite wie aktuell bei Amazon: verringert die Komplexität der Logik und der UI erheblich
         * Bearbeiten und Auswahl von Adressen
         * Bearbeiten und Auswahl von Zahlungsmöglichkeit (optional, da ähnlich wie Adressen)
     * Bestellabschluss mit Constraints
-        * Bestellung darf nicht bereits abgeschlossen worden sein (Check mit Bestellungs-ID)
-        * muss immer noch eingeloggt sein
-        * keine zwischenzeitliche Änderung des Warenkorbs
+        * (alles erledigt bis auf:)
         * keine zwischenzeitliche Änderung des Preises
         * evtl. Prüfung ob Artikel noch in Stock
     * Auflistung aller Bestellungen des Users im Userbereich
@@ -21,12 +17,12 @@ Open tasks:
 
 * CD: Suche verbessern
     * weitere Filterungsmöglichkeiten
+    * weitere Sortierungsmöglichkeiten
     * Typeahead für Textfeld
     * konsistente Suche (bei gleichem Filter: gleiche Werte)
 
 * NN: Erweiterte Review-Darstellungsmöglichkeiten
     * Sortierung nach Datum
-    * Filterung nach Anzahl der Sterne (nur 3-Stern-Bewertungen)
     * ...
 
 * NN: Artikel-Vorschläge generieren
@@ -48,7 +44,6 @@ Open tasks:
 
 * NN: Benutzerbereich
     * Frühere Bestellungen einsehen (siehe anderen Task weiter oben)
-    * Adressen bearbeiten
     * Account-Details bearbeiten
         * Benutzername
         * Passwort

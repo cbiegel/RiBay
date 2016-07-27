@@ -1,6 +1,8 @@
 package com.ribay.server.material;
 
-public class ArticleShort {
+import java.io.Serializable;
+
+public class ArticleShort implements Serializable {
 
     private String id;
     private String name;

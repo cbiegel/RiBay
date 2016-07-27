@@ -17,18 +17,23 @@ import java.util.Map;
 public class RiakSearchHelperImpl implements RiakSearchHelper {
 
     @Override
-    public String getString(String field, Map<String, List<String>> map) {
-        return map.getOrDefault(field, Collections.singletonList(null)).get(0);
+    public String getString(String field, Map<String, List<String>> map, String defaultValue) {
+        return map.getOrDefault(field, Collections.singletonList(defaultValue)).get(0);
     }
 
     @Override
-    public int getInteger(String field, Map<String, List<String>> map) {
-        return Integer.valueOf(map.getOrDefault(field, Collections.singletonList("0")).get(0));
+    public int getInteger(String field, Map<String, List<String>> map, int defaultValue) {
+        return Integer.valueOf(map.getOrDefault(field, Collections.singletonList(String.valueOf(defaultValue))).get(0));
     }
 
     @Override
-    public boolean getBoolean(String field, Map<String, List<String>> map) {
-        return Boolean.valueOf(map.getOrDefault(field, Collections.singletonList("false")).get(0));
+    public long getLong(String field, Map<String, List<String>> map, long defaultValue) {
+        return Long.valueOf(map.getOrDefault(field, Collections.singletonList(String.valueOf(defaultValue))).get(0));
+    }
+
+    @Override
+    public boolean getBoolean(String field, Map<String, List<String>> map, boolean defaultValue) {
+        return Boolean.valueOf(map.getOrDefault(field, Collections.singletonList(String.valueOf(defaultValue))).get(0));
     }
 
 }

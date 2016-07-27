@@ -66,6 +66,15 @@ public class Order {
         this.dateStarted = dateStarted;
     }
 
+    /**
+     * Only for junit tests
+     *
+     * @return the hash for this order
+     */
+    public String getHash() {
+        return hash;
+    }
+
     public void updateHash() {
         this.hash = HashUtil.generateHash(getSuppliers());
     }
@@ -82,7 +91,8 @@ public class Order {
      * @return data to use for geneating hash
      */
     private Supplier<?>[] getSuppliers() {
-        Supplier<?>[] suppliers = {this::getId, this::getUserId, this::getAddress, this::getCart};
+        // use every field except the ones that the user has to fill ('address') and except the hash itself
+        Supplier<?>[] suppliers = {this::getId, this::getSessionId, this::getUserId, this::getCart, this::getDateStarted};
         return suppliers;
     }
 

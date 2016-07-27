@@ -86,6 +86,7 @@ public class ArticleService {
         return result;
     }
 
+    // TODO move to AdminService
     @RequestMapping(path = "/article/changeStock/{articleId}/{diff}", method = RequestMethod.PUT)
     public Integer changeStock(
             @PathVariable(value = "articleId") String articleId,
@@ -96,6 +97,7 @@ public class ArticleService {
         return result;
     }
 
+    // TODO move to AdminService
     @RequestMapping(path = "/article/setPrice/{articleId}/{price}", method = RequestMethod.PUT)
     public void setPrice(@PathVariable(value = "articleId") String articleId, @PathVariable(value = "price") int price) throws Exception {
         articleRepository.setPrice(articleId, price);

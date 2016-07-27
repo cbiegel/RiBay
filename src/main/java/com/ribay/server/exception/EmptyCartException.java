@@ -8,4 +8,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.PRECONDITION_FAILED, reason = "Cart is empty")
 public class EmptyCartException extends Exception {
+
+    public EmptyCartException() {
+        super("Cart is empty");
+    }
+
 }

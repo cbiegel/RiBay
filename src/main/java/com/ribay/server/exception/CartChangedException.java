@@ -1,6 +1,7 @@
 package com.ribay.server.exception;
 
 import com.ribay.server.material.Cart;
+import com.ribay.server.material.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -10,19 +11,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Cart has changed.")
 public class CartChangedException extends Exception {
 
-    private final Cart expected;
-    private final Cart given;
+    private final Order newOrder;
 
-    public CartChangedException(Cart expected, Cart given) {
-        this.expected = expected;
-        this.given = given;
+    public CartChangedException(Order newOrder) {
+        this.newOrder = newOrder;
     }
 
-    public Cart getExpected() {
-        return expected;
+    public Order getNewOrder() {
+        return newOrder;
     }
 
-    public Cart getGiven() {
-        return given;
-    }
 }

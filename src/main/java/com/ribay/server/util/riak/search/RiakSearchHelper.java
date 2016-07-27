@@ -1,6 +1,5 @@
 package com.ribay.server.util.riak.search;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -9,10 +8,28 @@ import java.util.Map;
  */
 public interface RiakSearchHelper {
 
-    public String getString(String field, Map<String, List<String>> map);
+    public default String getString(String field, Map<String, List<String>> map) {
+        return getString(field, map, null); // default value: null
+    }
 
-    public int getInteger(String field, Map<String, List<String>> map);
+    public String getString(String field, Map<String, List<String>> map, String defaultValue);
 
-    public boolean getBoolean(String field, Map<String, List<String>> map);
+    public default int getInteger(String field, Map<String, List<String>> map) {
+        return getInteger(field, map, 0); // default value: 0
+    }
+
+    public int getInteger(String field, Map<String, List<String>> map, int defaultValue);
+
+    public default long getLong(String field, Map<String, List<String>> map) {
+        return getLong(field, map, 0L); // default value: 0
+    }
+
+    public long getLong(String field, Map<String, List<String>> map, long defaultValue);
+
+    public default boolean getBoolean(String field, Map<String, List<String>> map) {
+        return getBoolean(field, map, false); // default value: false
+    }
+
+    public boolean getBoolean(String field, Map<String, List<String>> map, boolean defaultValue);
 
 }

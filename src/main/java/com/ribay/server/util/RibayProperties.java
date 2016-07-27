@@ -90,6 +90,12 @@ public class RibayProperties {
         return buildBucketFromAttrs(attrs);
     }
 
+    public Namespace getBucketOrders(String userId) {
+        String[] attrs = databaseProperties.getProperty("bucket.orders").split("#");
+        attrs[1] = attrs[1].replace("{{userId}}", userId);
+        return buildBucketFromAttrs(attrs);
+    }
+
     private Namespace buildBucketFromAttrs(String... attrs) {
         String bucketType;
         String bucketName;

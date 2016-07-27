@@ -6,6 +6,7 @@ import com.basho.riak.client.core.RiakFuture;
 import com.basho.riak.client.core.query.Namespace;
 import com.basho.riak.client.core.query.search.YokozunaSchema;
 import com.ribay.server.db.MyRiakClient;
+import com.ribay.server.db.MyRiakClientImpl;
 import com.ribay.server.util.RibayProperties;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StreamUtils;
@@ -35,7 +36,7 @@ public class StoreSearchSchema {
     public StoreSearchSchema() throws Exception {
         properties = new RibayProperties();
 
-        client = new MyRiakClient();
+        client = new MyRiakClientImpl();
         ReflectionUtils.findField(client.getClass(), "properties").setAccessible(true);
         ReflectionUtils.findField(client.getClass(), "properties").set(client, properties);
         ReflectionUtils.findMethod(client.getClass(), "init").setAccessible(true);
@@ -60,7 +61,7 @@ public class StoreSearchSchema {
     }
 
     private void shutdown() throws Exception {
-        client.getRiakClient().shutdown();
+        // client.getRiakClient().shutdown();
     }
 
 }

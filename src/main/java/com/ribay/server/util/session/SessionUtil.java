@@ -10,14 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.util.DigestUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -33,7 +30,7 @@ public class SessionUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(SessionUtil.class);
 
-    private static final String SESSION_COOKIE_NAME = "session";
+    public static final String SESSION_COOKIE_NAME = "session";
 
     private static final Charset COOKIE_CHARSET = StandardCharsets.US_ASCII; // use ascii because it is easy to decode with js
 
@@ -61,12 +58,17 @@ public class SessionUtil {
         String hashValue = generateHash(sessionData);
         sessionData.setHash(hashValue);
 
-        byte[] sessionBytes = SessionUtil.sessionToJSON(sessionData);
-        String sessionValue = new String(sessionBytes, COOKIE_CHARSET);
-        Cookie sessionCookie = new Cookie(SessionUtil.SESSION_COOKIE_NAME, sessionValue);
+        Cookie sessionCookie = generateSessionCookie(sessionData);
         sessionCookie.setMaxAge(properties.getSessionTimeout());
         sessionCookie.setPath("/");
         response.addCookie(sessionCookie);
+    }
+
+    public static Cookie generateSessionCookie(SessionData sessionData) {
+        byte[] sessionBytes = SessionUtil.sessionToJSON(sessionData);
+        String sessionValue = new String(sessionBytes, COOKIE_CHARSET);
+        Cookie sessionCookie = new Cookie(SessionUtil.SESSION_COOKIE_NAME, sessionValue);
+        return sessionCookie;
     }
 
     private static SessionData createSession() {
