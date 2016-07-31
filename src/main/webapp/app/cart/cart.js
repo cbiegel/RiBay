@@ -56,14 +56,13 @@ angular.module('myApp.cart', [])
             }
         };
 
-        this.checkout = function () {
-            // TODO proceed to checkout
-            alert("Checkout");
+        this.checkout = function (successCallback, errorCallback) {
+            $http.post('/checkout/start').then(successCallback, errorCallback);
         };
 
     }])
 
-    .controller('cartCtrl', ['$scope', 'waitingService', 'cartService', function ($scope, waitingService, cartService) {
+    .controller('cartCtrl', ['$scope', '$rootScope', '$window', '$location', 'waitingService', 'cartService', 'UserService', function ($scope, $rootScope, $window, $location, waitingService, cartService, UserService) {
 
         waitingService.startWaiting();
 
@@ -114,6 +113,22 @@ angular.module('myApp.cart', [])
             });
         };
 
-        $scope.checkout = cartService.checkout;
+        $scope.checkout = function () {
+            if (UserService.getLoggedInUser() == null) {
+                $location.url('/login');
+                // TODO proceed to checkout directly after successful login?
+            }
+            else {
+                cartService.checkout(function onSuccess(order) {
+                    $rootScope.order = order;
+                    $location.url('/checkout/');
+                }, function onError(response) {
+                    var data = response.data;
+                    if (data.exception) {
+                        $window.alert(data.exception.message);
+                    }
+                });
+            }
+        };
 
     }]);

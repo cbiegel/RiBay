@@ -21,7 +21,8 @@ angular.module('myApp', [
     'myApp.status',
     'myApp.version',
     'myApp.register',
-    'myApp.admin'
+    'myApp.admin',
+    'myApp.checkout'
 ])
 
     .service('UserService', ['$cookies', function ($cookies) {
