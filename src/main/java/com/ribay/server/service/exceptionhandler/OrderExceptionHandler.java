@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,8 +16,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 @ControllerAdvice(assignableTypes = OrderService.class)
 public class OrderExceptionHandler {
-
-    public static final String DEFAULT_ERROR_VIEW = "error";
 
     @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
     @ExceptionHandler({EmptyCartException.class, NotLoggedInException.class, IncorrectHashException.class, IncorrectClientException.class, IncorrectUserException.class, IncompleteOrderException.class})
@@ -42,7 +41,7 @@ public class OrderExceptionHandler {
         ModelAndView mav = new ModelAndView();
         mav.addObject("exception", e);
         mav.addObject("url", req.getRequestURL());
-        mav.setViewName(DEFAULT_ERROR_VIEW);
+        mav.setView(new MappingJackson2JsonView()); // return as json
         return mav;
     }
 
