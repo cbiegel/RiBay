@@ -3,22 +3,32 @@ package com.ribay.server.service;
 import com.ribay.server.exception.*;
 import com.ribay.server.material.*;
 import com.ribay.server.material.converter.Converter;
+import com.ribay.server.repository.ArticleRepository;
 import com.ribay.server.repository.CartRepository;
 import com.ribay.server.repository.OrderRepository;
 import com.ribay.server.util.RequestScopeData;
 import com.ribay.server.util.RibayConstants;
 import com.ribay.server.util.clock.RibayClock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by CD on 04.07.2016.
  */
 @RestController
 public class OrderService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
+
+    @Autowired
+    private ArticleRepository articleRepository;
 
     @Autowired
     private CartRepository cartRepository;
@@ -69,7 +79,8 @@ public class OrderService {
         }
 
         // refresh data that might have changed after articles were added to cart (especially prices)
-        cart = getRefreshedCart(cart);
+        // TODO why does this generate a different hash once serialized to and deserialized from json?
+        // cart = getRefreshedCart(cart);
 
         // generate id
         String id = UUID.randomUUID().toString();
@@ -177,9 +188,31 @@ public class OrderService {
         return false;
     }
 
+    /**
+     * Returns a new cart object with the same entries as the specified but with updated prices from db.
+     */
     private Cart getRefreshedCart(Cart cart) {
-        // TODO check price for each article in cart and update cart (maybe update db?)
-        return cart;
+        List<ArticleForCart> refreshedArticles = cart.getArticles().parallelStream().map((articleOld -> {
+            ArticleForCart articleNew = new ArticleForCart();
+            articleNew.setId(articleOld.getId());
+            articleNew.setName(articleOld.getName());
+            articleNew.setImage(articleOld.getId());
+            articleNew.setQuantity(articleOld.getQuantity());
+            articleNew.setPrice(articleOld.getPrice());
+
+            try {
+                ArticleDynamic articleDynamic = articleRepository.getArticleInformationDynamic(articleOld.getId());
+                articleNew.setPrice(articleDynamic.getPrice());
+            } catch (Exception e) {
+                LOGGER.error("error while fetching price for article", e);
+            }
+
+            return articleNew;
+        })).collect(Collectors.toList());
+
+        Cart refreshedCart = new Cart(refreshedArticles); // use new arraylist here for correct serialization
+        // TODO maybe update db?
+        return refreshedCart;
     }
 
 }

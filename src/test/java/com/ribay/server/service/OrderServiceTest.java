@@ -344,7 +344,37 @@ public class OrderServiceTest {
                 .andExpect(model().attribute("newOrder", hasProperty("cart", hasProperty("articles", everyItem(both(hasProperty("id", is(articleId2))).and(hasProperty("quantity", is(quantity2))))))));
     }
 
-    // TODO test case for cart change due to a changed price
+    @Test
+    public void testFinishCheckoutCartChanged4() throws Exception {
+        final String sessionId = "test_" + System.currentTimeMillis();
+        final UUID userId = UUID.randomUUID();
+        final String articleId = "1000560";
+        final int quantity = 2;
+
+        Cookie sessionCookie = generateSessionCookie(sessionId, userId);
+
+        mockMvc.perform(put("/cart/add/" + articleId + "/" + quantity).cookie(sessionCookie))
+                .andExpect(status().isOk());
+
+        byte[] orderBytes = mockMvc.perform(post("/checkout/start").cookie(sessionCookie))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsByteArray();
+
+        Order order = JSONUtil.read(orderBytes, Order.class);
+        int oldPrice = order.getCart().getArticles().get(0).getPrice();
+        int newPrice = oldPrice + 1; // add 1 cent to price
+
+        // change price of article that is already in cart
+        mockMvc.perform(put("/article/setPrice/" + articleId + "/" + newPrice).cookie(sessionCookie))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/checkout/finish").cookie(sessionCookie).content(orderBytes).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().is(HttpStatus.CONFLICT.value()))
+                .andExpect(model().attribute("exception", isA(CartChangedException.class)))
+                .andExpect(model().attribute("newOrder", isA(Order.class)))
+                .andExpect(model().attribute("newOrder", hasProperty("cart", hasProperty("articles", hasSize(1)))))
+                .andExpect(model().attribute("newOrder", hasProperty("cart", hasProperty("articles", everyItem(both(hasProperty("id", is(articleId))).and(hasProperty("price", is(newPrice))))))));
+    }
 
     @Test
     public void testFinishCheckoutOrderMissingAddress() throws Exception {

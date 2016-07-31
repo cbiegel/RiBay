@@ -6,10 +6,9 @@ Open tasks:
     * Zwischenseite mit Warenkorb-Review, Adressliste, etc.
         * Nur **eine** Zwischenseite wie aktuell bei Amazon: verringert die Komplexität der Logik und der UI erheblich
         * Bearbeiten und Auswahl von Adressen
-        * Bearbeiten und Auswahl von Zahlungsmöglichkeit (optional, da ähnlich wie Adressen)
+        * Fehlerbahndlung für Fehler, die bei normalem Betrieb auftreten (cart changed)
     * Bestellabschluss mit Constraints
         * (alles erledigt bis auf:)
-        * keine zwischenzeitliche Änderung des Preises
         * evtl. Prüfung ob Artikel noch in Stock
     * Auflistung aller Bestellungen des Users im Userbereich
     * Auflistung aller Bestellungen der Anwendung im Administrationsbereich (Händlersicht)
