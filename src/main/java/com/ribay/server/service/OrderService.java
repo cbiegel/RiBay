@@ -79,8 +79,7 @@ public class OrderService {
         }
 
         // refresh data that might have changed after articles were added to cart (especially prices)
-        // TODO why does this generate a different hash once serialized to and deserialized from json?
-        // cart = getRefreshedCart(cart);
+        cart = getRefreshedCart(cart);
 
         // generate id
         String id = UUID.randomUUID().toString();
@@ -129,6 +128,12 @@ public class OrderService {
         }
 
         Cart cartFromDB = cartRepository.getCart(sessionId);
+
+        if (cartFromDB.getArticles().isEmpty()) {
+            // cart must not be empty when finishing order
+            throw new EmptyCartException();
+        }
+
         Cart cartFromDBRefreshed = getRefreshedCart(cartFromDB);
 
         Cart cartFromClient = order.getCart();

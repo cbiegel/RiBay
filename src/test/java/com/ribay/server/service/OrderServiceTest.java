@@ -252,6 +252,31 @@ public class OrderServiceTest {
     }
 
     @Test
+    public void testFinishCheckoutCartEmpty() throws Exception {
+        final String sessionId = "test_" + System.currentTimeMillis();
+        final UUID userId = UUID.randomUUID();
+        final String articleId = "1000560";
+        final int quantity = 8;
+
+        Cookie sessionCookie = generateSessionCookie(sessionId, userId);
+
+        mockMvc.perform(put("/cart/add/" + articleId + "/" + quantity).cookie(sessionCookie))
+                .andExpect(status().isOk());
+
+        byte[] orderBytes = mockMvc.perform(post("/checkout/start").cookie(sessionCookie))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsByteArray();
+
+        // remove only article from cart
+        mockMvc.perform(delete("/cart/remove/" + articleId).cookie(sessionCookie))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/checkout/finish").cookie(sessionCookie).content(orderBytes).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().is(HttpStatus.PRECONDITION_FAILED.value()))
+                .andExpect(model().attribute("exception", isA(EmptyCartException.class)));
+    }
+
+    @Test
     public void testFinishCheckoutCartChanged1() throws Exception {
         final String sessionId = "test_" + System.currentTimeMillis();
         final UUID userId = UUID.randomUUID();
@@ -436,5 +461,58 @@ public class OrderServiceTest {
         Cart cartAfterCheckout = JSONUtil.read(cartAfterCheckoutBytes, Cart.class);
         assertTrue(cartAfterCheckout.getArticles().isEmpty());
     }
+
+    @Test
+    public void testFinishCheckoutSuccessAfterChange() throws Exception {
+        final String sessionId = "test_" + System.currentTimeMillis();
+        final UUID userId = UUID.randomUUID();
+        final String articleId = "1000560";
+        final int quantity = 2;
+        final Address address = new Address("myName", "myAdditionalInfo", "myStreet", "myZipCode", "myPlace", "myCountry");
+
+        Cookie sessionCookie = generateSessionCookie(sessionId, userId);
+
+        mockMvc.perform(put("/cart/add/" + articleId + "/" + quantity).cookie(sessionCookie))
+                .andExpect(status().isOk());
+
+        byte[] orderBytes = mockMvc.perform(post("/checkout/start").cookie(sessionCookie))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsByteArray();
+
+        Order order = JSONUtil.read(orderBytes, Order.class);
+        order.setAddress(address);
+        String newOrderString = JSONUtil.write(order);
+
+        // add article quantity after starting checkout
+        mockMvc.perform(put("/cart/add/" + articleId + "/" + quantity).cookie(sessionCookie))
+                .andExpect(status().isOk());
+
+        Order updatedOrder = (Order) mockMvc.perform(post("/checkout/finish").cookie(sessionCookie).content(newOrderString).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().is(HttpStatus.CONFLICT.value()))
+                .andExpect(model().attribute("exception", isA(CartChangedException.class)))
+                .andExpect(model().attribute("newOrder", isA(Order.class))).andReturn().getModelAndView().getModelMap().get("newOrder");
+
+        String updatedOrderString = JSONUtil.write(updatedOrder);
+
+        mockMvc.perform(post("/checkout/finish").cookie(sessionCookie).content(updatedOrderString).contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.id", is(order.getId()))) // id must match
+                .andExpect(jsonPath("$.userId", is(order.getUserId()))) // user id must match
+                .andExpect(jsonPath("$.address", both(hasEntry("name", address.getName())).and(hasEntry("additionalInfo", address.getAdditionalInfo())).and(hasEntry("street", address.getStreet())).and(hasEntry("zipCode", address.getZipCode())).and(hasEntry("place", address.getPlace())).and(hasEntry("country", address.getCountry())))) // address that was set
+                .andExpect(jsonPath("$.articles", hasSize(1))) // cart contains only one item
+                .andExpect(jsonPath("$.articles[0]", both(hasEntry("id", articleId)).and(hasEntry("quantity", quantity * 2)))) // only item has the specified values
+                .andExpect(jsonPath("$.timestamp", notNullValue())); // date is set
+
+        // after checkout: cart must be empty:
+        byte[] cartAfterCheckoutBytes = mockMvc.perform(get("/cart/").cookie(sessionCookie))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsByteArray();
+
+        Cart cartAfterCheckout = JSONUtil.read(cartAfterCheckoutBytes, Cart.class);
+        assertTrue(cartAfterCheckout.getArticles().isEmpty());
+    }
+
+    // FIXME test case finish checkout after cart changed
 
 }

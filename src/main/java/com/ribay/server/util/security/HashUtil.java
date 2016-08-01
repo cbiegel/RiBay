@@ -1,9 +1,10 @@
 package com.ribay.server.util.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.util.DigestUtils;
 
 import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
 import java.util.function.Supplier;
 
 /**
@@ -20,21 +21,26 @@ public class HashUtil {
      * @return the md5 hash for the specified data as an hex string
      */
     public static String generateHash(Supplier<?>... suppliers) {
-        if (suppliers == null) {
+        if ((suppliers == null) || (suppliers.length == 0)) {
             throw new IllegalArgumentException("at least one supplier must be set!");
         }
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
+
+            // write values as json. this is safer than using java serialization
+            ObjectWriter writer = new ObjectMapper().writer();
+
+            // add some salt first
+            writer.writeValue(baos, MY_SALT);
+
             for (Supplier<?> supplier : suppliers) {
                 // serialize data
                 Object o = supplier.get();
-                oos.writeObject(o);
+                writer.writeValue(baos, o);
             }
-            // add some salt
-            oos.write(MY_SALT);
-            oos.close(); // flush and close
+
+            baos.close();
 
             byte[] serialized = baos.toByteArray();
             String digested = DigestUtils.md5DigestAsHex(serialized);
