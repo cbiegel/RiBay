@@ -13,6 +13,7 @@ import com.basho.riak.client.core.query.crdt.types.RiakMap;
 import com.basho.riak.client.core.query.crdt.types.RiakRegister;
 import com.basho.riak.client.core.query.indexes.StringBinIndex;
 import com.basho.riak.client.core.util.BinaryValue;
+import com.google.common.util.concurrent.Futures;
 import com.ribay.server.db.MyRiakClient;
 import com.ribay.server.exception.NotFoundException;
 import com.ribay.server.material.*;
@@ -336,6 +337,17 @@ public class ArticleRepository {
 
         f1.get();
         f2.get();
+    }
+
+    public Future<?> changeStocks(Map<String, Integer> articleIdToDiff) throws Exception {
+        for (Map.Entry<String, Integer> entry : articleIdToDiff.entrySet()) {
+            String articleId = entry.getKey();
+            int diff = entry.getValue();
+
+            changeStockForDynamic(articleId, diff);
+            changeStockForSearch(articleId, diff);
+        }
+        return Futures.immediateFuture(null);
     }
 
     private Future<?> changeStockForDynamic(String articleId, int diff) throws Exception {

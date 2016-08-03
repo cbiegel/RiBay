@@ -1,5 +1,6 @@
 package com.ribay.server.service;
 
+import com.google.common.base.Functions;
 import com.ribay.server.exception.*;
 import com.ribay.server.material.*;
 import com.ribay.server.material.converter.Converter;
@@ -16,7 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.IntToLongFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -160,17 +165,8 @@ public class OrderService {
         orderRepository.storeFinishedOrder(orderFinished);
 
         // update stock for each bought article
-        orderFinished.getArticles().parallelStream().forEach(
-                (article) -> {
-                    String id = article.getId();
-                    int quantity = article.getQuantity();
-                    try {
-                        articleRepository.changeStock(id, -quantity);
-                    } catch (Exception e) {
-                        LOGGER.error("Was not able to update stock after article was bought: " + id, e);
-                    }
-                }
-        );
+        Map<String, Integer> articleIdToDiff = orderFinished.getArticles().stream().collect(Collectors.toMap(ArticleForCart::getId, negate(ArticleForCart::getQuantity)));
+        articleRepository.changeStocks(articleIdToDiff);
 
         return orderFinished;
     }
@@ -231,6 +227,10 @@ public class OrderService {
         Cart refreshedCart = new Cart(refreshedArticles); // use new arraylist here for correct serialization
         // TODO maybe update db?
         return refreshedCart;
+    }
+
+    private static <T> Function<T, Integer> negate(Function<T, Integer> input) {
+        return input.andThen((value) -> -value);
     }
 
 }
