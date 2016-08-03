@@ -119,8 +119,8 @@ angular.module('myApp.cart', [])
                 // TODO proceed to checkout directly after successful login?
             }
             else {
-                cartService.checkout(function onSuccess(order) {
-                    $rootScope.order = order;
+                cartService.checkout(function onSuccess(response) {
+                    $rootScope.order = response.data;
                     $location.url('/checkout/');
                 }, function onError(response) {
                     var data = response.data;

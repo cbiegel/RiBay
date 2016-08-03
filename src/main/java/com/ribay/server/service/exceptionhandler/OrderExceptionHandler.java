@@ -40,6 +40,7 @@ public class OrderExceptionHandler {
     private ModelAndView handleDefault(HttpServletRequest req, Exception e) {
         ModelAndView mav = new ModelAndView();
         mav.addObject("exception", e);
+        mav.addObject("exceptionClass", e.getClass().getSimpleName());
         mav.addObject("url", req.getRequestURL());
         mav.setView(new MappingJackson2JsonView()); // return as json
         return mav;

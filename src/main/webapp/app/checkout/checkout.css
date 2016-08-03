@@ -1,3 +1,75 @@
 .checkout {
+    min-width: 1000px;
+    max-width: 1200px;
+    margin: 0 auto;
+    /* padding: 20px 0; */
+}
 
+.checkout #top {
+    padding-bottom: 20px;
+}
+
+.checkout > #right {
+    width: 300px;
+    float: right;
+}
+
+.checkout > #center {
+    margin-right: 300px;
+    padding-right: 3.5%;
+}
+
+.checkout #finish-button {
+    width: 100%;
+}
+
+.checkout #back-to-cart-button {
+    width: 200px;
+}
+
+.checkout .total-price-details {
+    margin-top: 12px;
+}
+
+.checkout .total-price-details > * {
+    margin: 4px 0;
+}
+
+.checkout .form-group > div {
+    padding: 2px 0;
+}
+
+.checkout label {
+    font-size: 11px;
+    font-weight: normal;
+    margin-bottom: 0px;
+}
+
+.checkout input.form-control {
+    height: 24px;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
+.checkout .inline > * {
+    display: inline-block;
+}
+
+.checkout .article-container {
+    height: 100px;
+    margin: 8px 0;
+}
+
+.checkout .article-container .article-image {
+    width: 80px;
+    height: 100%;
+    margin-right: 12px;
+}
+
+.checkout .article-container .article-image > img {
+    display: block;
+    margin: auto;
+    max-width: 100%;
+    max-height: 100%;
 }

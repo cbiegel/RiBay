@@ -210,7 +210,7 @@ public class OrderService {
             ArticleForCart articleNew = new ArticleForCart();
             articleNew.setId(articleOld.getId());
             articleNew.setName(articleOld.getName());
-            articleNew.setImage(articleOld.getId());
+            articleNew.setImage(articleOld.getImage());
             articleNew.setQuantity(articleOld.getQuantity());
             articleNew.setPrice(articleOld.getPrice());
 

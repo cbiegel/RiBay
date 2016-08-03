@@ -1,2 +1,128 @@
 <div class="checkout">
+    <div id="top">
+        <div class="text-big text-bold">Review your order</div>
+        <div class="text-smallest">By placing your order, you agree to sell your <a
+                href="https://en.wikipedia.org/wiki/Soul" target="_blank">soul</a> to RiBay.
+        </div>
+    </div>
+    <div id="right">
+        <div class="box background-grey">
+            <div class="box-content">
+                <button type="button" id="finish-button" class="btn button-primary"
+                        ng-disabled="order.address == undefined" ng-click="finishCheckout()">Pay in EUR
+                </button>
+                <div class="total-price-details">
+                    <div class="text-bold">Order Summary</div>
+                    <div style="position: relative;">
+                        <span>Items:</span>
+                        <span style="position: absolute; right: 0;">{{((order.cart.articles | sumPrice) / 100) | currency: "€"}}</span>
+                    </div>
+                    <div style="position: relative;">
+                        <span>Postage & Packing:</span>
+                        <span style="position: absolute; right: 0;">{{0 | currency: "€"}}</span>
+                    </div>
+                    <div class="text-bold" style="margin-top: 12px">
+                        (Order total {{((order.cart.articles | sumPrice) / 100) | currency: "€"}})
+                    </div>
+                    <div class="text-medium text-bold price" style="position: relative;">
+                        <span>Payment Total:</span>
+                        <span style="position: absolute; right: 0;">{{((order.cart.articles | sumPrice) / 100) | currency: "€"}}</span>
+                    </div>
+                    <div class="text-smallest">Order Totals include RAT (RiBay awesomeness tax)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="center">
+        <!-- Show changes of cart if there are any -->
+        <div uib-alert class="alert-warning" ng-show="changes">
+            <div class="text-bold">Oops, your shopping cart has changed. Please review your order</div>
+            <ul>
+                <li ng-show="changes.added && changes.added.length > 0">
+                    Articles added
+                    <ul>
+                        <li ng-repeat="article in changes.added">{{article.name}} (x {{article.quantity}})</li>
+                    </ul>
+                </li>
+                <li ng-show="changes.removed && changes.removed.length > 0">
+                    Articles removed
+                    <ul>
+                        <li ng-repeat="article in changes.removed">{{article.name}}</li>
+                    </ul>
+                </li>
+                <li ng-show="changes.quantity && changes.quantity.length > 0">
+                    Quantity changed
+                    <ul>
+                        <li ng-repeat="tuple in changes.quantity">
+                            {{tuple.left.name}} (was: {{tuple.left.quantity}}, now: {{tuple.right.quantity}})
+                        </li>
+                    </ul>
+                </li>
+                <li ng-show="changes.price && changes.price.length > 0">
+                    Price changed
+                    <ul>
+                        <li ng-repeat="tuple in changes.price">
+                            {{tuple.left.name}} (was: {{tuple.left.price / 100 | currency: "€"}}, now:
+                            {{tuple.right.price / 100 | currency: "€"}})
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="box background-grey">
+            <div class="box-content">
+                <div class="text-bold" style="margin-bottom: 6px;">Delivery address</div>
+                <form name="form" role="form" class="form-group" style="width: 360px;">
+                    <div>
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" ng-model="order.address.name" id="name" required/>
+                    </div>
+                    <div>
+                        <label for="additionalInfo">Additional info</label>
+                        <input type="text" class="form-control" ng-model="order.address.additionalInfo"
+                               id="additionalInfo"/>
+                    </div>
+                    <div>
+                        <label for="street">Street</label>
+                        <input type="text" class="form-control" ng-model="order.address.street" id="street" required/>
+                    </div>
+                    <div class="inline">
+                        <div style="width: 20%;">
+                            <label for="zipCode">ZIP Code</label>
+                            <input type="text" class="form-control" ng-model="order.address.zipCode" id="zipCode"
+                                   required/>
+                        </div>
+                        <div style="width: 80%; padding-left: 8px;">
+                            <label for="place">City</label>
+                            <input type="text" class="form-control" ng-model="order.address.place" id="place" required/>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="country">Country</label>
+                        <input type="text" class="form-control" ng-model="order.address.country" id="country" required/>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div style="padding: 8px 0;"></div>
+        <div class="box background-grey">
+            <div class="box-content">
+                <div class="text-bold" style="margin-bottom: 6px;">Cart</div>
+                <div class="article-container inline" ng-repeat="article in order.cart.articles">
+                    <div class="article-image">
+                        <img ng-src="{{article.image | imageIdToUrl}}">
+                    </div>
+                    <div class="article-content">
+                        <div class="text-bold">{{article.name}}</div>
+                        <div class="text-bold price">{{article.price / 100 | currency: "€"}}</div>
+                        <div>Quantity: {{article.quantity}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="padding: 8px 0;"></div>
+        <button type="button" id="back-to-cart-button" class="btn button-primary"
+                ng-click="backToCart()">Back to cart
+        </button>
+    </div>
 </div>

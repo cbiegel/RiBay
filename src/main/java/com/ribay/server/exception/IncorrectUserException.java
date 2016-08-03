@@ -8,4 +8,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.PRECONDITION_FAILED, reason = "User is not correct")
 public class IncorrectUserException extends Exception {
+
+    public IncorrectUserException() {
+        super("User is not correct");
+    }
+
 }

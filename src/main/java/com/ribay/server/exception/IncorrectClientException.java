@@ -8,4 +8,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.PRECONDITION_FAILED, reason = "Client is not correct")
 public class IncorrectClientException extends Exception {
+
+    public IncorrectClientException()
+    {
+        super("Client is not correct");
+    }
+
 }

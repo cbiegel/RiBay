@@ -8,4 +8,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.GONE, reason = "Order has started too long ago")
 public class OrderTooOldException extends Exception {
+
+    public OrderTooOldException()
+    {
+        super("Order has started too long ago");
+    }
+
 }

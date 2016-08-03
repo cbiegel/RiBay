@@ -5,4 +5,8 @@ package com.ribay.server.exception;
  */
 public class IncompleteOrderException extends Exception {
 
+    public IncompleteOrderException() {
+        super("Order is incomplete!");
+    }
+
 }

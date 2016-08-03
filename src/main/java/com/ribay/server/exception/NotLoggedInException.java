@@ -9,4 +9,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(code = HttpStatus.PRECONDITION_FAILED, reason = "Must be logged in")
 public class NotLoggedInException extends Exception {
 
+    public NotLoggedInException() {
+        super("Must be logged in!");
+    }
+
 }
