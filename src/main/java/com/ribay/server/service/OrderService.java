@@ -159,6 +159,19 @@ public class OrderService {
         cartRepository.deleteCart(sessionId);
         orderRepository.storeFinishedOrder(orderFinished);
 
+        // update stock for each bought article
+        orderFinished.getArticles().parallelStream().forEach(
+                (article) -> {
+                    String id = article.getId();
+                    int quantity = article.getQuantity();
+                    try {
+                        articleRepository.changeStock(id, -quantity);
+                    } catch (Exception e) {
+                        LOGGER.error("Was not able to update stock after article was bought: " + id, e);
+                    }
+                }
+        );
+
         return orderFinished;
     }
 
