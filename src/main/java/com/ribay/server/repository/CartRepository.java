@@ -127,7 +127,7 @@ public class CartRepository {
                         return articleForCart;
                     })
                     .filter(articleForCart -> articleForCart.getQuantity() > 0) // only articles in cart with positive quantity
-                    .sorted(Comparator.comparing(ArticleForCart::getImage)) // sort by name
+                    .sorted(Comparator.comparing(ArticleForCart::getName)) // sort by name
                     .collect(Collectors.toList());
 
             return new Cart(cartAsList);
