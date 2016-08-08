@@ -18,7 +18,7 @@ angular.module('myApp.checkout', [])
         };
     }])
 
-    .controller('checkoutCtrl', ['$scope', '$rootScope', '$timeout', '$window', '$location', 'checkoutService', function ($scope, $rootScope, $timeout, $window, $location, checkoutService) {
+    .controller('checkoutCtrl', ['$scope', '$rootScope', '$window', '$location', 'checkoutService', function ($scope, $rootScope, $window, $location, checkoutService) {
 
         if (!$rootScope.order) {
             // no order
@@ -43,10 +43,10 @@ angular.module('myApp.checkout', [])
         $scope.finishCheckout = function () {
             checkoutService.finishCheckout(
                 $scope.order,
-                function onSuccess(response) {
+                function onSuccess() {
+                    // checkout successful. go to list of all the user's orders
                     $rootScope.order = undefined;
-                    // TODO on success: show finished order
-                    $window.alert("success");
+                    $location.url('/orders/');
                 },
                 function onError(response) {
                     $scope.changes = undefined; // reset potential changes from last try
@@ -118,14 +118,4 @@ angular.module('myApp.checkout', [])
             });
             return result;
         }
-    }])
-
-    .filter('sumPrice', function () {
-        return function (articles) {
-            return articles.map(function (article) {
-                return article.price * article.quantity;
-            }).reduce(function (a, b) {
-                return a + b;
-            }, 0);
-        };
-    })
+    }]);

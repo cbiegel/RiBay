@@ -66,7 +66,7 @@ public class OrderRepository {
         Location location = new Location(bucket, key);
 
         RiakObject value = new RiakObjectBuilder(order) //
-                .withIndex(LongIntIndex.named(INDEX_NAME_ORDER_TIMESTAMP), order.getTimestamp()) //
+                .withIndex(LongIntIndex.named(INDEX_NAME_ORDER_TIMESTAMP), toIndexValue(order.getTimestamp())) //
                 .build(); //
 
         // TODO more options for query? (sloppy quorum, timeout, nval, etc.)
@@ -84,11 +84,11 @@ public class OrderRepository {
 
         long now = clock.getTime();
 
-        long start = now - (365 * 24 * 60 * 60 * 1000); // one year ago
-        long end = now; // until now
+        long start = toIndexValue(now - (365 * 24 * 60 * 60 * 1000)); // one year ago
+        long end = toIndexValue(now); // until now
 
-        IntIndexQuery biq = new IntIndexQuery.Builder(bucket, INDEX_NAME_ORDER_TIMESTAMP, start, end)
-                .withMaxResults(10)
+        IntIndexQuery biq = new IntIndexQuery.Builder(bucket, INDEX_NAME_ORDER_TIMESTAMP, Math.min(start, end), Math.max(start, end))
+                .withMaxResults(5)
                 .withPaginationSort(true)
                 .withContinuation((continuation == null) ? null : BinaryValue.create(continuation))
                 .build();
@@ -102,6 +102,11 @@ public class OrderRepository {
         result.setOrders(orders);
         result.setContinuation(newContinuation);
         return result;
+    }
+
+    private long toIndexValue(long timestamp) {
+        // reverse so orders with higher timestamp will have lower index value -> will be found earlier
+        return Long.MAX_VALUE - timestamp;
     }
 
 }

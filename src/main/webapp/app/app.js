@@ -22,7 +22,8 @@ angular.module('myApp', [
     'myApp.version',
     'myApp.register',
     'myApp.admin',
-    'myApp.checkout'
+    'myApp.checkout',
+    'myApp.orders'
 ])
 
     .service('UserService', ['$cookies', function ($cookies) {
@@ -47,6 +48,10 @@ angular.module('myApp', [
             return (session == null) ? null : session.user;
         }
 
+        this.isLoggedIn = function () {
+            return self.getLoggedInUser() != null;
+        }
+
     }])
 
     .run(['$rootScope', '$location', '$log', 'UserService', function ($rootScope, $location, $log, UserService) {
@@ -63,6 +68,8 @@ angular.module('myApp', [
     }])
 
     .service('imageService', [function () {
+
+        // TODO use filter instead
 
         this.createImageURLFromId = function (imageId) {
             if (imageId) {
@@ -218,7 +225,23 @@ angular.module('myApp', [
         return function (imageId) {
             return imageService.createImageURLFromId(imageId);
         };
-    }]);
+    }])
+
+    .filter('sumPrice', function () {
+        return function (articles) {
+            return articles.map(function (article) {
+                return article.price * article.quantity;
+            }).reduce(function (a, b) {
+                return a + b;
+            }, 0);
+        };
+    })
+
+    .filter('articleIdToUrl', function () {
+        return function (articleId) {
+            return '#/product/' + articleId;
+        };
+    });
 
 Array.prototype.toMap = function (keyFunction, valueFunction) {
     var result = new Map();

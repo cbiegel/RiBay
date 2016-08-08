@@ -50,7 +50,7 @@ public class OrderService {
     @Autowired
     private Converter<Order, OrderFinished> orderConverter;
 
-    @RequestMapping(path = "/user/orders", method = RequestMethod.POST)
+    @RequestMapping(path = "/user/orders", method = RequestMethod.GET)
     public OrderSearchResult getUserOrders(@RequestParam(value = "continuation", required = false) String continuation) throws Exception {
         if (requestData.getUser() == null) {
             // must be logged in
@@ -62,7 +62,7 @@ public class OrderService {
     }
 
     // TODO move to AdminService
-    @RequestMapping(path = "/admin/orders", method = RequestMethod.POST)
+    @RequestMapping(path = "/admin/orders", method = RequestMethod.GET)
     public OrderSearchResult getAllOrders(@RequestParam(value = "continuation", required = false) String continuation) throws Exception {
         return orderRepository.getAllOrders(continuation);
     }

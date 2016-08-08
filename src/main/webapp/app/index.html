@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="bower_components/angularjs-slider/dist/rzslider.css">
     <link rel="stylesheet" href="app.css">
     <link rel="stylesheet" href="checkout/checkout.css">
+    <link rel="stylesheet" href="orders/orders.css">
     <link rel="stylesheet" href="components/css/pacman.css">
     <link rel="icon" href="components/img/application-logo.png" type="image/png">
     <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
@@ -64,7 +65,8 @@
             <li><a href="#/search/So">Search page demo</a></li>
             <li><a href="#/product/1000560">Product page demo</a></li>
             <li><a href="#/cart">Cart page demo</a></li>
-            <li><a href="#/status">Status</a></li>
+            <li ng-show="loggedIn"><a href="#/orders">My orders</a></li>
+            <li style="right: 20px; position: absolute;"><a href="#/status">Status</a></li>
             <li><a href="#/admin">Admin</a></li>
             <li ng-show="!loggedIn"><a href="#/login">Login</a></li>
             <li ng-show="loggedIn"><a ng-click="logout()">Logout</a></li>
@@ -106,6 +108,7 @@
 <script src="status/status.js"></script>
 <script src="admin/admin.js"></script>
 <script src="checkout/checkout.js"></script>
+<script src="orders/orders.js"></script>
 <script src="components/version/version.js"></script>
 <script src="components/version/version-directive.js"></script>
 <script src="components/version/interpolate-filter.js"></script>

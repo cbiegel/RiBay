@@ -1,0 +1,63 @@
+<div class="orders">
+    <div class="text-bold text-big color-grey">My orders</div>
+    <div class="box order-box" ng-repeat="order in orders.data">
+        <div class="box-content">
+            <div class="text-bold">
+                <span>Order </span>
+                <span class="colored">#{{order.id}}</span>
+                <span> from </span>
+                <span class="color-grey">{{order.timestamp | date:'MM/dd/yyyy HH:mm:ss'}}</span>
+            </div>
+            <table style="width: 100%">
+                  <tr>
+                    <td class="cart-column">
+                        <div class="article-container inline" ng-repeat="article in order.articles">
+                            <div class="article-image">
+                                <a href="{{article.id | articleIdToUrl}}"><img ng-src="{{article.image | imageIdToUrl}}"></a>
+                            </div>
+                            <div class="article-content">
+                                <div class="text-bold"><a href="{{article.id | articleIdToUrl}}">{{article.name}}</a></div>
+                                <div class="text-bold price">{{article.price / 100 | currency: "€"}}</div>
+                                <div>Quantity: {{article.quantity}}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="address-column">
+                        <span class="text-bold color-grey">Address</span>
+                        <div class="text-small">
+                            <div>{{order.address.name}}</div>
+                            <div>{{order.address.additionalInfo}}</div>
+                            <div>{{order.address.street}}</div>
+                            <div>{{order.address.zipCode}} {{order.address.place}}</div>
+                            <div>{{order.address.country}}</div>
+                        </div>
+                    </td>
+                    <td class="price-column">
+                        <div class="total-price-details">
+                            <div class="text-bold color-grey">Order Summary</div>
+                            <div style="position: relative;">
+                                <span>Items:</span>
+                                <span style="position: absolute; right: 0;">{{((order.articles | sumPrice) / 100) | currency: "€"}}</span>
+                            </div>
+                            <div style="position: relative;">
+                                <span>Postage & Packing:</span>
+                                <span style="position: absolute; right: 0;">{{0 | currency: "€"}}</span>
+                            </div>
+                            <div class="text-bold" style="margin-top: 12px">
+                                (Order total {{((order.articles | sumPrice) / 100) | currency: "€"}})
+                            </div>
+                            <div class="text-medium text-bold price" style="position: relative;">
+                                <span>Payment Total:</span>
+                                <span style="position: absolute; right: 0;">{{((order.articles | sumPrice) / 100) | currency: "€"}}</span>
+                            </div>
+                            <div class="text-smallest">Order Totals include RAT (RiBay awesomeness tax)</div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <button type="button" id="load-more-button" class="btn button-primary"
+            ng-show="orders.hasNextPage()" ng-click="orders.nextPage()">Load next page
+    </button>
+</div>
