@@ -3,14 +3,9 @@ Open tasks:
 
 
 * CD: Checkout-Vorgang
-    * Zwischenseite mit Warenkorb-Review, Adressliste, etc.
-        * Nur **eine** Zwischenseite wie aktuell bei Amazon: verringert die Komplexität der Logik und der UI erheblich
-        * Bearbeiten und Auswahl von Adressen
-        * Fehlerbahndlung für Fehler, die bei normalem Betrieb auftreten (cart changed)
     * Bestellabschluss mit Constraints
         * (alles erledigt bis auf:)
-        * evtl. Prüfung ob Artikel noch in Stock
-    * Auflistung aller Bestellungen des Users im Userbereich
+        * evtl. Prüfung ob Artikel noch in Stock (kann nicht vollständig geprüft werden, da 'Eventual Consistency')
     * Auflistung aller Bestellungen der Anwendung im Administrationsbereich (Händlersicht)
     * Überlegungen bzgl. Konsistenz
 
@@ -42,7 +37,6 @@ Open tasks:
         * Generische CRDT-Map -> generische Java-Map
 
 * NN: Benutzerbereich
-    * Frühere Bestellungen einsehen (siehe anderen Task weiter oben)
     * Account-Details bearbeiten
         * Benutzername
         * Passwort
