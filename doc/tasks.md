@@ -15,6 +15,10 @@ Open tasks:
     * Typeahead für Textfeld
     * konsistente Suche (bei gleichem Filter: gleiche Werte)
 
+* CD: Wunschliste
+    * Benutzer kann selbstständig die Liste ordnen
+    * CRDT für Listen? Kann eventuell durch manuelle Konfliktresolution implementiert werden. Siehe CRDT-Beschreibung für kollaborativen Text-Editor
+
 * NN: Erweiterte Review-Darstellungsmöglichkeiten
     * Sortierung nach Datum
     * ...
