@@ -58,13 +58,13 @@ public class OrderService {
         }
 
         String userId = requestData.getUser().getUuid().toString();
-        return orderRepository.getUserOrders(userId, continuation);
+        return orderRepository.getUserOrders(userId, continuation, 5);
     }
 
     // TODO move to AdminService
     @RequestMapping(path = "/admin/orders", method = RequestMethod.GET)
     public OrderSearchResult getAllOrders(@RequestParam(value = "continuation", required = false) String continuation) throws Exception {
-        return orderRepository.getAllOrders(continuation);
+        return orderRepository.getAllOrders(continuation, 5);
     }
 
     @RequestMapping(path = "/checkout/start", method = RequestMethod.POST)

@@ -75,11 +75,11 @@ public class OrderRepository {
         return response;
     }
 
-    public OrderSearchResult getAllOrders(String continuation) throws Exception {
-        return getUserOrders(USER_ID_FOR_STORING_ALL_ORDERS, continuation);
+    public OrderSearchResult getAllOrders(String continuation, int amount) throws Exception {
+        return getUserOrders(USER_ID_FOR_STORING_ALL_ORDERS, continuation, amount);
     }
 
-    public OrderSearchResult getUserOrders(String userId, String continuation) throws Exception {
+    public OrderSearchResult getUserOrders(String userId, String continuation, int amount) throws Exception {
         Namespace bucket = properties.getBucketOrders(userId);
 
         long now = clock.getTime();
@@ -88,7 +88,7 @@ public class OrderRepository {
         long end = toIndexValue(now); // until now
 
         IntIndexQuery biq = new IntIndexQuery.Builder(bucket, INDEX_NAME_ORDER_TIMESTAMP, Math.min(start, end), Math.max(start, end))
-                .withMaxResults(5)
+                .withMaxResults(amount)
                 .withPaginationSort(true)
                 .withContinuation((continuation == null) ? null : BinaryValue.create(continuation))
                 .build();
