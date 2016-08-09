@@ -52,6 +52,12 @@ public class MarketingService {
         return result;
     }
 
+    @RequestMapping(path = "/article/recommended/{articleId}", method = RequestMethod.GET)
+    public List<ArticleShortest> getRecommendedArticles(@PathVariable(value = "articleId") String articleId) throws Exception {
+        List<ArticleShortest> result = marketingRepository.getRecommendedArticles(articleId);
+        return result;
+    }
+
     @RequestMapping(path = "/apriori", method = RequestMethod.GET)
     public void apriori() throws Exception {
         aprioriJob.start();

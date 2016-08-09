@@ -17,6 +17,21 @@
                 <button type="button" class="btn button-primary" ng-click="addToCart()">Add to articles</button>
             </div>
         </div>
+        <div class="box">
+            <div class="box-content">
+                <span class="text-bold color-grey">Other customers also bought:</span>
+                <div ng-repeat="article in recommendations" style="margin-top: 4px;">
+                    <div style="height: 100px; margin: 8px 0;">
+                        <a href="{{article.id | articleIdToUrl}}">
+                            <img ng-src="{{article.image | imageIdToUrl}}"
+                                 style="width: 80px; height: 100%; margin: auto; display: block;">
+                        </a>
+                    </div>
+                    <div class="text-bold" style="text-align: center;"><a href="{{article.id | articleIdToUrl}}">{{article.name}}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="left">
         <uib-carousel interval="0" no-wrap="false">
@@ -30,8 +45,11 @@
             <span>{{product.title}}</span>
         </div>
         <div class="rating noselect">
-            <uib-rating ng-model="product.averageRating" max="5" readonly="true" ng-show="product.countRatings > 0"></uib-rating>
-            <div ng-show="product.countRatings >= 1" class="ratingText">Rating: {{product.averageRating | number: 1}} with {{product.countRatings}} votes</div>
+            <uib-rating ng-model="product.averageRating" max="5" readonly="true"
+                        ng-show="product.countRatings > 0"></uib-rating>
+            <div ng-show="product.countRatings >= 1" class="ratingText">Rating: {{product.averageRating | number: 1}}
+                with {{product.countRatings}} votes
+            </div>
             <div ng-show="product.countRatings <= 0" class="ratingText">Rating: No ratings yet!</div>
         </div>
         <hr>
@@ -67,7 +85,8 @@
             </div>
             <div class="actors">
                 <span class="caption text-bold">Actors: </span>
-                <span class="value" ng-repeat="actor in product.actors | limitTo : 5">{{actor}}{{$last ? '' : ', '}}</span>
+                <span class="value"
+                      ng-repeat="actor in product.actors | limitTo : 5">{{actor}}{{$last ? '' : ', '}}</span>
             </div>
             <div class="details">
                 <span class="caption text-bold">Plot information:</span>
@@ -101,27 +120,37 @@
                 </tr>
                 <tr class="review-table-row">
                     <td>
-                        <a ng-click="reloadReviewsForFilter('5')">Show  <uib-rating class="rating noselect" ng-model="5" max="5" readonly="true"></uib-rating> ratings</a>
+                        <a ng-click="reloadReviewsForFilter('5')">Show
+                            <uib-rating class="rating noselect" ng-model="5" max="5" readonly="true"></uib-rating>
+                            ratings</a>
                     </td>
                 </tr>
                 <tr class="review-table-row">
                     <td>
-                        <a ng-click="reloadReviewsForFilter('4')">Show  <uib-rating class="rating noselect" ng-model="4" max="5" readonly="true"></uib-rating> ratings</a>
+                        <a ng-click="reloadReviewsForFilter('4')">Show
+                            <uib-rating class="rating noselect" ng-model="4" max="5" readonly="true"></uib-rating>
+                            ratings</a>
                     </td>
                 </tr>
                 <tr class="review-table-row">
                     <td>
-                        <a ng-click="reloadReviewsForFilter('3')">Show <uib-rating class="rating noselect" ng-model="3" max="5" readonly="true"></uib-rating> ratings</a>
+                        <a ng-click="reloadReviewsForFilter('3')">Show
+                            <uib-rating class="rating noselect" ng-model="3" max="5" readonly="true"></uib-rating>
+                            ratings</a>
                     </td>
                 </tr>
                 <tr class="review-table-row">
                     <td>
-                        <a ng-click="reloadReviewsForFilter('2')">Show <uib-rating class="rating noselect" ng-model="2" max="5" readonly="true"></uib-rating> ratings</a>
+                        <a ng-click="reloadReviewsForFilter('2')">Show
+                            <uib-rating class="rating noselect" ng-model="2" max="5" readonly="true"></uib-rating>
+                            ratings</a>
                     </td>
                 </tr>
                 <tr class="review-table-row">
                     <td>
-                        <a ng-click="reloadReviewsForFilter('1')">Show <uib-rating class="rating noselect" ng-model="1" max="5" readonly="true"></uib-rating> ratings</a>
+                        <a ng-click="reloadReviewsForFilter('1')">Show
+                            <uib-rating class="rating noselect" ng-model="1" max="5" readonly="true"></uib-rating>
+                            ratings</a>
                     </td>
                 </tr>
             </table>
@@ -130,14 +159,20 @@
             <div class="title">Create Review</div>
             <div class="content">Got feedback? Share your thoughts by creating a review for this product.</div>
             <div class="button">
-                <button type="button" class="btn button-primary" ng-click="createReview()" ng-show="!isCreatingReview">Create Review</button>
+                <button type="button" class="btn button-primary" ng-click="createReview()" ng-show="!isCreatingReview">
+                    Create Review
+                </button>
             </div>
         </div>
         <div class="edit-review" ng-show="!isEditingReview && !isFirstReview">
             <div class="title">Edit your Review</div>
-            <div class="content">You have already created a review for this article. You can edit it if you've changed your mind.</div>
+            <div class="content">You have already created a review for this article. You can edit it if you've changed
+                your mind.
+            </div>
             <div class="button">
-                <button type="button" class="btn button-primary" ng-click="editReview()" ng-show="!isEditingReview">Edit Review</button>
+                <button type="button" class="btn button-primary" ng-click="editReview()" ng-show="!isEditingReview">Edit
+                    Review
+                </button>
                 <img ng-if="dataLoadingPreviousReview"
                      src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
             </div>
@@ -155,15 +190,19 @@
 
                     <fieldset class="form-group">
                         <label for="newReviewTitle">Title</label>
-                        <input type="text" class="form-control" id="newReviewTitle" placeholder="The title of your review" ng-model="newRatingTitle">
+                        <input type="text" class="form-control" id="newReviewTitle"
+                               placeholder="The title of your review" ng-model="newRatingTitle">
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="newReviewTextArea">Review</label>
-                        <textarea class="form-control" id="newReviewTextArea" rows="5" placeholder="Write your review here" ng-model="newRatingContent"></textarea>
+                        <textarea class="form-control" id="newReviewTextArea" rows="5"
+                                  placeholder="Write your review here" ng-model="newRatingContent"></textarea>
                     </fieldset>
                 </div>
                 <div class="button">
-                    <button type="button" class="btn button-primary" ng-disabled="dataLoading" ng-click="submitReview()">Submit Review</button>
+                    <button type="button" class="btn button-primary" ng-disabled="dataLoading"
+                            ng-click="submitReview()">Submit Review
+                    </button>
                     <img ng-if="dataLoading"
                          src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
                 </div>
@@ -173,7 +212,8 @@
             <form>
                 <div class="title">
                     Edit your previous review
-                    <div class="subtitle-date">Last changed on: <span ng-bind="oldReviewDate | date:'MM/dd/yyyy HH:mm:ss'"></span></div>
+                    <div class="subtitle-date">Last changed on: <span
+                            ng-bind="oldReviewDate | date:'MM/dd/yyyy HH:mm:ss'"></span></div>
                 </div>
 
                 <div class="content">
@@ -186,15 +226,19 @@
 
                     <fieldset class="form-group">
                         <label for="newReviewTitle">Title</label>
-                        <input type="text" class="form-control" id="oldReviewTitle" placeholder="The title of your review" ng-model="oldRatingTitle">
+                        <input type="text" class="form-control" id="oldReviewTitle"
+                               placeholder="The title of your review" ng-model="oldRatingTitle">
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="newReviewTextArea">Review</label>
-                        <textarea class="form-control" id="oldReviewTextArea" rows="5" placeholder="Write your review here" ng-model="oldRatingContent"></textarea>
+                        <textarea class="form-control" id="oldReviewTextArea" rows="5"
+                                  placeholder="Write your review here" ng-model="oldRatingContent"></textarea>
                     </fieldset>
                 </div>
                 <div class="button">
-                    <button type="button" class="btn button-primary" ng-disabled="dataLoading" ng-click="submitEditedReview()">Submit Edited Review</button>
+                    <button type="button" class="btn button-primary" ng-disabled="dataLoading"
+                            ng-click="submitEditedReview()">Submit Edited Review
+                    </button>
                     <img ng-if="dataLoading"
                          src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
                 </div>
@@ -215,6 +259,8 @@
         </div>
     </div>
     <div class="button">
-        <button type="button" class="btn button-primary" ng-show="reviews_continuation != null" ng-click="loadMoreReviews()">Load more reviews</button>
+        <button type="button" class="btn button-primary" ng-show="reviews_continuation != null"
+                ng-click="loadMoreReviews()">Load more reviews
+        </button>
     </div>
 </div>

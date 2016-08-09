@@ -81,14 +81,14 @@ angular.module('myApp.product', [])
             if (continuation !== null) { // do no try to load more reviews after reaching end of list (null means end of list)
                 var url;
                 if (continuation == undefined) {
-                    if(ratingRange == null) {
+                    if (ratingRange == null) {
                         url = '/article/reviews?articleId=' + articleId;
                     } else {
                         url = '/article/reviews?articleId=' + articleId + "&rating_range=" + JSON.stringify(ratingRange);
                     }
                 }
                 else {
-                    if(ratingRange == null) {
+                    if (ratingRange == null) {
                         url = '/article/reviews?articleId=' + articleId + '&continuation=' + continuation;
                     } else {
                         url = '/article/reviews?articleId=' + articleId + '&continuation=' + continuation + "&rating_range=" + JSON.stringify(ratingRange);
@@ -141,6 +141,14 @@ angular.module('myApp.product', [])
                     callback(null);
                 }
             });
+        };
+
+        this.getRecommendations = function (articleId) {
+            var result = [];
+            $http.get('/article/recommended/' + articleId).then(function (response) {
+                Array.prototype.push.apply(result, response.data); // add all
+            });
+            return result;
         }
 
     }])
@@ -197,6 +205,8 @@ angular.module('myApp.product', [])
                 // TODO callback?
             });
         };
+
+        $scope.recommendations = productService.getRecommendations(id);
 
         $scope.reviews = [];
         $scope.reviews_continuation = undefined; // undefined -> initial value, non-null -> there are more reviews, null -> there are no more reviews
@@ -260,12 +270,12 @@ angular.module('myApp.product', [])
         };
 
         $scope.setRatingFilter = function (value) {
-            if(value == '-1') {
+            if (value == '-1') {
                 $scope.ratingFilter = null;
             } else {
                 $scope.ratingFilter = {
-                    ratingFrom : value,
-                    ratingTo : value
+                    ratingFrom: value,
+                    ratingTo: value
                 };
             }
         }
@@ -273,7 +283,7 @@ angular.module('myApp.product', [])
         $scope.reloadReviewsForFilter = function (filterValue) {
             $scope.setRatingFilter(filterValue);
             $scope.reviews = [];
-            productService.getReviews(id, undefined , $scope.ratingFilter, updateReviews);
+            productService.getReviews(id, undefined, $scope.ratingFilter, updateReviews);
         }
 
     }]);

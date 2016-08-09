@@ -71,7 +71,7 @@ public class AprioriJob {
             if (!recommendedArticles.isEmpty()) {
                 // only save recommendations if there are any for this article.
                 // there might be no recommendations when an article has always been bought with no other articles in the cart
-                marketingRepository.saveRecommendationArticle(String.valueOf(articleId), recommendedArticles);
+                marketingRepository.saveRecommendedArticles(String.valueOf(articleId), recommendedArticles);
             }
         });
     }
