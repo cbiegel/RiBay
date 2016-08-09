@@ -3,6 +3,23 @@
         <uib-tab heading="DB Explorer">
             <div id="container">
                 <div id="left">
+                    <span class="text-bold text-medium">Bucket types</span>
+                    <div class="box box-content background-grey text-code">
+                        <ul ng-show="bucketTypes" style="height: 360px;">
+                            <li ng-repeat="bucketType in bucketTypes.slice((bucketTypes_page - 1) * 20, bucketTypes_page *20)"
+                                ng-class="{'text-bolder text-underline' : bucketType == selectedBucketType}">
+                                <a ng-click="selectBucketType(bucketType)">{{bucketType}}</a>
+                            </li>
+                        </ul>
+                        <uib-pagination ng-show="bucketTypes" total-items="bucketTypes.length" ng-model="bucketTypes_page"
+                                        items-per-page="20"
+                                        max-size="5" class="pagination-sm" direction-links="false"
+                                        boundary-links="true"
+                                        boundary-link-numbers="true"
+                                        rotate="true"></uib-pagination>
+                    </div>
+                </div>
+                <div id="middle">
                     <span class="text-bold text-medium">Buckets</span>
                     <div class="box box-content background-grey text-code">
                         <ul ng-show="buckets" style="height: 360px;">
@@ -23,7 +40,7 @@
                                         open="100"></json-formatter>
                     </div>
                 </div>
-                <div id="middle">
+                <div id="right">
                     <span class="text-bold text-medium">Keys</span>
                     <div class="box box-content background-grey text-code">
                         <ul ng-show="keys" style="height: 360px;">
@@ -40,7 +57,7 @@
                                         rotate="true"></uib-pagination>
                     </div>
                 </div>
-                <div id="right">
+                <div id="value">
                     <span class="text-bold text-medium">Value</span>
                     <div class="box box-content background-grey">
                         <!-- Display either json viewer or image viewer -->

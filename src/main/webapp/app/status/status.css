@@ -1,0 +1,41 @@
+.status {
+    padding: 12px 16px;
+}
+
+.status #container {
+    width: 100%;
+    padding-top: 12px;
+}
+
+.status #container .box {
+    overflow-x: auto;
+}
+
+.status #container ul {
+    padding-left: 14px;
+}
+
+.status #container #left, .status #container #middle, .status #container #right, .status #container #value {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.status #container #left {
+    width: 20%;
+}
+
+.status #container #middle {
+    width: 20%;
+}
+
+.status #container #right {
+    width: 20%;
+}
+
+.status #container #value {
+    width: 35%;
+}
+
+.status .json-formatter-row .toggler {
+    margin-left: -1.2em;
+}

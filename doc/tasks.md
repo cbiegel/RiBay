@@ -36,7 +36,6 @@ Open tasks:
     * Ebenso auf Startseite: Empfehlungen aufgrund von bisher getätigten Käufen
 
 * NN: Erweiterung der Status-View
-    * Top-Level-Auswahlmöglichkeit: Bucket-Type
     * Darstellungsmöglichkeit für CRDT-Werte
         * Generische CRDT-Map -> generische Java-Map
 

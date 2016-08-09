@@ -38,9 +38,19 @@ public class StatusService {
     @Autowired
     private MyRiakClient client;
 
+    @RequestMapping(path = "/status/db/bucketTypes", method = RequestMethod.GET)
+    public List<String> getBucketTypes() throws Exception {
+        List<String> bucketTypes = Arrays.asList( //
+                Namespace.DEFAULT_BUCKET_TYPE, //
+                properties.getBucketArticlesDynamic().getBucketTypeAsString(), //
+                properties.getBucketOrders("0").getBucketTypeAsString() //
+        ); //
+        return bucketTypes;
+    }
+
     @RequestMapping(path = "/status/db/buckets", method = RequestMethod.GET)
-    public List<String> getBuckets() throws Exception {
-        ListBuckets lb = new ListBuckets.Builder("default").build();
+    public List<String> getBuckets(@RequestParam(value = "bucketType") String bucketType) throws Exception {
+        ListBuckets lb = new ListBuckets.Builder(bucketType).build();
         ListBuckets.Response lbResp = client.execute(lb);
 
         List<String> buckets = StreamSupport.stream(lbResp.spliterator(), false)
@@ -50,8 +60,8 @@ public class StatusService {
     }
 
     @RequestMapping(path = "/status/db/keys", method = RequestMethod.GET)
-    public List<String> getKeys(@RequestParam(value = "bucket") String bucket) throws Exception {
-        ListKeys lk = new ListKeys.Builder(new Namespace(bucket)).build();
+    public List<String> getKeys(@RequestParam(value = "bucketType") String bucketType, @RequestParam(value = "bucket") String bucket) throws Exception {
+        ListKeys lk = new ListKeys.Builder(new Namespace(bucketType, bucket)).build();
         ListKeys.Response lkResp = client.execute(lk);
 
         List<String> keys = StreamSupport.stream(lkResp.spliterator(), false)
@@ -60,9 +70,10 @@ public class StatusService {
     }
 
     @RequestMapping(path = "/status/db/value", method = RequestMethod.GET)
-    public Object getValue(@RequestParam(value = "bucket") String bucket,
+    public Object getValue(@RequestParam(value = "bucketType") String bucketType,
+                           @RequestParam(value = "bucket") String bucket,
                            @RequestParam(value = "key") String key) throws Exception {
-        Namespace quotesBucket = new Namespace(bucket);
+        Namespace quotesBucket = new Namespace(bucketType, bucket);
         Location quoteObjectLocation = new Location(quotesBucket, key);
 
         FetchValue fetchOp = new FetchValue.Builder(quoteObjectLocation).build();
@@ -71,8 +82,8 @@ public class StatusService {
     }
 
     @RequestMapping(path = "/status/db/bucket_properties", method = RequestMethod.GET)
-    public BucketProperties getBucketProperties(@RequestParam(value = "bucket") String bucket) throws Exception {
-        Namespace namespace = new Namespace(bucket);
+    public BucketProperties getBucketProperties(@RequestParam(value = "bucketType") String bucketType, @RequestParam(value = "bucket") String bucket) throws Exception {
+        Namespace namespace = new Namespace(bucketType, bucket);
         FetchBucketProperties command = new FetchBucketProperties.Builder(namespace).build();
         FetchBucketPropsOperation.Response response = client.execute(command);
         return response.getBucketProperties();
