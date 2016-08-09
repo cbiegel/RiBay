@@ -19,18 +19,16 @@ Open tasks:
     * Benutzer kann selbstständig die Liste ordnen
     * CRDT für Listen? Kann eventuell durch manuelle Konfliktresolution implementiert werden. Siehe CRDT-Beschreibung für kollaborativen Text-Editor
 
-* NN: Erweiterte Review-Darstellungsmöglichkeiten
+* CB: Benutzerbereich
+    * Evtl. neue Features für User Settings ausdenken? (Amazon hat ziemlich viele Preferences)
+
+* CB: Erweiterte Review-Darstellungsmöglichkeiten
     * Sortierung nach Datum
     * ...
 
 * NN: Erweiterung der Status-View
     * Darstellungsmöglichkeit für CRDT-Werte
         * Generische CRDT-Map -> generische Java-Map
-
-* NN: Benutzerbereich
-    * Account-Details bearbeiten
-        * Benutzername
-        * Passwort
 
 * ...
 

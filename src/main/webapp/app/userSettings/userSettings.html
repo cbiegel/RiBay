@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div class="userSettings">
+    <div class="settings-container">
+        <div class="settings-header">
+            View and Change Your User Settings
+        </div>
+        <div class="settingsTable">
+            <table>
+                <tr>
+                    <td>
+                        <ul>
+                            <li><div class="userSettingPropertyHeader">Name:</div></li>
+                            <li>{{user.name}}</li>
+                        </ul>
+                    </td>
+                    <td ng-show="isEditingName">
+                        <div class="editNameTextfield">
+                            <input class="form-control" type="text" id="newName" placeholder="Your new name" ng-model="newUsername">
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" ng-click="switchEditingName()" ng-show="!isEditingName">Edit</button>
+                        <button type="button" class="btn btn-primary" ng-click="editUsername()" ng-show="isEditingName">Save</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <ul>
+                            <li><div class="userSettingPropertyHeader">Password:</div></li>
+                            <li>**********</li>
+                        </ul>
+                    </td>
+                    <td ng-show="isEditingPassword">
+                        <div class="editPasswordTextfield">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <input type="password" id="inputPassword4" placeholder="Your new password" class="form-control" ng-model="newPassword">
+                                    </div>
+                                </form>
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" ng-click="switchEditingPassword()" ng-show="!isEditingPassword">Edit</button>
+                        <button type="button" class="btn btn-primary" ng-click="editPassword()" ng-show="isEditingPassword">Save</button>
+                    </td>
+                </tr>
+                <tr>
+                <td>
+                    <ul>
+                        <li>
+                            <div class="userSettingPropertyHeader">E-Mail Address:</div>
+                        </li>
+                        <li>{{user.emailAddress}}</li>
+                    </ul>
+                </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

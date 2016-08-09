@@ -25,7 +25,8 @@ angular.module('myApp', [
     'myApp.register',
     'myApp.admin',
     'myApp.checkout',
-    'myApp.orders'
+    'myApp.orders',
+    'myApp.editUser'
 ])
 
     .service('UserService', ['$cookies', function ($cookies) {

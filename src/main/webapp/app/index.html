@@ -69,6 +69,7 @@
             <li ng-show="loggedIn"><a href="#/orders">My orders</a></li>
             <li style="right: 20px; position: absolute;"><a href="#/status">Status</a></li>
             <li><a href="#/admin">Admin</a></li>
+            <li ng-show="loggedIn"><a href="#/userSettings">Edit User Settings</a></li>
             <li ng-show="!loggedIn"><a href="#/login">Login</a></li>
             <li ng-show="loggedIn"><a ng-click="logout()">Logout</a></li>
             <li ng-show="!loggedIn"><a href="#/register">Register</a></li>
@@ -106,6 +107,7 @@
 <script src="search/search.js"></script>
 <script src="product/product.js"></script>
 <script src="cart/cart.js"></script>
+<script src="userSettings/userSettings.js"></script>
 <script src="login/login.js"></script>
 <script src="login/loginSuccess.js"></script>
 <script src="register/register.js"></script>
