@@ -1,5 +1,6 @@
 package com.ribay.server.service;
 
+import com.ribay.server.job.AprioriJob;
 import com.ribay.server.material.ArticleForLastVisited;
 import com.ribay.server.material.ArticleShort;
 import com.ribay.server.material.ArticleShortest;
@@ -31,6 +32,9 @@ public class MarketingService {
     private MarketingRepository marketingRepository;
 
     @Autowired
+    private AprioriJob aprioriJob;
+
+    @Autowired
     private RequestScopeData requestData;
 
     @RequestMapping(path = "/article/visit/{articleId}", method = RequestMethod.GET)
@@ -46,6 +50,11 @@ public class MarketingService {
         String sessionId = requestData.getSessionId();
         List<ArticleForLastVisited> result = marketingRepository.getLastVisitedArticles(sessionId, 20); // TODO pass limit as parameter
         return result;
+    }
+
+    @RequestMapping(path = "/apriori", method = RequestMethod.GET)
+    public void apriori() throws Exception {
+        aprioriJob.start();
     }
 
 }

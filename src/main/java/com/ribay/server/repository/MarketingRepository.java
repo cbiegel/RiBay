@@ -4,19 +4,27 @@ import com.basho.riak.client.api.commands.datatypes.FetchMap;
 import com.basho.riak.client.api.commands.datatypes.MapUpdate;
 import com.basho.riak.client.api.commands.datatypes.RegisterUpdate;
 import com.basho.riak.client.api.commands.datatypes.UpdateMap;
+import com.basho.riak.client.core.RiakFuture;
 import com.basho.riak.client.core.operations.DeleteOperation;
+import com.basho.riak.client.core.operations.StoreOperation;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
+import com.basho.riak.client.core.query.RiakObject;
 import com.basho.riak.client.core.query.crdt.types.RiakDatatype;
 import com.basho.riak.client.core.query.crdt.types.RiakMap;
 import com.basho.riak.client.core.util.BinaryValue;
 import com.google.common.primitives.Longs;
+import com.google.common.util.concurrent.Futures;
 import com.ribay.server.db.MyRiakClient;
 import com.ribay.server.material.ArticleForLastVisited;
 import com.ribay.server.material.ArticleShort;
+import com.ribay.server.material.ArticleShortest;
 import com.ribay.server.util.JSONUtil;
 import com.ribay.server.util.RibayProperties;
 import com.ribay.server.util.clock.RibayClock;
+import com.ribay.server.util.riak.RiakObjectBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -35,6 +43,8 @@ import java.util.stream.Collectors;
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class MarketingRepository {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MarketingRepository.class);
 
     @Autowired
     private RibayClock clock;
@@ -98,6 +108,23 @@ public class MarketingRepository {
 
         DeleteOperation command = new DeleteOperation.Builder(new Location(bucket, key)).build();
         return client.execute(command);
+    }
+
+    public Future<?> saveRecommendationArticle(String articleId, List<ArticleShortest> recommendations) {
+        try {
+            Namespace namespace = properties.getBucketRecommendationArticle();
+            String key = articleId;
+
+            RiakObject riakObject = new RiakObjectBuilder(recommendations).build();
+
+            StoreOperation operation = new StoreOperation.Builder(new Location(namespace, key)).withContent(riakObject).build();
+            RiakFuture<StoreOperation.Response, Location> response = client.execute(operation);
+
+            return response;
+        } catch (Exception e) {
+            LOGGER.error("error while saving recommendation", e);
+            return Futures.immediateFailedFuture(e);
+        }
     }
 
 }
