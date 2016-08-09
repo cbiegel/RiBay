@@ -9,6 +9,8 @@ angular.module('myApp', [
     'rzModule',
     'checklist-model',
     'ui.bootstrap',
+    'myApp.filter',
+    'myApp.directive',
     'myApp.home',
     'myApp.view1',
     'myApp.view2',
@@ -41,16 +43,16 @@ angular.module('myApp', [
                 // no session
                 return null;
             }
-        }
+        };
 
         this.getLoggedInUser = function () {
             var session = self.getSession();
             return (session == null) ? null : session.user;
-        }
+        };
 
         this.isLoggedIn = function () {
             return self.getLoggedInUser() != null;
-        }
+        };
 
     }])
 
@@ -185,90 +187,4 @@ angular.module('myApp', [
             });
         };
 
-    }])
-
-    .directive('myEnter', function () {
-        return function (scope, element, attrs) {
-            element.bind("keydown keypress", function (event) {
-                if (event.which === 13) {
-                    scope.$apply(function () {
-                        scope.$eval(attrs.myEnter);
-                    });
-
-                    event.preventDefault();
-                }
-            });
-        };
-    })
-
-    // http://stackoverflow.com/questions/11873570/angularjs-for-loop-with-numbers-ranges
-    .filter('range', function () {
-        return function (input, total) {
-            total = parseInt(total);
-
-            for (var i = 0; i < total; i++) {
-                input.push(i);
-            }
-
-            return input;
-        };
-    })
-
-    // http://stackoverflow.com/questions/15266671/angular-ng-repeat-in-reverse
-    .filter('reverse', function () {
-        return function (items) {
-            return items.slice().reverse();
-        };
-    })
-
-    .filter('imageIdToUrl', ['imageService', function (imageService) {
-        return function (imageId) {
-            return imageService.createImageURLFromId(imageId);
-        };
-    }])
-
-    .filter('sumPrice', function () {
-        return function (articles) {
-            return articles.map(function (article) {
-                return article.price * article.quantity;
-            }).reduce(function (a, b) {
-                return a + b;
-            }, 0);
-        };
-    })
-
-    .filter('articleIdToUrl', function () {
-        return function (articleId) {
-            return '#/product/' + articleId;
-        };
-    });
-
-Array.prototype.toMap = function (keyFunction, valueFunction) {
-    var result = new Map();
-    this.forEach(function (elem) {
-        var key = keyFunction(elem);
-        var value = valueFunction(elem);
-        result.set(key, value);
-    });
-    return result;
-}
-
-// returns this map without the other map (identified by their keys)
-Map.prototype.without = function (otherMap) {
-    var result = new Map();
-    this.forEach(function (value, key) {
-        // the result only contains pairs that are in this map but not in the other map
-        if (!otherMap.has(key)) {
-            result.set(key, value);
-        }
-    });
-    return result;
-}
-
-Map.prototype.valueList = function () {
-    var result = [];
-    this.forEach(function (value) {
-        result.push(value);
-    });
-    return result;
-}
+    }]);
