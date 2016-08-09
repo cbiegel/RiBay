@@ -23,18 +23,6 @@ Open tasks:
     * Sortierung nach Datum
     * ...
 
-* NN: Artikel-Vorschläge generieren
-    * Optional, da nur geringer Bezug zur DB
-    * Job zur Analyse von abgeschlossenen Käufen
-        * z.B. über Nacht
-        * Job evtl. auch über Admin-Seite ausführbar machen (für Live-Demo)
-        * Apriori-Algorithmus
-        * Häufig gemeinsam gekaufte Artikel (Kombinationen als Ergebnis des Algorithmus) in DB speichern
-            * Key: Artikel-ID
-            * Value: Liste von anderen Artikeln, die zusammen mit Artikel (Key) gekauft wurden
-    * In Warenkorb-Ansicht: Anhand der Kombinationen Empfehlungen anzeigen (Nutzer die Artikel A kauften, kaufen auch B, C, ...)
-    * Ebenso auf Startseite: Empfehlungen aufgrund von bisher getätigten Käufen
-
 * NN: Erweiterung der Status-View
     * Darstellungsmöglichkeit für CRDT-Werte
         * Generische CRDT-Map -> generische Java-Map
