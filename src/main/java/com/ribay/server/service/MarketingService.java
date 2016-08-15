@@ -1,9 +1,11 @@
 package com.ribay.server.service;
 
+import com.ribay.server.exception.NotLoggedInException;
 import com.ribay.server.job.AprioriJob;
 import com.ribay.server.material.ArticleForLastVisited;
 import com.ribay.server.material.ArticleShort;
 import com.ribay.server.material.ArticleShortest;
+import com.ribay.server.material.User;
 import com.ribay.server.repository.ArticleRepository;
 import com.ribay.server.repository.MarketingRepository;
 import com.ribay.server.util.RequestScopeData;
@@ -45,7 +47,7 @@ public class MarketingService {
         marketingRepository.addVisitedArticle(sessionId, articleShort); // is async: fire and forget
     }
 
-    @RequestMapping(path = "/article/lastvisited", method = RequestMethod.GET)
+    @RequestMapping(path = "/article/lastVisited", method = RequestMethod.GET)
     public List<ArticleForLastVisited> getLastVisitedArticles() throws Exception {
         String sessionId = requestData.getSessionId();
         List<ArticleForLastVisited> result = marketingRepository.getLastVisitedArticles(sessionId, 20); // TODO pass limit as parameter
@@ -54,8 +56,19 @@ public class MarketingService {
 
     @RequestMapping(path = "/article/recommended/{articleId}", method = RequestMethod.GET)
     public List<ArticleShortest> getRecommendedArticles(@PathVariable(value = "articleId") String articleId) throws Exception {
-        List<ArticleShortest> result = marketingRepository.getRecommendedArticles(articleId);
+        List<ArticleShortest> result = marketingRepository.getRecommendedArticlesForArticle(articleId);
         return result;
+    }
+
+    @RequestMapping(path = "/article/recommended", method = RequestMethod.GET)
+    public List<ArticleShortest> getRecommendedArticlesForUser() throws Exception {
+        User user = requestData.getUser();
+        if (user == null) {
+            throw new NotLoggedInException();
+        } else {
+            List<ArticleShortest> result = marketingRepository.getRecommendedArticlesForUser(user.getUuid().toString());
+            return result;
+        }
     }
 
     @RequestMapping(path = "/apriori", method = RequestMethod.GET)

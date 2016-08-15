@@ -73,10 +73,70 @@ public class AprioriJobTest {
         assertEquals(expected, actual);
 
         actual = AprioriJob.getMostOtherItemsInSet(2, input, 2);
-        expected = Arrays.asList(1,3);
+        expected = Arrays.asList(1, 3);
         assertEquals(expected, actual);
 
         actual = AprioriJob.getMostOtherItemsInSet(4, input, 0);
+        expected = Arrays.asList();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetOtherFrequentItemsMultiple() {
+        Map<Set<Integer>, Long> input = new HashMap<>();
+        input.put(set(0, 1), 3L);
+        input.put(set(1, 2), 2L);
+        input.put(set(1, 3), 1L);
+        input.put(set(2, 3), 1L);
+
+        List<Integer> actual;
+        List<Integer> expected;
+
+        actual = AprioriJob.getMostOtherItemsInSet(set(1), input, 1);
+        expected = Arrays.asList(0);
+        assertEquals(expected, actual);
+
+        actual = AprioriJob.getMostOtherItemsInSet(set(1), input, 2);
+        expected = Arrays.asList(0, 2);
+        assertEquals(expected, actual);
+
+        actual = AprioriJob.getMostOtherItemsInSet(set(1), input, 4);
+        expected = Arrays.asList(0, 2, 3);
+        assertEquals(expected, actual);
+
+        actual = AprioriJob.getMostOtherItemsInSet(set(1), input, 5);
+        expected = Arrays.asList(0, 2, 3);
+        assertEquals(expected, actual);
+
+        actual = AprioriJob.getMostOtherItemsInSet(set(0), input, 1);
+        expected = Arrays.asList(1);
+        assertEquals(expected, actual);
+
+        actual = AprioriJob.getMostOtherItemsInSet(set(2), input, 1);
+        expected = Arrays.asList(1);
+        assertEquals(expected, actual);
+
+        actual = AprioriJob.getMostOtherItemsInSet(set(2), input, 2);
+        expected = Arrays.asList(1, 3);
+        assertEquals(expected, actual);
+
+        actual = AprioriJob.getMostOtherItemsInSet(set(4), input, 0);
+        expected = Arrays.asList();
+        assertEquals(expected, actual);
+
+        actual = AprioriJob.getMostOtherItemsInSet(set(1, 3), input, 1);
+        expected = Arrays.asList(0);
+        assertEquals(expected, actual);
+
+        actual = AprioriJob.getMostOtherItemsInSet(set(1, 3), input, 2);
+        expected = Arrays.asList(0, 2);
+        assertEquals(expected, actual);
+
+        actual = AprioriJob.getMostOtherItemsInSet(set(1, 2, 3), input, 2);
+        expected = Arrays.asList(0);
+        assertEquals(expected, actual);
+
+        actual = AprioriJob.getMostOtherItemsInSet(set(0, 1, 2, 3), input, 2);
         expected = Arrays.asList();
         assertEquals(expected, actual);
     }

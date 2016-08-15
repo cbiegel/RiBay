@@ -27,3 +27,7 @@ Map.prototype.valueList = function () {
     });
     return result;
 };
+
+Array.prototype.pushArray = function(arr) {
+    this.push.apply(this, arr);
+};

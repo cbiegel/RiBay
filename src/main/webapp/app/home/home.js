@@ -11,30 +11,35 @@ angular.module('myApp.home', ['ngRoute'])
         });
     }])
 
-    .service('homeService', ['$http', 'imageService', function ($http, imageService) {
+    .service('homeService', ['$http', 'imageService', 'UserService', function ($http, imageService, UserService) {
 
-        this.getLastVisitedArticles = function (callback) {
-            $http.get('/article/lastvisited').success(function (data) {
-
-                data.forEach(function (article) {
-                    // resolve images
-                    article.image = imageService.createImageURLFromId(article.image);
-                });
-
-                callback(data);
+        this.getLastVisitedArticles = function () {
+            var result = [];
+            $http.get('/article/lastVisited').then(function (response) {
+                result.pushArray(response.data);
             });
-        }
+            return result;
+        };
+
+        this.getRecommendations = function () {
+            var result = [];
+            if (UserService.isLoggedIn()) {
+                $http.get('/article/recommended').then(function (response) {
+                    result.pushArray(response.data); // append
+                });
+            }
+            return result;
+        };
 
     }])
 
     .controller('HomeCtrl', ['$scope', '$window', 'homeService', function ($scope, $window, homeService) {
         $scope.focused = undefined;
 
-        $scope.lastVisited = undefined;
-
-        homeService.getLastVisitedArticles(function (data) {
-            $scope.lastVisited = data;
-        });
+        $scope.lastVisited = homeService.getLastVisitedArticles();
+        $scope.recommendations = homeService.getRecommendations();
+        $scope.wishList = []; // TODO implement?
+        $scope.inspiredByWishList = []; // TODO implement?
 
         $scope.showDetails = function (item) {
             $window.alert(item);

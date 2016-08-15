@@ -9,39 +9,39 @@
         <div style="text-align: center;">This is a sidebar. It can be used to <a>display things</a>.</div>
     </div>
     <div id="center">
-        <div class="itemrow">
+        <div class="itemrow" ng-show="recommendations.length > 0">
             <div class="caption">
                 <span class="text-big">New for you</span>
                 <a>See more</a>
             </div>
             <div class="content">
                 <div class="items">
-                    <div class="item" ng-repeat="n in [] | range: 20" ng-init="focused = false"
+                    <div class="item" ng-repeat="article in recommendations" ng-init="focused = false"
                          ng-mouseover="focused = true"
                          ng-mouseleave="focused = false">
                         <button type="button" class="detail-button box" ng-show="focused"
-                                ng-click="showDetails(n)">Show details
+                                ng-click="showDetails(article)">Show details
                         </button>
-                        <a><span>Product {{n}}</span></a>
+                        <a ng-href="#/product/{{article.id}}"><img ng-src="{{article.image | imageIdToUrl}}"></a>
                         <!-- icons here -->
                     </div>
                 </div>
             </div>
         </div>
-        <div class="itemrow">
+        <div class="itemrow" ng-show="wishList.length > 0">
             <div class="caption">
-                <span class="text-big">Related to items you've viewed</span>
+                <span class="text-big">Treat yourself with ...</span>
                 <a>See more</a>
             </div>
             <div class="content">
                 <div class="items">
-                    <div class="item" ng-repeat="n in [] | range: 20" ng-init="focused = false"
+                    <div class="item" ng-repeat="article in wishList" ng-init="focused = false"
                          ng-mouseover="focused = true"
                          ng-mouseleave="focused = false">
                         <button type="button" class="detail-button box" ng-show="focused"
-                                ng-click="showDetails(n)">Show details
+                                ng-click="showDetails(article)">Show details
                         </button>
-                        <a><span>Product {{n}}</span></a>
+                        <a ng-href="#/product/{{article.id}}"><img ng-src="{{article.image | imageIdToUrl}}"></a>
                         <!-- icons here -->
                     </div>
                 </div>
@@ -55,26 +55,26 @@
                 <a><img alt="advertising2"></a>
             </div>
         </div>
-        <div class="itemrow">
+        <div class="itemrow" ng-show="inspiredByWishList.length > 0">
             <div class="caption">
                 <span class="text-big">Inspired by your Wish List</span>
                 <a>See more</a>
             </div>
             <div class="content">
                 <div class="items">
-                    <div class="item" ng-repeat="n in [] | range: 20" ng-init="focused = false"
+                    <div class="item" ng-repeat="article in inspiredByWishList" ng-init="focused = false"
                          ng-mouseover="focused = true"
                          ng-mouseleave="focused = false">
                         <button type="button" class="detail-button box" ng-show="focused"
-                                ng-click="showDetails(n)">Show details
+                                ng-click="showDetails(article)">Show details
                         </button>
-                        <a><span>Product {{n}}</span></a>
+                        <a ng-href="#/product/{{article.id}}"><img ng-src="{{article.image | imageIdToUrl}}"></a>
                         <!-- icons here -->
                     </div>
                 </div>
             </div>
         </div>
-        <div class="itemrow">
+        <div class="itemrow" ng-show="lastVisited.length > 0">
             <div class="caption">
                 <span class="text-big">Your recently watched articles</span>
                 <a>See more</a>
@@ -87,7 +87,7 @@
                         <button type="button" class="detail-button box" ng-show="focused"
                                 ng-click="showDetails(article)">Show details
                         </button>
-                        <a ng-href="#/product/{{article.id}}"><img ng-src="{{article.image}}"></a>
+                        <a ng-href="#/product/{{article.id}}"><img ng-src="{{article.image | imageIdToUrl}}"></a>
                         <!-- icons here -->
                     </div>
                 </div>

@@ -7,7 +7,6 @@ import com.basho.riak.client.api.commands.datatypes.UpdateMap;
 import com.basho.riak.client.api.commands.kv.FetchValue;
 import com.basho.riak.client.core.RiakFuture;
 import com.basho.riak.client.core.operations.DeleteOperation;
-import com.basho.riak.client.core.operations.FetchOperation;
 import com.basho.riak.client.core.operations.StoreOperation;
 import com.basho.riak.client.core.query.Location;
 import com.basho.riak.client.core.query.Namespace;
@@ -33,7 +32,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -114,7 +112,7 @@ public class MarketingRepository {
         return client.execute(command);
     }
 
-    public List<ArticleShortest> getRecommendedArticles(String articleId) throws Exception {
+    public List<ArticleShortest> getRecommendedArticlesForArticle(String articleId) throws Exception {
         Namespace namespace = properties.getBucketRecommendationArticle();
         String key = articleId;
 
@@ -129,7 +127,7 @@ public class MarketingRepository {
         }
     }
 
-    public Future<?> saveRecommendedArticles(String articleId, List<ArticleShortest> recommendations) {
+    public Future<?> saveRecommendedArticlesForArticle(String articleId, List<ArticleShortest> recommendations) {
         try {
             Namespace namespace = properties.getBucketRecommendationArticle();
             String key = articleId;
@@ -145,5 +143,38 @@ public class MarketingRepository {
             return Futures.immediateFailedFuture(e);
         }
     }
+
+    public List<ArticleShortest> getRecommendedArticlesForUser(String userId) throws Exception {
+        Namespace namespace = properties.getBucketRecommendationUser();
+        String key = userId;
+
+        FetchValue command = new FetchValue.Builder(new Location(namespace, key)).build();
+        FetchValue.Response response = client.execute(command);
+
+        if (response.isNotFound()) {
+            return new ArrayList<>();
+        } else {
+            return response.getValue(new TypeReference<List<ArticleShortest>>() {
+            });
+        }
+    }
+
+    public Future<?> saveRecommendedArticlesForUser(String userId, List<ArticleShortest> recommendations) {
+        try {
+            Namespace namespace = properties.getBucketRecommendationUser();
+            String key = userId;
+
+            RiakObject riakObject = new RiakObjectBuilder(recommendations).build();
+
+            StoreOperation operation = new StoreOperation.Builder(new Location(namespace, key)).withContent(riakObject).build();
+            RiakFuture<StoreOperation.Response, Location> response = client.execute(operation);
+
+            return response;
+        } catch (Exception e) {
+            LOGGER.error("error while saving recommendation", e);
+            return Futures.immediateFailedFuture(e);
+        }
+    }
+
 
 }

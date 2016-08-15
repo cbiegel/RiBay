@@ -6,6 +6,7 @@ import com.ribay.server.material.OrderFinished;
 import com.ribay.server.material.converter.Converter;
 import com.ribay.server.repository.MarketingRepository;
 import com.ribay.server.repository.OrderRepository;
+import com.ribay.server.util.function.Functions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,7 @@ public class AprioriJob {
                 .map(OrderFinished::getArticles) //
                 .map(articlesFromOrder -> articlesFromOrder.parallelStream() //
                         .map(ArticleShort::getId) //
-                        .map(articleId -> Integer.valueOf(articleId)) //
+                        .map(Integer::valueOf) //
                         .collect(Collectors.toSet())) //
                 .collect(Collectors.toList()); //
 
@@ -71,7 +72,34 @@ public class AprioriJob {
             if (!recommendedArticles.isEmpty()) {
                 // only save recommendations if there are any for this article.
                 // there might be no recommendations when an article has always been bought with no other articles in the cart
-                marketingRepository.saveRecommendedArticles(String.valueOf(articleId), recommendedArticles);
+                marketingRepository.saveRecommendedArticlesForArticle(String.valueOf(articleId), recommendedArticles);
+            }
+        });
+
+        // map of user ids to the set of ids of all articles that they bought
+        final Map<String, Set<Integer>> userIdToArticleIds = orders.parallelStream() //
+                .collect(Collectors.toMap( //
+                        OrderFinished::getUserId, //
+                        (order -> order.getArticles().parallelStream() //
+                                .map(ArticleShort::getId) //
+                                .map(Integer::valueOf) //
+                                .collect(Collectors.toSet())), //
+                        Functions::mergeSets)); //
+
+        userIdToArticleIds.entrySet().parallelStream().forEach(entry -> {
+            String userId = entry.getKey();
+            Set<Integer> articlesOfUser = entry.getValue();
+
+            // for each user -> save recommended articles
+            List<Integer> recommendedIds = getMostOtherItemsInSet(articlesOfUser, subsetToOccurrence, MAX_NOF_RECOMMENDATIONS_PER_ARTICLE);
+            List<ArticleShortest> recommendedArticles = recommendedIds.parallelStream()
+                    .map((recommendedId) -> articleIdToArticle.get(recommendedId))
+                    .collect(Collectors.toList());
+
+            if (!recommendedArticles.isEmpty()) {
+                // only save recommendations if there are any for this user.
+                // there might be no recommendations when an article has always been bought with no other articles in the cart or when the user did not order yet or when the user has all recommendations for the article that he has bought
+                marketingRepository.saveRecommendedArticlesForUser(userId, recommendedArticles);
             }
         });
     }
@@ -93,6 +121,16 @@ public class AprioriJob {
                 .collect(Collectors.toList());
     }
 
+    public static List<Integer> getMostOtherItemsInSet(final Set<Integer> items, Map<Set<Integer>, Long> subsetToOccurrence, int limit) {
+        return subsetToOccurrence.entrySet().parallelStream()
+                .filter((entry) -> intersection(entry.getKey(), items).size() == 1) // only itemsets that have only one item of the specified articleIds
+                .sorted(Comparator.comparing((entry) -> -entry.getValue()))
+                .limit(limit)
+                .map((entry) -> entry.getKey())
+                .map((set) -> otherElem(set, items.toArray(new Integer[0])))
+                .collect(Collectors.toList());
+    }
+
     public static <T> Set<Set<T>> getSubsetsWithSizeOfTwo(Set<T> input) {
         Set<Set<T>> result = new HashSet<>();
 
@@ -109,14 +147,20 @@ public class AprioriJob {
         return result;
     }
 
-    public static <T> T otherElem(Set<T> set, T toExclude) {
+    public static <T> T otherElem(Set<T> set, T... toExclude) {
         Set<T> newSet = new HashSet<>(set);
-        newSet.remove(toExclude);
+        newSet.removeAll(Arrays.asList(toExclude));
         if (newSet.size() == 1) {
             return newSet.iterator().next();
         } else {
             throw new IllegalArgumentException();
         }
+    }
+
+    public static <T> Set<T> intersection(Set<T> set1, Set<T> set2) {
+        Set<T> result = new HashSet<>(set1);
+        result.retainAll(set2);
+        return result;
     }
 
 }

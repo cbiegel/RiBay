@@ -101,6 +101,11 @@ public class RibayProperties {
         return buildBucketFromAttrs(attrs);
     }
 
+    public Namespace getBucketRecommendationUser() {
+        String[] attrs = databaseProperties.getProperty("bucket.recommendation_user").split("#");
+        return buildBucketFromAttrs(attrs);
+    }
+
     private Namespace buildBucketFromAttrs(String... attrs) {
         String bucketType;
         String bucketName;
