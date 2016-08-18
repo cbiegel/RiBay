@@ -29,6 +29,11 @@ Open tasks:
 * NN: Erweiterung der Status-View
     * Darstellungsmöglichkeit für CRDT-Werte
         * Generische CRDT-Map -> generische Java-Map
+        
+* CD: Pixelschubsen
+    * Schönere Startseite
+    * Navigationsleiste überarbeiten
+    * Footer und anderes Füllmaterial
 
 * ...
 
