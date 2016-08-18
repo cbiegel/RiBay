@@ -12,9 +12,6 @@ angular.module('myApp', [
     'myApp.filter',
     'myApp.directive',
     'myApp.home',
-    'myApp.view1',
-    'myApp.view2',
-    'myApp.view3',
     'myApp.search',
     'myApp.product',
     'myApp.cart',
@@ -57,10 +54,8 @@ angular.module('myApp', [
 
     }])
 
-    .run(['$rootScope', '$location', '$log', 'UserService', function ($rootScope, $location, $log, UserService) {
+    .run(['$rootScope', 'UserService', function ($rootScope, UserService) {
         $rootScope.$on("$locationChangeStart", function (event, next, current) {
-            $log.debug("location changing to:" + next);
-
             // when changing view -> check if logged in and set as global variable
             $rootScope.loggedIn = UserService.getLoggedInUser();
         });
