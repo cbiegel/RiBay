@@ -13,30 +13,14 @@ angular.module('myApp.cart', [])
         });
     }])
 
-    .service('cartService', ['$http', 'imageService', function ($http, imageService) {
+    .service('cartService', ['$http', function ($http) {
 
         this.getCart = function (callback) {
-            $http.get('/cart').success(function (response) {
-
-                response.articles.forEach(function (article) {
-                    // resolve images
-                    article.image = imageService.createImageURLFromId(article.image);
-                });
-
-                callback(response);
-            });
+            $http.get('/cart').success(callback);
         };
 
         this.deleteItem = function (item, callback) {
-            $http.delete('/cart/remove/' + item.id).success(function (response) {
-
-                response.articles.forEach(function (article) {
-                    // resolve images
-                    article.image = imageService.createImageURLFromId(article.image);
-                });
-
-                callback(response);
-            });
+            $http.delete('/cart/remove/' + item.id).success(callback);
         };
 
         this.setQuantity = function (item, oldQuantity, newQuantity, callback) {

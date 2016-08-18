@@ -26,7 +26,7 @@
                     <td>
                         <div class="inline">
                             <div class="image-container">
-                                <a href="#/product/{{item.id}}"><img ng-src="{{item.image}}"></a>
+                                <a href="#/product/{{item.id}}"><img ng-src="{{item.image | imageIdToUrl}}"></a>
                             </div>
                             <div class="cart-item-details">
                                 <div class="cart-item-caption">

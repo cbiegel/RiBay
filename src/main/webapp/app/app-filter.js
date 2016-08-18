@@ -20,11 +20,24 @@ angular.module('myApp.filter', [])
         };
     })
 
-    .filter('imageIdToUrl', ['imageService', function (imageService) {
+    .filter('imageIdToUrl', function () {
         return function (imageId) {
-            return imageService.createImageURLFromId(imageId);
+            if (imageId) {
+                if (imageId.indexOf("http") == 0) {
+                    // image link in db, not the image data itself
+                    return imageId;
+                }
+                else {
+                    //resolve path
+                    return "/image/" + imageId;
+                }
+            }
+            else {
+                // attribute not set
+                return undefined;
+            }
         };
-    }])
+    })
 
     .filter('sumPrice', function () {
         return function (articles) {

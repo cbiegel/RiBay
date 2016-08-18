@@ -13,7 +13,7 @@ angular.module('myApp.product', [])
         });
     }])
 
-    .service('productService', ['$http', '$window', 'imageService', function ($http, $window, imageService) {
+    .service('productService', ['$http', '$window', function ($http, $window) {
 
         this.getProductDetails = function (id, callback) {
 
@@ -30,12 +30,7 @@ angular.module('myApp.product', [])
                     result.actors = response.data.actors;
                     result.runtime = response.data.runtime;
                     result.details = response.data.plot;
-                    result.images = [];
-
-                    if (response.data.imageId) {
-                        var url = imageService.createImageURLFromId(response.data.imageId);
-                        result.images.push({src: url});
-                    }
+                    result.images = [response.data.imageId];
 
                     if (result.releases) {
                         // convert release timestamps from unix time to date string

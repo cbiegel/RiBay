@@ -65,29 +65,6 @@ angular.module('myApp', [
         $routeProvider.otherwise({redirectTo: '/'});
     }])
 
-    .service('imageService', [function () {
-
-        // TODO use filter instead
-
-        this.createImageURLFromId = function (imageId) {
-            if (imageId) {
-                if (imageId.indexOf("http") == 0) {
-                    // image link in db, not the image data itself
-                    return imageId;
-                }
-                else {
-                    //resolve path
-                    return "/image/" + imageId;
-                }
-            }
-            else {
-                // attribute not set
-                return undefined;
-            }
-        };
-
-    }])
-
     .service('waitingService', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
 
         var delay = 200; // delay after the loading animation will be shown

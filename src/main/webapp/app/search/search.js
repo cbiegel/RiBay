@@ -13,7 +13,7 @@ angular.module('myApp.search', [])
         });
     }])
 
-    .service('searchService', ['$http', 'imageService', function ($http, imageService) {
+    .service('searchService', ['$http', function ($http) {
 
         // TODO add parameters for filter and sort-by
         this.search = function (query, callback) {
@@ -31,9 +31,6 @@ angular.module('myApp.search', [])
                     };
 
                     data.list.forEach(function (item) {
-                        // resolve images
-                        item.image = imageService.createImageURLFromId(item.image);
-
                         // add float attribute
                         item.mediumRating = (item.sumRatings / item.votes).toFixed(0); // round
                     });

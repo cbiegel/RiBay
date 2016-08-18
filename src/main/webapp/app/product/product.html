@@ -36,7 +36,7 @@
     <div class="left">
         <uib-carousel interval="0" no-wrap="false">
             <uib-slide ng-repeat="image in product.images">
-                <img ng-src="{{image.src}}" style="margin:auto;">
+                <img ng-src="{{image | imageIdToUrl}}" style="margin:auto;">
             </uib-slide>
         </uib-carousel>
     </div>
