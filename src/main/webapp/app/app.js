@@ -9,6 +9,7 @@ angular.module('myApp', [
     'rzModule',
     'checklist-model',
     'ui.bootstrap',
+    'myApp.service',
     'myApp.filter',
     'myApp.directive',
     'myApp.home',
@@ -26,34 +27,6 @@ angular.module('myApp', [
     'myApp.editUser'
 ])
 
-    .service('UserService', ['$cookies', function ($cookies) {
-
-        var self = this;
-
-        this.getSession = function () {
-            var sessionString = $cookies.get('session');
-            if (sessionString) {
-                // object in session is double escaped. so double parse the string
-                var sessionObject = JSON.parse(JSON.parse(sessionString));
-                return sessionObject;
-            }
-            else {
-                // no session
-                return null;
-            }
-        };
-
-        this.getLoggedInUser = function () {
-            var session = self.getSession();
-            return (session == null) ? null : session.user;
-        };
-
-        this.isLoggedIn = function () {
-            return self.getLoggedInUser() != null;
-        };
-
-    }])
-
     .run(['$rootScope', 'UserService', function ($rootScope, UserService) {
         $rootScope.$on("$locationChangeStart", function (event, next, current) {
             // when changing view -> check if logged in and set as global variable
@@ -63,42 +36,6 @@ angular.module('myApp', [
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.otherwise({redirectTo: '/'});
-    }])
-
-    .service('waitingService', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
-
-        var delay = 200; // delay after the loading animation will be shown
-
-        $rootScope.blocking = false; // non-blocking at start
-        $rootScope.showLoadingAnimation = false; // no loading animation at start
-
-        var promise = null; // no pending promise at start
-
-        this.startWaiting = function () {
-            // block user interaction immediately
-            $rootScope.blocking = true;
-
-            // show loading animation after some delay. only do that if there is no pending start of animation yet
-            if (!promise) {
-                promise = $timeout(function () {
-                    $rootScope.showLoadingAnimation = true;
-                }, delay);
-            }
-        }
-
-        this.endWaiting = function () {
-            // cancel delayed start of loading animation
-            if (promise) {
-                $timeout.cancel(promise);
-                promise = null;
-            }
-
-            // release block
-            $rootScope.blocking = false;
-
-            // remove loading animation
-            $rootScope.showLoadingAnimation = false;
-        }
     }])
 
     .controller('searchController', function ($scope, $location, $http) {
