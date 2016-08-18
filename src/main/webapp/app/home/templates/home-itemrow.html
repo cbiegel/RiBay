@@ -1,0 +1,15 @@
+<div class="itemrow" ng-show="items.length > 0">
+    <div class="caption">
+        <span class="text-big">{{caption}}</span>
+        <a>See more</a>
+    </div>
+    <div class="content">
+        <div class="items">
+            <div class="item" ng-repeat="article in items">
+                <button type="button" class="detail-button box" ng-click="onDetails(article)">Show details
+                </button>
+                <a ng-href="#/product/{{article.id}}"><img ng-src="{{article.image | imageIdToUrl}}"></a>
+            </div>
+        </div>
+    </div>
+</div>

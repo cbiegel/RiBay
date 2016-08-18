@@ -11,12 +11,12 @@ angular.module('myApp.home', ['ngRoute'])
         });
     }])
 
-    .service('homeService', ['$http', 'imageService', 'UserService', function ($http, imageService, UserService) {
+    .service('homeService', ['$http', 'UserService', function ($http, UserService) {
 
         this.getLastVisitedArticles = function () {
             var result = [];
             $http.get('/article/lastVisited').then(function (response) {
-                result.pushArray(response.data);
+                result.pushArray(response.data); // append
             });
             return result;
         };
@@ -34,8 +34,6 @@ angular.module('myApp.home', ['ngRoute'])
     }])
 
     .controller('HomeCtrl', ['$scope', '$window', 'homeService', function ($scope, $window, homeService) {
-        $scope.focused = undefined;
-
         $scope.lastVisited = homeService.getLastVisitedArticles();
         $scope.recommendations = homeService.getRecommendations();
         $scope.wishList = []; // TODO implement?
@@ -44,4 +42,16 @@ angular.module('myApp.home', ['ngRoute'])
         $scope.showDetails = function (item) {
             $window.alert(item);
         };
-    }]);
+    }])
+
+    .directive('homeItemrow', function () {
+        return {
+            restrict: 'E',
+            scope: {
+                caption: '=',
+                items: '=',
+                onDetails: '='
+            },
+            templateUrl: 'home/templates/home-itemrow.html'
+        };
+    });

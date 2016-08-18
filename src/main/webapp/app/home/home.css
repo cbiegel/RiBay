@@ -1,0 +1,86 @@
+.home {
+    max-width: 1500px;
+    min-width: 1000px;
+    margin: auto;
+    overflow: hidden;
+}
+
+.home #center {
+    margin-right: 310px;
+}
+
+.home #right {
+    float: right;
+    width: 300px;
+    padding: 10px 24px;
+}
+
+.home #promo-banner {
+    height: 240px;
+    background-color: #c3c3c3;
+    margin-bottom: 12px;
+}
+
+.home .itemrow {
+    margin: 36px 16px;
+}
+
+.home .itemrow .caption a {
+    margin-left: 12px;
+}
+
+.home .itemrow .content {
+    overflow-x: auto;
+}
+
+.home .itemrow .items {
+    width: 3450px;
+}
+
+.home .itemrow .content .item {
+    display: inline-block;
+    width: 160px;
+    height: 200px;
+    margin: 4px 6px;
+    background-color: #c3c3c3;
+    position: relative;
+}
+
+.home .itemrow .content .item .detail-button {
+    position: absolute;
+    bottom: 15%;
+    padding: 8px 12px;
+    background-color: #ddd;
+    cursor: pointer;
+    margin-left: 18%;
+    margin-right: 18%;
+    visibility: hidden;
+}
+
+.home .itemrow .content .item:hover .detail-button {
+    visibility: visible;
+}
+
+.home .itemrow .content .item img {
+    max-width: 160px;
+    max-height: 200px;
+    margin: 0 auto;
+    display: block;
+}
+
+.home #promo-split {
+    margin: 48px 16px;
+}
+
+.home #promo-split > * {
+    display: inline-block;
+    width: 49%;
+}
+
+.home #promo-split img {
+    max-width: 440px;
+    min-width: 330px;
+    height: 180px;
+    margin: 0 25%;
+    background-color: #d3d3d3;
+}
