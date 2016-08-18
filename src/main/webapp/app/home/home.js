@@ -11,26 +11,25 @@ angular.module('myApp.home', ['ngRoute'])
         });
     }])
 
-    .service('homeService', ['$http', 'UserService', function ($http, UserService) {
-
-        this.getLastVisitedArticles = function () {
-            var result = [];
-            $http.get('/article/lastVisited').then(function (response) {
-                result.pushArray(response.data); // append
-            });
-            return result;
-        };
-
-        this.getRecommendations = function () {
-            var result = [];
-            if (UserService.isLoggedIn()) {
-                $http.get('/article/recommended').then(function (response) {
+    .factory('homeService', ['$http', 'UserService', function ($http, UserService) {
+        return {
+            getLastVisitedArticles: function () {
+                var result = [];
+                $http.get('/article/lastVisited').then(function (response) {
                     result.pushArray(response.data); // append
                 });
+                return result;
+            },
+            getRecommendations: function () {
+                var result = [];
+                if (UserService.isLoggedIn()) {
+                    $http.get('/article/recommended').then(function (response) {
+                        result.pushArray(response.data); // append
+                    });
+                }
+                return result;
             }
-            return result;
         };
-
     }])
 
     .controller('HomeCtrl', ['$scope', '$window', 'homeService', function ($scope, $window, homeService) {
