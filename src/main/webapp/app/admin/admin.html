@@ -20,11 +20,12 @@
             <td>{{product.title}}</td>
             <td>
                 <img ng-show="product.images"
-                     ng-src="{{product.images[0].src}}"
+                     ng-src="{{product.images[0] | imageIdToUrl}}"
                      style="margin:auto; max-height: 160px; max-width: 160px;">
             </td>
             <td class="inline">
-                <input type="number" ng-model="product.price" my-enter="confirmPrice(product)" class="form-control" style="width: 80px;">
+                <input type="number" ng-model="product.price" my-enter="confirmPrice(product)" class="form-control"
+                       style="width: 80px;">
                 <button type="button" class="btn" ng-click="confirmPrice(product)">Ok</button>
             </td>
             <td>
