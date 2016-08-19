@@ -7,10 +7,12 @@
 angular.module('myApp.search', [])
 
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/search/:text', {
+        var config = {
             templateUrl: 'search/search.html',
             controller: 'searchCtrl'
-        });
+        };
+
+        $routeProvider.when('/search/text/:text', config).when('/search/genre/:genre', config);
     }])
 
     .service('searchService', ['$http', function ($http) {
@@ -45,7 +47,7 @@ angular.module('myApp.search', [])
 
     }])
 
-    .controller('searchCtrl', ['$scope', '$routeParams', '$location', '$anchorScroll', 'searchService', 'waitingService', function ($scope, $routeParams, $location, $anchorScroll, searchService, waitingService) {
+    .controller('searchCtrl', ['$scope', '$routeParams', '$location', '$anchorScroll', 'searchService', 'waitingService', 'genres', function ($scope, $routeParams, $location, $anchorScroll, searchService, waitingService, genres) {
 
         $scope.query = undefined;
 
@@ -63,10 +65,10 @@ angular.module('myApp.search', [])
         }, true);
 
         $scope.query = {
-            text: decodeURIComponent($routeParams.text),
+            text: $routeParams.text ? decodeURIComponent($routeParams.text) : '',
             movie: undefined, // TODO make configurable through ui
             imageOnly: true,
-            genre: [],
+            genre: $routeParams.genre ? [decodeURIComponent($routeParams.genre)] : [],
             price_low: 0, // 0 euro
             price_high: 2000, // 20 euro
             rating_low: undefined,
@@ -97,36 +99,7 @@ angular.module('myApp.search', [])
             label: "Newest Arrivals"
         }];
 
-        $scope.genres = [
-            'Action',
-            'Adventure',
-            'Animation',
-            'Biography',
-            'Comedy',
-            'Crime',
-            'Documentary',
-            'Drama',
-            'Family',
-            'Fantasy',
-            'Film-Noir',
-            'Game-Show',
-            'History',
-            'Horror',
-            'Lifestyle',
-            'Music',
-            'Musical',
-            'Mystery',
-            'News',
-            'Reality-TV',
-            'Romance',
-            'Sci-Fi',
-            'Short',
-            'Sport',
-            'Talk-Show',
-            'Thriller',
-            'Western',
-            'War'
-        ];
+        $scope.genres = genres;
 
         $scope.priceSliderOptions = {
             min: $scope.query.price_low,

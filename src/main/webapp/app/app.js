@@ -9,6 +9,8 @@ angular.module('myApp', [
     'rzModule',
     'checklist-model',
     'ui.bootstrap',
+    'picardy.fontawesome',
+    'myApp.constants',
     'myApp.service',
     'myApp.controller',
     'myApp.filter',

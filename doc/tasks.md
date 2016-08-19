@@ -32,7 +32,6 @@ Open tasks:
         
 * CD: Pixelschubsen
     * Schönere Startseite
-    * Navigationsleiste überarbeiten
     * Footer und anderes Füllmaterial
 
 * ...

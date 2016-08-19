@@ -146,7 +146,6 @@ a {
 
 .menu {
     list-style: none;
-    border-bottom: 0.1em solid black;
     /* margin-bottom: 2em; */
     padding: 0 0 0.5em;
 }
@@ -178,12 +177,81 @@ a {
     height: 42px;
 }
 
+.headline-first {
+    margin-bottom: 4px;
+}
+
 .headline-first > div {
     display: inline-block;
+    height: 42px;
+}
+
+.headline-second > div {
+    display: inline-block;
+    height: 50px;
+}
+
+.headline .nav-left {
+    position: relative;
+    float: left;
+}
+
+.headline .nav-right {
+    position: relative;
+    float: right;
+}
+
+.headline .nav-center {
+}
+
+.headline .nav-button {
+    height: 100%;
+    display: inline-block;
+    border: solid 1px transparent;
+    border-radius: 4px;
+    padding: 0 8px 4px 8px;
+}
+
+.headline .nav-button:hover {
+    border-color: #888;
+}
+
+.headline .nav-button:hover {
+    text-decoration: none;
+}
+
+.headline .nav-button-icon {
+    color: #fff;
+    font-size: 35px;
+    display: inline-block;
+    height: 100%;
+    margin-right: 2px;
+}
+
+.headline .nav-button-caption {
+    display: inline-block;
+    height: 100%;
+}
+
+.headline .nav-button-row-first {
+    color: #aaa;
+    height: 50%;
+    line-height: 250%;
+}
+
+.headline .nav-button-row-second {
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    height: 50%;
 }
 
 .header {
-    padding: 12px 16px;
+    padding-top: 12px;
+    padding-left: 24px;
+    padding-right: 24px;
+    background-color: #232f3e;
+    color: #fff;
 }
 
 .footer {
@@ -192,14 +260,39 @@ a {
 
 .search-field {
     padding-left: 16px;
+    padding-top: 4px;
 }
 
 .search-field > * {
     display: inline-block;
+    vertical-align: middle;
+}
+
+.search-field button {
+    background-color: #f3f3f3;
+    color: #777;
+    font-size: 12px;
+    height: 34px;
+    border-radius: 4px 0px 0px 4px;
+}
+
+.search-field input {
+    border-radius: 0px;
+    margin: 0 -4px;
+}
+
+.search-field button.search-button {
+    background-color: #febd69;
+    color: #333;
+    font-size: 16px;
+    width: 45px;
+    border: none;
+    border-radius: 0px 4px 4px 0px;
 }
 
 .search-field > input {
-    width: 480px;
+    min-width: 700px;
+    width: auto;
 }
 
 .viewHeader {

@@ -20,12 +20,24 @@ angular.module('myApp.filter', [])
         };
     })
 
+    // http://stackoverflow.com/questions/11540157/using-comma-as-list-separator-with-angularjs
+    .filter('joinBy', function () {
+        return function (input, delimiter) {
+            return (input || []).join(delimiter || ',');
+        };
+    })
+
     .filter('imageIdToUrl', function () {
         return function (imageId) {
             if (imageId) {
                 if (imageId.indexOf("http") == 0) {
                     // image link in db, not the image data itself
                     return imageId;
+                }
+                else if(imageId.indexOf("{") == 0)
+                {
+                    // imageId is a JSON string?
+                    return undefined;
                 }
                 else {
                     //resolve path

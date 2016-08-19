@@ -1,7 +1,8 @@
 <div class="viewHeader" id="top">
     <div class="left">
-        {{result.start}}-{{result.end}} of {{result.total_size}} results for <b class="colored">"{{query.text}}"</b> in
-        <b>"{{search.category}}"</b>
+        <span>{{result.total_size == 0 ? 0 : result.start}}-{{result.end}} of {{result.total_size}} results</span>
+        <span ng-show="query.text.length > 0"> for <b class="colored">"{{query.text}}"</b></span>
+        <span ng-show="query.genre.length > 0"> in <b>"{{query.genre | joinBy: ', '}}"</b></span>
     </div>
     <div class="right">
         <span>Sort by</span>

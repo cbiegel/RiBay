@@ -19,6 +19,7 @@
     "jquery": "~2.1.4",
     "json-formatter": "~0.4.2",
     "angularjs-slider": "^2.13.0",
-    "checklist-model": "^0.9.0"
+    "checklist-model": "^0.9.0",
+    "angular-fontawesome": "^1.0.0"
   }
 }

@@ -39,6 +39,7 @@ angular.module('myApp.home', ['ngRoute'])
         $scope.inspiredByWishList = []; // TODO implement?
 
         $scope.showDetails = function (item) {
+            // TODO show details as popup
             $window.alert(item);
         };
     }])

@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/json-formatter/dist/json-formatter.min.css">
     <link rel="stylesheet" href="bower_components/angularjs-slider/dist/rzslider.css">
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="app.css">
     <link rel="stylesheet" href="home/home.css">
     <link rel="stylesheet" href="status/status.css">
@@ -25,22 +26,32 @@
     <link rel="stylesheet" href="orders/orders.css">
     <link rel="stylesheet" href="components/css/pacman.css">
     <link rel="icon" href="components/img/application-logo.png" type="image/png">
-    <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
-    <script src="bower_components/highcharts-release/highcharts.js"></script>
 </head>
 <body>
-<div id="blocking-overlay" ng-show="blocking"></div>
-<div id="loading-overlay" ng-show="showLoadingAnimation">
-    <div class="wrapper">
-        <div class="uil-pacman-css" style="-webkit-transform:scale(1)"><div><div></div></div><div><div></div></div><div><div></div></div></div>
+<div id="overlays">
+    <div id="blocking-overlay" ng-show="blocking"></div>
+    <div id="loading-overlay" ng-show="showLoadingAnimation">
+        <div class="wrapper">
+            <div class="uil-pacman-css" style="-webkit-transform:scale(1)">
+                <div>
+                    <div></div>
+                </div>
+                <div>
+                    <div></div>
+                </div>
+                <div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div class="header">
-    <div class="headline-first">
-        <div class="application-logo">
-            <img src="components/img/application-logo.png">
+    <div class="headline headline-first">
+        <div class="nav-left application-logo">
+            <a href="#/"><img src="components/img/application-logo.png"></a>
         </div>
-        <div class="search-field" ng-controller="searchController">
+        <div class="nav-center search-field" ng-controller="searchController">
             <div class="btn-group" uib-dropdown>
                 <button id="single-button" type="button" class="btn" uib-dropdown-toggle>
                     {{category.selected.name}} <span class="caret"></span>
@@ -54,24 +65,32 @@
                    uib-typeahead="article for article in getArticles($viewValue)" my-enter="search()"
                    typeahead-loading="loadingArticles" class="form-control">
             <i ng-show="loadingArticles" class="glyphicon glyphicon-refresh"></i>
-            <button type="button" class="btn btn-primary" ng-click="search()">Search</button>
+            <button type="button" class="btn search-button" ng-click="search()">
+                <fa name="search" size="1"></fa>
+            </button>
         </div>
     </div>
-    <span class="text-bold text-medium" ng-show="loggedIn">Hello, {{loggedIn.name}}</span>
-    <div class="headline-second" ng-controller="navController">
-        <ul class="menu">
-            <li><a href="#/">Home</a></li>
-            <li><a href="#/search/So">Search page demo</a></li>
-            <li><a href="#/product/1000560">Product page demo</a></li>
-            <li><a href="#/cart">Cart page demo</a></li>
-            <li ng-show="loggedIn"><a href="#/orders">My orders</a></li>
-            <li style="right: 20px; position: absolute;"><a href="#/status">Status</a></li>
-            <li><a href="#/admin">Admin</a></li>
-            <li ng-show="loggedIn"><a href="#/userSettings">Edit User Settings</a></li>
-            <li ng-show="!loggedIn"><a href="#/login">Login</a></li>
-            <li ng-show="loggedIn"><a ng-click="logout()">Logout</a></li>
-            <li ng-show="!loggedIn"><a href="#/register">Register</a></li>
-        </ul>
+    <div class="headline headline-second" ng-controller="navController">
+        <div class="nav-left">
+            <nav-button-dropdown caption1="'Shop by'" caption2="'Genre'" items="genreMenu" uib-dropdown></nav-button-dropdown>
+        </div>
+        <div class="nav-right">
+            <nav-button-dropdown ng-show="loggedIn" caption1="'Hello, ' + loggedIn.name" caption2="'Your Account'"
+                                 items="usermenu" uib-dropdown></nav-button-dropdown>
+            <nav-button href="'#/cart'" icon="'shopping-cart'" caption1="'Shopping'" caption2="'Basket'"></nav-button>
+            <nav-button href="'#/admin'" icon="'usd'" caption1="'Manage'" caption2="'Products'"></nav-button>
+            <nav-button href="'#/status'" icon="'stethoscope'" caption2="'Status'"></nav-button>
+            <nav-button ng-show="!loggedIn" href="'#/login'" icon="'sign-in'" caption2="'Login'"></nav-button>
+            <nav-button ng-show="!loggedIn" href="'#/register'" icon="'pencil-square-o'" caption1="'New customer?'"
+                        caption2="'Register'"></nav-button>
+            <nav-button ng-show="loggedIn" ng-click="logout()" icon="'sign-out'" caption2="'Logout'"></nav-button>
+        </div>
+        <div class="nav-center">
+            <ul class="menu" style="display: none;">
+                <li><a href="#/search/So">Search page demo</a></li>
+                <li><a href="#/product/1000560">Product page demo</a></li>
+            </ul>
+        </div>
     </div>
 </div>
 
@@ -94,8 +113,12 @@
 <script src="bower_components/angularjs-slider/dist/rzslider.min.js"></script>
 <script src="bower_components/checklist-model/checklist-model.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+<script src="bower_components/angular-fontawesome/dist/angular-fontawesome.min.js"></script>
+<script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+<script src="bower_components/highcharts-release/highcharts.js"></script>
 <script src="app-prototype.js"></script>
 <script src="app.js"></script>
+<script src="app-constants.js"></script>
 <script src="app-service.js"></script>
 <script src="app-controller.js"></script>
 <script src="app-filter.js"></script>

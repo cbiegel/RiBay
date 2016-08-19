@@ -7,11 +7,7 @@ angular.module('myApp.controller', [])
                     /* name depends on language, value could be a key for db */
                     name: 'All',
                     value: ''
-                },
-                {
-                    name: 'option1Name',
-                    value: 'option1Value'
-                }
+                } // TODO more options
             ],
 
             selected: {
@@ -44,19 +40,54 @@ angular.module('myApp.controller', [])
             // TODO handle 'null' input
             // TODO handle input 'all' as category
             // TODO no category!
-            $location.path('search/' + encodeURIComponent($scope.searchText));
+            $location.path('search/text/' + encodeURIComponent($scope.searchText));
 
             // reset textfield content
             // $scope.searchText = '';
         };
     })
 
-    .controller('navController', ['$rootScope', '$scope', '$http', function ($rootScope, $scope, $http) {
+    .controller('navController', ['$rootScope', '$scope', '$http', '$location', 'genres', function ($rootScope, $scope, $http, $location, genres) {
 
         $scope.logout = function () {
-            $http.post('/auth/logout').success(function (data) {
+            $http.post('/auth/logout').then(function success() {
                 $rootScope.loggedIn = undefined;
+                $location.url("/");
             });
         };
 
-    }]);
+        $scope.usermenu = [
+            {url: '#/orders', caption: 'Your Orders'},
+            {url: '#/userSettings', caption: 'Your Account'}
+        ];
+
+        $scope.genreMenu = genres.map(function (genre) {
+            return {url: '#/search/genre/' + encodeURIComponent(genre), caption: genre};
+        });
+
+    }])
+
+    .directive('navButton', function () {
+        return {
+            restrict: 'E',
+            scope: {
+                href: '=',
+                icon: '=',
+                caption1: '=',
+                caption2: '='
+            },
+            templateUrl: 'templates/headline-nav-button.html'
+        };
+    })
+
+    .directive('navButtonDropdown', function () {
+        return {
+            restrict: 'E',
+            scope: {
+                caption1: '=',
+                caption2: '=',
+                items: '='
+            },
+            templateUrl: 'templates/headline-nav-button-dropdown.html'
+        };
+    });
