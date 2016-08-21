@@ -20,6 +20,8 @@ import com.ribay.server.material.*;
 import com.ribay.server.material.continuation.ArticleReviewsContinuation;
 import com.ribay.server.repository.query.QueryBuilder;
 import com.ribay.server.repository.query.QueryBuilderArticle;
+import com.ribay.server.repository.query.element.QueryElementOr;
+import com.ribay.server.repository.query.element.QueryElementStartsWith;
 import com.ribay.server.util.RibayConstants;
 import com.ribay.server.util.RibayProperties;
 import com.ribay.server.util.riak.RiakObjectBuilder;
@@ -110,6 +112,35 @@ public class ArticleRepository {
         int numResults = response.numResults();
 
         return new ArticleSearchResult(result, numResults);
+    }
+
+    public List<ArticleShortest> getArticleTypeahead(String text) throws Exception {
+
+        QueryElementStartsWith idFilter = new QueryElementStartsWith("id", text);
+        QueryElementStartsWith titleFilter = new QueryElementStartsWith("title", text);
+        // QueryElementStartsWith actorsFilter = new QueryElementStartsWith("actors", text);
+        QueryElementOr textFilter = new QueryElementOr(idFilter, titleFilter); // text must be in either id or title
+
+        String queryString = textFilter.toQuery();
+
+        SearchOperation command = new SearchOperation.Builder(BinaryValue.create("article_typeahead"), queryString) //
+                .withNumRows(10) //
+                .build();
+
+        SearchOperation.Response response = client.execute(command).get();
+
+        List<Map<String, List<String>>> searchResults = response.getAllResults();
+
+        // map solr result document to object
+        List<ArticleShortest> result = searchResults.stream().map((map) -> {
+            ArticleShortest item = new ArticleShortest();
+            item.setId(riakSearchHelper.getString("id", map));
+            item.setName(riakSearchHelper.getString("title", map));
+            item.setImage(riakSearchHelper.getString("imageId", map));
+            return item;
+        }).collect(Collectors.toList());
+
+        return result;
     }
 
     public Article getArticleInformation(final String articleId) throws Exception {

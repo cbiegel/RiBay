@@ -18,32 +18,26 @@ angular.module('myApp.controller', [])
 
         $scope.searchText = '';
 
-        $scope.getArticles = function (val) {
-            // TODO lazy load article suggestions
-            /*
-             return $http.get('//maps.googleapis.com/maps/api/geocode/json', {
-             params: {
-             address: val,
-             sensor: false
-             }
-             }).then(function (response) {
-             return response.data.results.map(function (item) {
-             return item.formatted_address;
-             });
-             });
-             */
-            return [];
+        $scope.getArticlesAsync = function (val) {
+            return $http.get('/article/typeahead/' + encodeURIComponent(val)).then(function (response) {
+                return response.data;
+            });
         };
 
         $scope.search = function () {
             // switch to search view
-            // TODO handle 'null' input
-            // TODO handle input 'all' as category
-            // TODO no category!
             $location.path('search/text/' + encodeURIComponent($scope.searchText));
 
             // reset textfield content
             // $scope.searchText = '';
+        };
+
+        $scope.typeaheadOnSelect = function($item, $model, $label, $event) {
+            $location.path('product/' + $item.id);
+        };
+
+        $scope.typeaheadInputFormatter = function(item) {
+            return item.name;
         };
     })
 

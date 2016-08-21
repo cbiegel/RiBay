@@ -26,6 +26,12 @@
     <link rel="stylesheet" href="orders/orders.css">
     <link rel="stylesheet" href="components/css/pacman.css">
     <link rel="icon" href="components/img/application-logo.png" type="image/png">
+    <script type="text/ng-template" id="typeahead-template.html">
+        <a>
+            <img ng-src="{{match.model.image | imageIdToUrl}}" style="max-width: 16px; max-height: 16px;">
+            <span>{{match.label}}</span>
+        </a>
+    </script>
 </head>
 <body>
 <div id="overlays">
@@ -62,8 +68,12 @@
                 </ul>
             </div>
             <input type="text" ng-model="searchText" placeholder="Article"
-                   uib-typeahead="article for article in getArticles($viewValue)" my-enter="search()"
-                   typeahead-loading="loadingArticles" class="form-control">
+                   uib-typeahead="article as article.name for article in getArticlesAsync($viewValue)"
+                   my-enter="search()"
+                   typeahead-loading="loadingArticles" typeahead-input-formatter="$item.name"
+                   typeahead-on-select="typeaheadOnSelect($item, $model, $label, $event)" class="form-control"
+                   typeahead-min-length="3" typeahead-focus-first="false" typeahead-wait-ms="200"
+                   typeahead-template-url="typeahead-template.html">
             <i ng-show="loadingArticles" class="glyphicon glyphicon-refresh"></i>
             <button type="button" class="btn search-button" ng-click="search()">
                 <fa name="search" size="1"></fa>
@@ -72,7 +82,8 @@
     </div>
     <div class="headline headline-second" ng-controller="navController">
         <div class="nav-left">
-            <nav-button-dropdown caption1="'Shop by'" caption2="'Genre'" items="genreMenu" uib-dropdown></nav-button-dropdown>
+            <nav-button-dropdown caption1="'Shop by'" caption2="'Genre'" items="genreMenu"
+                                 uib-dropdown></nav-button-dropdown>
         </div>
         <div class="nav-right">
             <nav-button-dropdown ng-show="loggedIn" caption1="'Hello, ' + loggedIn.name" caption2="'Your Account'"

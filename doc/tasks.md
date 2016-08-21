@@ -12,7 +12,6 @@ Open tasks:
 * CD: Suche verbessern
     * weitere Filterungsmöglichkeiten
     * weitere Sortierungsmöglichkeiten
-    * Typeahead für Textfeld
     * konsistente Suche (bei gleichem Filter: gleiche Werte)
 
 * CD: Wunschliste
@@ -33,6 +32,9 @@ Open tasks:
 * CD: Pixelschubsen
     * Schönere Startseite
     * Footer und anderes Füllmaterial
+    
+* NN: Last-Tests
+    * z.B. mit JMeter
 
 * ...
 

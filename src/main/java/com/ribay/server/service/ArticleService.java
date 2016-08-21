@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Created by CD on 01.05.2016.
  */
@@ -37,6 +39,11 @@ public class ArticleService {
         return articleRepository.queryArticles(query);
     }
 
+    @RequestMapping(path = "/article/typeahead/{text}", method = RequestMethod.GET)
+    public List<ArticleShortest> getArticleTypeahead(@PathVariable(value = "text") String text) throws Exception {
+        return articleRepository.getArticleTypeahead(text);
+    }
+
     @RequestMapping(path = "/article/info", method = RequestMethod.GET)
     public Article getArticleInfo(@RequestParam(value = "articleId") String articleId) throws Exception {
         Article article = articleRepository.getArticleInformation(articleId);
@@ -54,7 +61,7 @@ public class ArticleService {
                                                         @RequestParam(value = "continuation", required = false) String continuation,
                                                         @RequestParam(value = "rating_range", required = false) String ratingRange) throws Exception {
         RatingFilterRange ratingRangeObj = null;
-        if(ratingRange != null) {
+        if (ratingRange != null) {
             ratingRangeObj = new ObjectMapper().readValue(ratingRange, RatingFilterRange.class);
         }
         return articleRepository.getReviewsForArticle(articleId, continuation, ratingRangeObj);
