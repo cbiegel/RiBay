@@ -106,6 +106,26 @@ public class RibayProperties {
         return buildBucketFromAttrs(attrs);
     }
 
+    public String getSSHUser() {
+        return databaseProperties.getProperty("ssh.user");
+    }
+
+    public String getSSHPort() {
+        return databaseProperties.getProperty("ssh.port");
+    }
+
+    public String getSSHPassphrase() {
+        return databaseProperties.getProperty("ssh.passphrase");
+    }
+
+    public String getSSHPrivateKey() {
+        return databaseProperties.getProperty("ssh.resources") + databaseProperties.getProperty("ssh.resources.privatekey");
+    }
+
+    public String getSSHPublicKey() {
+        return databaseProperties.getProperty("ssh.resources") + databaseProperties.getProperty("ssh.resources.publickey");
+    }
+
     private Namespace buildBucketFromAttrs(String... attrs) {
         String bucketType;
         String bucketName;

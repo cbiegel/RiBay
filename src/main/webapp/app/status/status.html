@@ -67,8 +67,20 @@
                 </div>
             </div>
         </uib-tab>
-        <uib-tab heading="Cluster status">
+        <uib-tab heading="Cluster Status">
             <json-formatter json="clusterStatus" open="1" style="padding-top: 12px;"></json-formatter>
+        </uib-tab>
+        <uib-tab heading="Ring Status">
+            <div class="ring_status">
+                <div class="status_box" style="white-space: pre-line;">
+                    <div class="status_box_header">
+                        RiBay Cluster Status:
+                    </div>
+                    <pre>
+                        {{ringstatus}}
+                    </pre>
+                </div>
+            </div>
         </uib-tab>
     </uib-tabset>
 </div>

@@ -61,6 +61,10 @@ angular.module('myApp.status', [])
             $http.get('/status/db/cluster').success(callback);
         };
 
+        this.getRingStatus = function (callback) {
+            $http.get('/status/db/ringstatus').success(callback);
+        };
+
     }])
     .controller('statusCtrl', ['$scope', 'statusService', function ($scope, statusService) {
 
@@ -72,7 +76,7 @@ angular.module('myApp.status', [])
         $scope.keys = undefined;
         $scope.keys_page = 1;
         $scope.value = undefined;
-
+        $scope.ringstatus = undefined;
         $scope.selectedBucketType = undefined;
         $scope.selectedBucket = undefined;
         $scope.selectedKey = undefined;
@@ -137,7 +141,9 @@ angular.module('myApp.status', [])
             $scope.clusterStatus = data;
         });
 
-
+        statusService.getRingStatus(function (data) {
+            $scope.ringstatus = "\r\n" + data;
+        });
     }]);
 
 

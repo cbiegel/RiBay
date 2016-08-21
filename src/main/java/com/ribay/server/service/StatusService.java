@@ -12,13 +12,9 @@ import java.util.stream.StreamSupport;
 import com.basho.riak.client.api.commands.buckets.FetchBucketProperties;
 import com.basho.riak.client.core.operations.FetchBucketPropsOperation;
 import com.basho.riak.client.core.query.BucketProperties;
-import com.basho.riak.client.core.query.RiakObject;
-import com.sun.org.apache.xml.internal.utils.NameSpace;
+import com.ribay.server.util.ssh.RibaySSHUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import com.basho.riak.client.api.commands.buckets.ListBuckets;
@@ -37,6 +33,8 @@ public class StatusService {
 
     @Autowired
     private MyRiakClient client;
+
+    private static final String SSH_COMMAND_RIAK_CLUSTER_STATUS = "sudo riak-admin cluster status";
 
     @RequestMapping(path = "/status/db/bucketTypes", method = RequestMethod.GET)
     public List<String> getBucketTypes() throws Exception {
@@ -104,6 +102,21 @@ public class StatusService {
                         (() -> new TreeMap<>(StatusService::compareNodeNames)))); // store sorted
 
         return result;
+    }
+
+    @RequestMapping(path = "/status/db/ringstatus", method = RequestMethod.GET, produces = "text/plain")
+    @ResponseBody
+    public String getRingStatus() throws Exception {
+
+        RibaySSHUtil ssh = RibaySSHUtil.getInstance();
+        ssh.startConnection();
+        String output = ssh.executeSSHCommand(SSH_COMMAND_RIAK_CLUSTER_STATUS);
+        return cutRingStatusString(output);
+    }
+
+    private String cutRingStatusString(String input) {
+        // The cluster status part begins with a '+' and ends with a '+' character -- pretty hacky, but simple :)
+        return input.substring(input.indexOf('+'), input.lastIndexOf('+') + 1);
     }
 
     private static int compareNodeNames(String nodeName1, String nodeName2) {
