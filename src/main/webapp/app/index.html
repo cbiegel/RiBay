@@ -89,8 +89,7 @@
             <nav-button-dropdown ng-show="loggedIn" caption1="'Hello, ' + loggedIn.name" caption2="'Your Account'"
                                  items="usermenu" uib-dropdown></nav-button-dropdown>
             <nav-button href="'#/cart'" icon="'shopping-cart'" caption1="'Shopping'" caption2="'Basket'"></nav-button>
-            <nav-button href="'#/admin'" icon="'usd'" caption1="'Manage'" caption2="'Products'"></nav-button>
-            <nav-button href="'#/status'" icon="'stethoscope'" caption2="'Status'"></nav-button>
+            <nav-button-dropdown icon="'wrench'" caption2="'Tools'" items="toolMenu" uib-dropdown></nav-button-dropdown>
             <nav-button ng-show="!loggedIn" href="'#/login'" icon="'sign-in'" caption2="'Login'"></nav-button>
             <nav-button ng-show="!loggedIn" href="'#/register'" icon="'pencil-square-o'" caption1="'New customer?'"
                         caption2="'Register'"></nav-button>

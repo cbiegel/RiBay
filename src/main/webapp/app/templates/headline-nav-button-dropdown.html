@@ -1,5 +1,8 @@
 <a href uib-dropdown-toggle>
     <div class="nav-button">
+        <div class="nav-button-icon" ng-show="icon">
+            <fa name="{{icon}}">
+        </div>
         <div class="nav-button-caption">
             <div class="nav-button-row-first">{{caption1}}</div>
             <div class="nav-button-row-second">{{caption2}}
@@ -10,6 +13,9 @@
 </a>
 <ul class="dropdown-menu" uib-dropdown-menu>
     <li ng-repeat="choice in items">
-        <a ng-href="{{choice.url}}">{{choice.caption}}</a>
+        <a ng-href="{{choice.url}}" my-target="{{choice.target}}">
+            <span ng-show="choice.icon"><fa name="{{choice.icon}}"></span>
+            <span>{{choice.caption}}</span>
+        </a>
     </li>
 </ul>

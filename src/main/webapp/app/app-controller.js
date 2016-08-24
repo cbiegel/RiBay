@@ -32,11 +32,11 @@ angular.module('myApp.controller', [])
             // $scope.searchText = '';
         };
 
-        $scope.typeaheadOnSelect = function($item, $model, $label, $event) {
+        $scope.typeaheadOnSelect = function ($item, $model, $label, $event) {
             $location.path('product/' + $item.id);
         };
 
-        $scope.typeaheadInputFormatter = function(item) {
+        $scope.typeaheadInputFormatter = function (item) {
             return item.name;
         };
     })
@@ -59,6 +59,12 @@ angular.module('myApp.controller', [])
             return {url: '#/search/genre/' + encodeURIComponent(genre), caption: genre};
         });
 
+        $scope.toolMenu = [
+            {url: '#/admin', caption: 'Manage Products', icon: 'usd'},
+            {url: '#/status', caption: 'Status', icon: 'stethoscope'},
+            {url: '../swagger-ui.html', target: '_blank', caption: 'API Documentation', icon: 'book'}
+        ];
+
     }])
 
     .directive('navButton', function () {
@@ -78,6 +84,7 @@ angular.module('myApp.controller', [])
         return {
             restrict: 'E',
             scope: {
+                icon: '=',
                 caption1: '=',
                 caption2: '=',
                 items: '='
