@@ -31,11 +31,10 @@ angular.module('myApp.filter', [])
         return function (imageId) {
             if (imageId) {
                 if (imageId.indexOf("http") == 0) {
-                    // image link in db, not the image data itself
-                    return imageId;
+                    // image link in db, not the image data itself. that means that link was not resolved, maybe due to 404 so we can not use that link here either
+                    return undefined;
                 }
-                else if(imageId.indexOf("{") == 0)
-                {
+                else if (imageId.indexOf("{") == 0) {
                     // imageId is a JSON string?
                     return undefined;
                 }
