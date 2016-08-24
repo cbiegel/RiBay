@@ -29,8 +29,6 @@ Open tasks:
     * Schönere Startseite
     * Footer und anderes Füllmaterial
     * Margin
-
-* CD: Dokumentation der DB
     
 * NN: Last-Tests
     * z.B. mit JMeter
