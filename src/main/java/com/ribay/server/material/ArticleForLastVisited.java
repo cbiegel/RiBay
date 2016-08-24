@@ -3,7 +3,7 @@ package com.ribay.server.material;
 /**
  * Created by CD on 24.05.2016.
  */
-public class ArticleForLastVisited extends ArticleShort {
+public class ArticleForLastVisited extends ArticleShortest {
 
     private long lastVisited;
 

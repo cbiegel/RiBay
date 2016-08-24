@@ -6,6 +6,7 @@ import com.ribay.server.material.ArticleForLastVisited;
 import com.ribay.server.material.ArticleShort;
 import com.ribay.server.material.ArticleShortest;
 import com.ribay.server.material.User;
+import com.ribay.server.material.converter.Converter;
 import com.ribay.server.repository.ArticleRepository;
 import com.ribay.server.repository.MarketingRepository;
 import com.ribay.server.util.RequestScopeData;
@@ -39,12 +40,16 @@ public class MarketingService {
     @Autowired
     private RequestScopeData requestData;
 
+    @Autowired
+    private Converter<ArticleShort, ArticleShortest> articleConverter;
+
     @RequestMapping(path = "/article/visit/{articleId}", method = RequestMethod.GET)
     public void visitArticle(@PathVariable(value = "articleId") String articleId) throws Exception {
         // save last visited article
         String sessionId = requestData.getSessionId();
         ArticleShort articleShort = articleRepository.getArticleShort(articleId);
-        marketingRepository.addVisitedArticle(sessionId, articleShort); // is async: fire and forget
+        ArticleShortest articleShortest = articleConverter.convert(articleShort);
+        marketingRepository.addVisitedArticle(sessionId, articleShortest); // is async: fire and forget
     }
 
     @RequestMapping(path = "/article/lastVisited", method = RequestMethod.GET)

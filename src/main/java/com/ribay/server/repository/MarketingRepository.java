@@ -57,7 +57,7 @@ public class MarketingRepository {
     @Autowired
     private RibayProperties properties;
 
-    public Future<?> addVisitedArticle(String sessionId, ArticleShort article) throws Exception {
+    public Future<?> addVisitedArticle(String sessionId, ArticleShortest article) throws Exception {
         Namespace bucket = properties.getBucketVisitedArticles();
         String key = sessionId;
 
@@ -86,14 +86,13 @@ public class MarketingRepository {
 
             List<ArticleForLastVisited> historyAsList = map.entrySet().stream() //
                     .map((entry) -> { //
-                        ArticleShort fromDB = JSONUtil.read(entry.getKey().getValue(), ArticleShort.class);
+                        ArticleShortest fromDB = JSONUtil.read(entry.getKey().getValue(), ArticleShortest.class);
                         long lastVisited = Longs.fromByteArray(entry.getValue().get(0).getAsRegister().view().getValue());
 
                         ArticleForLastVisited forHistory = new ArticleForLastVisited();
                         forHistory.setId(fromDB.getId());
                         forHistory.setName(fromDB.getName());
                         forHistory.setImage(fromDB.getImage());
-                        forHistory.setPrice(fromDB.getPrice());
                         forHistory.setLastVisited(lastVisited);
                         return forHistory;
                     }) //
