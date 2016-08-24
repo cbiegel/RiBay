@@ -3,11 +3,7 @@ Open tasks:
 
 
 * CD: Checkout-Vorgang
-    * Bestellabschluss mit Constraints
-        * (alles erledigt bis auf:)
-        * evtl. Prüfung ob Artikel noch in Stock (kann nicht vollständig geprüft werden, da 'Eventual Consistency')
-    * Auflistung aller Bestellungen der Anwendung im Administrationsbereich (Händlersicht)
-    * Überlegungen bzgl. Konsistenz
+    * evtl. Prüfung ob Artikel noch in Stock (kann nicht vollständig geprüft werden, da 'Eventual Consistency')
 
 * CD: Suche verbessern
     * weitere Filterungsmöglichkeiten
@@ -32,6 +28,9 @@ Open tasks:
 * CD: Pixelschubsen
     * Schönere Startseite
     * Footer und anderes Füllmaterial
+    * Margin
+
+* CD: Dokumentation der DB
     
 * NN: Last-Tests
     * z.B. mit JMeter
