@@ -24,7 +24,7 @@ angular.module('myApp.orders', [])
                 if (this.hasNextPage()) {
                     var url = '/user/orders';
                     if (result.continuation !== undefined) {
-                        url += '?continuation=' + result.continuation;
+                        url += '?continuation=' + encodeURIComponent(result.continuation);
                     }
                     $http.get(url).then(function (response) {
                         result.data = result.data.concat(response.data.orders); // append
