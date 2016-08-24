@@ -1,5 +1,5 @@
 <div class="orders">
-    <div class="text-bold text-big color-grey">My orders</div>
+    <div class="text-bold text-big color-grey">{{title}}</div>
     <div class="box order-box" ng-repeat="order in orders.data">
         <div class="box-content">
             <div class="text-bold">
@@ -7,16 +7,22 @@
                 <span class="colored">#{{order.id}}</span>
                 <span> from </span>
                 <span class="color-grey">{{order.timestamp | date:'MM/dd/yyyy HH:mm:ss'}}</span>
+                <span ng-show="showUser">
+                    <span> by </span>
+                    <span class="colored">{{order.userId}}</span>
+                </span>
             </div>
             <table style="width: 100%">
-                  <tr>
+                <tr>
                     <td class="cart-column">
                         <div class="article-container inline" ng-repeat="article in order.articles">
                             <div class="article-image">
-                                <a href="{{article.id | articleIdToUrl}}"><img ng-src="{{article.image | imageIdToUrl}}"></a>
+                                <a href="{{article.id | articleIdToUrl}}"><img
+                                        ng-src="{{article.image | imageIdToUrl}}"></a>
                             </div>
                             <div class="article-content">
-                                <div class="text-bold"><a href="{{article.id | articleIdToUrl}}">{{article.name}}</a></div>
+                                <div class="text-bold"><a href="{{article.id | articleIdToUrl}}">{{article.name}}</a>
+                                </div>
                                 <div class="text-bold price">{{article.price / 100 | currency: "€"}}</div>
                                 <div>Quantity: {{article.quantity}}</div>
                             </div>

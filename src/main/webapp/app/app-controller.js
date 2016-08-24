@@ -60,6 +60,7 @@ angular.module('myApp.controller', [])
         });
 
         $scope.toolMenu = [
+            {url: '#/adminOrders', caption: 'Show recent orders', icon: 'ship'},
             {url: '#/admin', caption: 'Manage Products', icon: 'usd'},
             {url: '#/status', caption: 'Status', icon: 'stethoscope'},
             {url: '../swagger-ui.html', target: '_blank', caption: 'API Documentation', icon: 'book'}
