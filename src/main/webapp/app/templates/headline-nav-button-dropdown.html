@@ -14,7 +14,7 @@
 <ul class="dropdown-menu" uib-dropdown-menu>
     <li ng-repeat="choice in items">
         <a ng-href="{{choice.url}}" my-target="{{choice.target}}">
-            <span ng-show="choice.icon"><fa name="{{choice.icon}}"></span>
+            <span ng-show="choice.icon"><fa name="{{choice.icon}}" class="icon"></span>
             <span>{{choice.caption}}</span>
         </a>
     </li>

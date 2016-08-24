@@ -51,8 +51,8 @@ angular.module('myApp.controller', [])
         };
 
         $scope.usermenu = [
-            {url: '#/orders', caption: 'Your Orders'},
-            {url: '#/userSettings', caption: 'Your Account'}
+            {url: '#/orders', caption: 'Your Orders', icon: 'ship'},
+            {url: '#/userSettings', caption: 'Your Account', icon: 'user'}
         ];
 
         $scope.genreMenu = genres.map(function (genre) {

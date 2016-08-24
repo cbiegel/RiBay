@@ -123,6 +123,11 @@ a {
     border-color: #a88734 #9c7e31 #9c7e31;
 }
 
+.dropdown-menu > li > a {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
 .box {
     border-radius: 4px;
     border: 1px #ddd solid;
@@ -244,6 +249,11 @@ a {
     font-size: 14px;
     font-weight: bold;
     height: 50%;
+}
+
+nav-button-dropdown .dropdown-menu .icon {
+    width: 20px;
+    text-align: center;
 }
 
 .header {
@@ -490,7 +500,7 @@ td#filterReviewsTable {
 .product-reviews .review-header .create-review {
     margin-left: 450px;
     margin-bottom: 30px;
- }
+}
 
 .product-reviews .create-review .title {
     font-weight: bold;
