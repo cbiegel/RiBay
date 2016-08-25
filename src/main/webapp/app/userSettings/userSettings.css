@@ -1,0 +1,27 @@
+.userSettings {
+    padding: 12px 50px;
+}
+
+.userSettings .settings-header {
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    margin-left: 59px;
+}
+
+.userSettings .userSettingPropertyHeader {
+    font-weight: bold;
+}
+
+.userSettings .settings-container .settingsTable tr {
+    margin-bottom: 15px;
+}
+
+.userSettings .settings-container .settingsTable table {
+    border-collapse: separate;
+    border-spacing: 20px 10px;
+}
+
+.userSettings .settings-container .settingsTable ul {
+    list-style-type: none;
+}

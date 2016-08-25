@@ -1,0 +1,44 @@
+.admin {
+    padding: 12px 16px;
+}
+
+.admin .filter > * {
+    display: inline-block;
+}
+
+.admin .filter input[type=text] {
+    width: 240px;
+}
+
+.admin table {
+    border-spacing: 36px;
+    border-collapse: separate;
+}
+
+.ring_status .status_box {
+    float: left;
+    margin-right: 100px;
+}
+
+.ring_status .status_box .status_box_header {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 0px;
+    padding-top: 0px;
+}
+
+.ring_status .ring_status_admin .status_admin_header {
+    font-size: 19px;
+    font-weight: bold;
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+.ring_status .ring_status_admin .status_admin_buttons th {
+    padding-right: 30px;
+}
+
+.ring_status .ring_status_admin .status_admin_buttons td {
+    border-collapse: collapse;
+    padding: 15px;
+}

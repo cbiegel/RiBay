@@ -20,7 +20,6 @@ angular.module('myApp', [
     'myApp.product',
     'myApp.cart',
     'myApp.login',
-    'myApp.loginSuccess',
     'myApp.status',
     'myApp.version',
     'myApp.register',

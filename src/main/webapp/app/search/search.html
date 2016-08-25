@@ -1,96 +1,99 @@
-<div class="viewHeader" id="top">
-    <div class="left">
-        <span>{{result.total_size == 0 ? 0 : result.start}}-{{result.end}} of {{result.total_size}} results</span>
-        <span ng-show="query.text.length > 0"> for <b class="colored">"{{query.text}}"</b></span>
-        <span ng-show="query.genre.length > 0"> in <b>"{{query.genre | joinBy: ', '}}"</b></span>
-    </div>
-    <div class="right">
-        <span>Sort by</span>
-        <!-- TODO build an url -->
-        <!--<select ng-model="sortcategory" ng-options="value.id as value.label for value in sortcategories"-->
-        <select ng-model="sortCategory" ng-options="value.label for value in sortCategories"
-                ng-change="searchAgain(query.text)">
-        </select>
-    </div>
-</div>
-<div class="search-main">
-    <div id="left">
-        <div>
-            <span class="headline text-medium text-light">Show results for</span>
-            <div class="filter-category">
-                <span class="title text-bold text-small">Genre (match all)</span>
-                <div>
-                    <div ng-repeat="genre in genres">
-                        <input id="cb_{{genre}}" type="checkbox" checklist-model="query.genre" checklist-value="genre">
-                        <label for="cb_{{genre}}" class="text-small">{{genre}}</label>
-                    </div>
-                </div>
-            </div>
+<div class="search">
+    <div class="viewHeader" id="top">
+        <div class="left">
+            <span>{{result.total_size == 0 ? 0 : result.start}}-{{result.end}} of {{result.total_size}} results</span>
+            <span ng-show="query.text.length > 0"> for <b class="colored">"{{query.text}}"</b></span>
+            <span ng-show="query.genre.length > 0"> in <b>"{{query.genre | joinBy: ', '}}"</b></span>
         </div>
-        <div>
-            <span class="headline text-medium text-light">Refine by</span>
-            <div class="filter-category">
-                <span class="title text-bold text-small">Image option</span>
-                <div>
-                    <input type="checkbox" ng-model="query.imageOnly"/>
-                    <span class="text-small" ng-click="query.imageOnly = !query.imageOnly">With image only</span>
-                </div>
-            </div>
-            <div class="filter-category">
-                <span class="title text-bold text-small">Price</span>
-                <div>
-                    <rzslider rz-slider-model="priceSliderOptions.min"
-                              rz-slider-high="priceSliderOptions.max"
-                              rz-slider-options="priceSliderOptions"
-                              class="text-small"></rzslider>
-                </div>
-            </div>
-            <div class="filter-category">
-                <span class="title text-bold text-small">Avg. Customer Review</span>
-                <div class="content text-small">
-                    <div ng-repeat="n in [] | range: 6 | reverse | limitTo: 5">
-                        <a ng-click="query.rating_low = n" ng-class="{'text-bold': (query.rating_low == n)}">
-                            <uib-rating ng-model="n" max="5" readonly="true" class="rating"></uib-rating>
-                            <span>& Up</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
+        <div class="right">
+            <span>Sort by</span>
+            <!-- TODO build an url -->
+            <!--<select ng-model="sortcategory" ng-options="value.id as value.label for value in sortcategories"-->
+            <select ng-model="sortCategory" ng-options="value.label for value in sortCategories"
+                    ng-change="searchAgain(query.text)">
+            </select>
         </div>
     </div>
-    <div id="center">
-        <!-- TODO build an url -->
-        <div class="text-medium" ng-show="result.suggestion">
-            <span>Did you mean: <a ng-click="searchAgain(result.suggestion)">"{{result.suggestion}}"</a></span>
-        </div>
-        <div class="search-list">
-            <div class="search-entry inline" ng-repeat="item in result.list">
-                <div class="image-container">
-                    <a href="#/product/{{item.id}}"><img ng-src="{{item.image | imageIdToUrl}}"></a>
-                </div>
-                <div>
-                    <div class="text-medium">
-                        <a href="#/product/{{item.id}}" class="product-link text-medium">{{item.title}}</a>
-                    </div>
-                    <div class="inline">
-                        <div class="details-left">
-                            <span class="price text-bold">{{(item.price / 100) | currency: "€"}}</span>
+    <div class="search-main">
+        <div id="left">
+            <div>
+                <span class="headline text-medium text-light">Show results for</span>
+                <div class="filter-category">
+                    <span class="title text-bold text-small">Genre (match all)</span>
+                    <div>
+                        <div ng-repeat="genre in genres">
+                            <input id="cb_{{genre}}" type="checkbox" checklist-model="query.genre"
+                                   checklist-value="genre">
+                            <label for="cb_{{genre}}" class="text-small">{{genre}}</label>
                         </div>
-                        <div class="details-right">
-                            <div class="rating noselect">
-                                <uib-rating ng-model="item.mediumRating" max="5" readonly="true"></uib-rating>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <span class="headline text-medium text-light">Refine by</span>
+                <div class="filter-category">
+                    <span class="title text-bold text-small">Image option</span>
+                    <div>
+                        <input type="checkbox" ng-model="query.imageOnly"/>
+                        <span class="text-small" ng-click="query.imageOnly = !query.imageOnly">With image only</span>
+                    </div>
+                </div>
+                <div class="filter-category">
+                    <span class="title text-bold text-small">Price</span>
+                    <div>
+                        <rzslider rz-slider-model="priceSliderOptions.min"
+                                  rz-slider-high="priceSliderOptions.max"
+                                  rz-slider-options="priceSliderOptions"
+                                  class="text-small"></rzslider>
+                    </div>
+                </div>
+                <div class="filter-category">
+                    <span class="title text-bold text-small">Avg. Customer Review</span>
+                    <div class="content text-small">
+                        <div ng-repeat="n in [] | range: 6 | reverse | limitTo: 5">
+                            <a ng-click="query.rating_low = n" ng-class="{'text-bold': (query.rating_low == n)}">
+                                <uib-rating ng-model="n" max="5" readonly="true" class="rating"></uib-rating>
+                                <span>& Up</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="center">
+            <!-- TODO build an url -->
+            <div class="text-medium" ng-show="result.suggestion">
+                <span>Did you mean: <a ng-click="searchAgain(result.suggestion)">"{{result.suggestion}}"</a></span>
+            </div>
+            <div class="search-list">
+                <div class="search-entry inline" ng-repeat="item in result.list">
+                    <div class="image-container">
+                        <a href="#/product/{{item.id}}"><img ng-src="{{item.image | imageIdToUrl}}"></a>
+                    </div>
+                    <div>
+                        <div class="text-medium">
+                            <a href="#/product/{{item.id}}" class="product-link text-medium">{{item.title}}</a>
+                        </div>
+                        <div class="inline">
+                            <div class="details-left">
+                                <span class="price text-bold">{{(item.price / 100) | currency: "€"}}</span>
+                            </div>
+                            <div class="details-right">
+                                <div class="rating noselect">
+                                    <uib-rating ng-model="item.mediumRating" max="5" readonly="true"></uib-rating>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="pagination">
-            <!-- TODO build an url -->
-            <uib-pagination total-items="result.total_size" ng-model="query.pageInfo.page_no"
-                            items-per-page="query.pageInfo.page_size"
-                            max-size="10" class="pagination-sm" boundary-links="true" boundary-link-numbers="true"
-                            rotate="true" ng-change="onPageChange()"></uib-pagination>
+            <div class="pagination">
+                <!-- TODO build an url -->
+                <uib-pagination total-items="result.total_size" ng-model="query.pageInfo.page_no"
+                                items-per-page="query.pageInfo.page_size"
+                                max-size="10" class="pagination-sm" boundary-links="true" boundary-link-numbers="true"
+                                rotate="true" ng-change="onPageChange()"></uib-pagination>
+            </div>
         </div>
     </div>
 </div>

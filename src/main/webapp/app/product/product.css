@@ -1,0 +1,229 @@
+.product-main {
+    padding: 12px 16px;
+}
+
+.product-main > .left {
+    width: 30%;
+    float: left;
+}
+
+.product-main .left img {
+    height: 400px;
+}
+
+.product-main .left .carousel-control {
+    background-image: none;
+}
+
+.product-main .left .carousel-control span {
+    color: #333;
+}
+
+.product-main .left .carousel-indicators > li {
+    border-color: #333;
+}
+
+.product-main .left .carousel-indicators .active {
+    background-color: #333;
+}
+
+.product-main > .center {
+    margin-left: 32%;
+    margin-right: 260px;
+}
+
+.product-main > .right {
+    width: 250px;
+    float: right;
+}
+
+.product-main .right .button-primary {
+    width: 100%;
+}
+
+.product-main .right .quantity {
+    margin-bottom: 16px;
+}
+
+.product-main .right .quantity select {
+    padding: 3px;
+    border-radius: 4px;
+}
+
+.product-main .title {
+    font-size: 19px;
+    font-weight: normal;
+}
+
+table#filterReviewsTable {
+    border-collapse: collapse;
+}
+
+td#filterReviewsTable {
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
+
+.rating {
+    color: #f7ce2b;
+}
+
+.product-main .price > .caption {
+    font-size: 13px;
+    color: #555;
+}
+
+.product-main .price > .value {
+    font-size: 17px;
+    color: #b12704;
+}
+
+.product-main .center .quantity {
+    margin-top: 8px;
+    margin-bottom: 8px;
+
+    font-size: 17px;
+    color: #008a00;
+}
+
+.product-main .details {
+    font-size: 13px;
+}
+
+.product-main hr {
+    margin-top: 0px;
+    margin-bottom: 8px;
+}
+
+.product-main #product-details > div {
+    padding: 4px 16px;
+}
+
+.product-main #product-details .releases table td {
+    padding-right: 8px;
+}
+
+.product-reviews {
+    clear: both;
+    margin-left: 8%;
+    margin-right: 260px;
+}
+
+.product-reviews .review-header {
+    margin: 0 auto 50px;
+}
+
+.product-reviews .review-header .filter-reviews {
+    float: left;
+    margin-bottom: 15px;
+}
+
+.product-reviews .review-header .filter-reviews .filter-reviews-header {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.product-reviews .review-header .filter-reviews .review-rating-table {
+    margin-bottom: 10px;
+}
+
+.product-reviews .reviewsTitle {
+    margin-bottom: 15px;
+}
+
+.product-reviews .review-header .create-review {
+    margin-left: 450px;
+    margin-bottom: 30px;
+}
+
+.product-reviews .create-review .title {
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.product-reviews .create-review .content {
+    margin-bottom: 5px;
+}
+
+.product-reviews .edit-review {
+    margin-left: 450px;
+    margin-bottom: 30px;
+}
+
+.product-reviews .edit-review .title {
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.product-reviews .edit-review .content {
+    margin-bottom: 5px;
+}
+
+.product-reviews .write-review {
+    margin-left: 450px;
+    margin-bottom: 30px;
+}
+
+.product-reviews .write-review .title {
+    font-weight: bold;
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+
+.product-reviews .write-review .content {
+    margin-bottom: 5px;
+    max-width: 50%;
+}
+
+.product-reviews .write-review .content .newReviewRating .content {
+    color: #f7ce2b;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.product-reviews .write-edit-review {
+    margin-left: 450px;
+    margin-bottom: 30px;
+}
+
+.product-reviews .write-edit-review .title {
+    font-weight: bold;
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+
+.product-reviews .write-edit-review .title .subtitle-date {
+    font-weight: normal;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.product-reviews .write-edit-review .content {
+    margin-bottom: 5px;
+    max-width: 50%;
+}
+
+.product-reviews .write-edit-review .content .newReviewRating .content {
+    color: #f7ce2b;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.product-reviews .review {
+    margin-bottom: 24px;
+}
+
+.product-reviews .review .review-caption-first {
+    clear: both;
+}
+
+.product-reviews .review .review-caption-first span {
+    font-weight: bold;
+}
+
+.product-reviews .review .review-caption-second {
+    font-size: 13px;
+    color: #555;
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
