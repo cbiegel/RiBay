@@ -28,7 +28,6 @@ Open tasks:
 * CD: Pixelschubsen
     * Schönere Startseite
     * Footer und anderes Füllmaterial
-    * Margin
     
 * NN: Last-Tests
     * z.B. mit JMeter

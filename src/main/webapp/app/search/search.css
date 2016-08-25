@@ -1,3 +1,7 @@
+.search {
+    padding: 0 !important;
+}
+
 .viewHeader {
     padding: 0px 16px;
     height: 42px;
@@ -82,4 +86,33 @@
 .search-list .search-entry .details-right {
 }
 
+rzslider {
+    height: 10px;
+    margin: 24px 0 8px 0;
+}
 
+rzslider .rz-bar-wrapper {
+    height: 16px;
+    padding-top: 7px;
+    margin-top: -7px;
+}
+
+rzslider .rz-bar {
+    height: 4px;
+}
+
+rzslider .rz-bar.rz-selection {
+    background: #f7ce2b;
+}
+
+rzslider .rz-pointer {
+    height: 16px;
+    width: 16px;
+    border-radius: 8px;
+    top: -7px;
+    background-color: #c45500;
+}
+
+rzslider .rz-pointer.rz-active:after {
+    display: none;
+}

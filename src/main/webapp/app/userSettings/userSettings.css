@@ -1,5 +1,7 @@
 .userSettings {
-    padding: 12px 50px;
+    min-width: 400px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .userSettings .settings-header {

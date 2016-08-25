@@ -1,3 +1,11 @@
 .register {
-    margin-left: 15px;
+    min-width: 600px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 40px !important;
+}
+
+.register form {
+    width: 400px;
+    margin: 0 auto;
 }

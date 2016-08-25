@@ -280,3 +280,7 @@ nav-button-dropdown .dropdown-menu .icon {
     min-width: 700px;
     width: auto;
 }
+
+.main > *:first-child {
+    padding: 12px 16px;
+}

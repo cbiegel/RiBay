@@ -8,7 +8,9 @@
             <div class="item" ng-repeat="article in items">
                 <button type="button" class="detail-button box" ng-click="onDetails(article)">Show details
                 </button>
-                <a ng-href="#/product/{{article.id}}"><img ng-src="{{article.image | imageIdToUrl}}"></a>
+                <a ng-href="#/product/{{article.id}}">
+                    <img alt="{{article.name}}" ng-src="{{article.image | imageIdToUrl}}">
+                </a>
             </div>
         </div>
     </div>
