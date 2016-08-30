@@ -1,20 +1,20 @@
 package com.ribay.server.service;
 
-import java.util.UUID;
-import java.util.concurrent.Future;
-
+import com.ribay.server.exception.InvalidLoginException;
+import com.ribay.server.exception.InvalidRegisterException;
+import com.ribay.server.material.User;
+import com.ribay.server.repository.AuthenticationRepository;
+import com.ribay.server.util.RequestScopeData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ribay.server.material.User;
-import com.ribay.server.repository.AuthenticationRepository;
-import com.ribay.server.util.RequestScopeData;
+import java.util.UUID;
+import java.util.concurrent.Future;
 
 @RestController
 public class AuthenticationService {
@@ -28,27 +28,26 @@ public class AuthenticationService {
     private RequestScopeData requestData;
 
     @RequestMapping(path = "/auth/login", method = RequestMethod.POST)
-    public User login(@RequestParam(value = "email") String emailAddress,
-                      @RequestParam(value = "password") String password) throws Exception {
-        // TODO encrypt password and send as header
-        User user = repository.lookupExistingUser(emailAddress);
+    public User login(@RequestBody LoginDTO loginData) throws Exception {
+        String emailAddress = loginData.getEmailAddress();
+        String password = loginData.getPassword();
 
-        // TODO do not return 'null'. send http error message instead!
+        User user = (emailAddress == null) ? null : repository.lookupExistingUser(emailAddress);
 
         if (user != null) {
             // User exists in database
-            if (password.equals(user.getPassword())) {
+            if ((password != null) && password.equals(user.getPassword())) {
                 requestData.setUser(user); // add user to session
 
                 String key = requestData.getSessionId();
                 return repository.login(key, user);
             } else {
                 // password is wrong
-                return null;
+                throw new InvalidLoginException();
             }
         } else {
             // user does not exist
-            return null;
+            throw new InvalidLoginException();
         }
     }
 
@@ -73,11 +72,11 @@ public class AuthenticationService {
         try {
             User existingUser = repository.lookupExistingUser(user.getEmailAddress());
             if (existingUser != null) {
-                return null;
+                throw new InvalidRegisterException();
             }
         } catch (Exception e) {
             LOGGER.warn("Failed to look up existing user in register operation.", e);
-            return null;
+            throw new InvalidRegisterException();
         }
 
         UUID uuid = UUID.randomUUID();
@@ -89,7 +88,30 @@ public class AuthenticationService {
             return user;
         } catch (Exception e) {
             LOGGER.warn("Failed to execute register.", e);
-            return null;
+            throw new InvalidRegisterException();
         }
     }
+
+    public static class LoginDTO {
+        private String emailAddress;
+        private String password;
+
+
+        public String getEmailAddress() {
+            return emailAddress;
+        }
+
+        public void setEmailAddress(String emailAddress) {
+            this.emailAddress = emailAddress;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+    }
+
 }
